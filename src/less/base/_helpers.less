@@ -1,0 +1,77 @@
+@import (reference) "_variables.less";
+@import (reference) "_breakpoints.less";
+@import (reference) "_mixins.less";
+
+.pccv .pcc-clear {
+    clear: both;
+}
+
+.pcc-clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.pccv .pcc-hide {
+    display: none
+}
+
+.pccv .pcc-must-hide {
+  display: none !important
+}
+
+.mobileView({
+    .pccv .pcc-show-sm { 
+        display: inline-block;
+    }
+});
+
+.desktopView({
+    .pccv .pcc-show-lg {
+        display: block !important;
+    }
+    .pccv .pcc-hide-lg {
+        display: none !important;
+    }
+    .pccv .pcc-icon.pcc-show-lg,
+    .pccv .pcc-show-lg-inline {
+        display: inline-block !important;
+    }
+});
+
+.pccv .pcc-text-right {
+    text-align: right
+}
+
+.pccv .pcc-text-left {
+    text-align: left;
+}
+
+.pccv .pcc-text-center,
+.pccv .pcc-center{
+    text-align: center;
+}
+
+.pccv .pcc-pull-left {
+    float: left;
+}
+
+.pccv .pcc-pull-right {
+    float: right;
+}
+
+.pccv .pcc-placeholder {
+    color: @font_color_d20;
+}
+
+.pccv .pcc-width-30 { width: 30% !important; }
+.pccv .pcc-width-50 { width: 50% !important; }
+.pccv .pcc-width-70 { width: 70% !important; }
+.pccv .pcc-width-100 { width: 100% !important; }
+
+.pccv .pcc-margin-top { margin-top: 5px; }
+
+.pccv hr {
+    border: none;
+    border-bottom: 1px solid @background_mid;
+}

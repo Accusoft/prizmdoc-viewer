@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html moznomarginboxes mozdisallowselectionprint>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'; child-src 'none'; object-src 'none'">
+
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> -->
+
+    <link rel="stylesheet" href="{{viewerAssetsPath}}/css/fonts.css">
+    <link rel="stylesheet" href="{{viewerAssetsPath}}/css/viewercontrol.css">
+
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" href="{{viewerAssetsPath}}/css/legacy.css">
+        <script src="{{viewerAssetsPath}}/js/html5shiv.js"></script>
+    <![endif]-->
+
+    <script src="{{viewerAssetsPath}}/js/viewercontrol.js"></script>
+
+    <style type="text/css">
+        html, body{ margin: 0px; padding: 0px; }
+
+        /*Printing Paper Sizes*/
+        /*default */
+        .portrait .page { width: 8.5in; height: 11in; margin: 0 auto !important; }
+        .portrait .pageIE { width: 7.3in; height: 9.5in; margin: 0 auto !important; }
+        .portrait .pageSafari { width: 6.9in; height: 8.9in; margin: 0 auto !important; }
+        .portrait .nomargins { width: 8.5in !important; height: 11in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .nomargins.pageSafari { width: 7.2in !important; height: 9.32in !important; }
+
+        .landscape .page { height: 8.5in; width: 11in; margin: 0 auto !important; }
+        .landscape .pageIE { height: 7in; width: 9.05in; margin: 0 auto !important; }
+        .landscape .pageSafari { height: 6.5in; width: 8.4in; margin: 0 auto !important; }
+        .landscape .nomargins { height: 8.5in !important; width: 11in !important; }
+        .landscape .nomargins.pageSafari { height: 7.2in !important; width: 9.32in !important; }
+        /*default end*/
+
+        /*letter */
+        .portrait .letter.page { width: 8.5in; height: 11in; margin: 0 auto !important; }
+        .portrait .letter.pageIE { width: 7.3in; height: 9.5in; margin: 0 auto !important; }
+        .portrait .letter.pageSafari { width: 6.9in; height: 8.9in; margin: 0 auto !important; }
+        .portrait .letter.nomargins { width: 8.5in !important; height: 11in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .letter.nomargins.pageSafari { width: 7.2in !important; height: 9.32in !important; }
+
+        .landscape .letter.page { height: 8.5in; width: 11in; margin: 0 auto !important; }
+        .landscape .letter.pageIE { height: 7in; width: 9.05in; margin: 0 auto !important; }
+        .landscape .letter.pageSafari { height: 6.5in; width: 8.4in; margin: 0 auto !important; }
+        .landscape .letter.nomargins { height: 8.5in !important; width: 11in !important; }
+        .landscape .letter.nomargins.pageSafari { height: 7.2in !important; width: 9.32in !important; }
+        /*letter end*/
+
+        /*legal*/
+        .portrait .legal.page { width: 8.5in; height: 14in; margin: 0 auto !important; }
+        .portrait .legal.pageIE { width: 7.3in; height: 12.5in; margin: 0 auto !important; }
+        .portrait .legal.pageSafari { width: 6.9in; height: 11.9in; margin: 0 auto !important; }
+        .portrait .legal.nomargins { width: 8.5in !important; height: 14in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .legal.nomargins.pageSafari { width: 7.2in !important; height: 12.32in !important; }
+
+        .landscape .legal.page { height: 8.5in; width: 14in; margin: 0 auto !important; }
+        .landscape .legal.pageIE { height: 7in; width: 12.05in; margin: 0 auto !important; }
+        .landscape .legal.pageSafari { height: 6.5in; width: 11.4in; margin: 0 auto !important; }
+        .landscape .legal.nomargins { height: 8.5in !important; width: 14in !important; }
+        .landscape .legal.nomargins.pageSafari { height: 7.2in !important; width: 12.32in !important; }
+        /*legal end*/
+
+        /*Foolscap*/
+        .portrait .foolscap.page { width: 8in; height: 13in; margin: 0 auto !important; }
+        .portrait .foolscap.pageIE { width: 6.8in; height: 11.5in; margin: 0 auto !important; }
+        .portrait .foolscap.pageSafari { width: 6.4in; height: 10.9in; margin: 0 auto !important; }
+        .portrait .foolscap.nomargins { width: 8in !important; height: 13in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .foolscap.nomargins.pageSafari { width: 6.7in !important; height: 11.32in !important; }
+
+        .landscape .foolscap.page { height: 8in; width: 13in; margin: 0 auto !important; }
+        .landscape .foolscap.pageIE { height: 6.5in; width: 11.05in; margin: 0 auto !important; }
+        .landscape .foolscap.pageSafari { height: 6in; width: 10.4in; margin: 0 auto !important; }
+        .landscape .foolscap.nomargins { height: 8in !important; width: 13in !important; }
+        .landscape .foolscap.nomargins.pageSafari { height: 6.7in !important; width: 11.32in !important; }
+        /*Foolscap end*/
+
+        /*Tabloid*/
+        .portrait .tabloid.page { width: 11in; height: 17in; margin: 0 auto !important; }
+        .portrait .tabloid.pageIE { width: 9.8in; height: 15.5in; margin: 0 auto !important; }
+        .portrait .tabloid.pageSafari { width: 9.4in; height: 14.9in; margin: 0 auto !important; }
+        .portrait .tabloid.nomargins { width: 11in !important; height: 17in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .tabloid.nomargins.pageSafari { width: 9.7in !important; height: 15.32in !important; }
+
+        .landscape .tabloid.page { height: 11in; width: 17in; margin: 0 auto !important; }
+        .landscape .tabloid.pageIE { height: 9.5in; width: 15.05in; margin: 0 auto !important; }
+        .landscape .tabloid.pageSafari { height: 8in; width: 13.4in; margin: 0 auto !important; }
+        .landscape .tabloid.nomargins { height: 11in !important; width: 17in !important; }
+        .landscape .tabloid.nomargins.pageSafari { height: 9.7in !important; width: 15.32in !important; }
+        /*Tabloid end*/
+
+        /*A3 */
+        .portrait .a3.page { width: 11.7in; height: 16.5in; margin: 0 auto !important; }
+        .portrait .a3.pageIE { width: 10.5in; height: 15in; margin: 0 auto !important; }
+        .portrait .a3.pageSafari { width: 10.1in; height: 14.4in; margin: 0 auto !important; }
+        .portrait .a3.nomargins { width: 11.7in !important; height: 16.5in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .a3.nomargins.pageSafari { width: 10.4in !important; height: 14.82in !important; }
+
+        .landscape .a3.page { height: 11.7in; width: 16.6in; margin: 0 auto !important; }
+        .landscape .a3.pageIE { height: 10.2in; width: 14.55in; margin: 0 auto !important; }
+        .landscape .a3.pageSafari { height: 9.7in; width: 13.9in; margin: 0 auto !important; }
+        .landscape .a3.nomargins { height: 11.7in !important; width: 16.5in !important; }
+        .landscape .a3.nomargins.pageSafari { height: 10.4in !important; width: 14.82in !important; }
+        /*A3 end*/
+
+        /*A4*/
+        .portrait .a4.page { width: 8.27in; height: 11.68in; margin: 0 auto !important; }
+        .portrait .a4.pageIE { width: 7.1in; height: 10in; margin: 0 auto !important; }
+        .portrait .a4.pageSafari { width: 6.7in; height: 9.4in; margin: 0 auto !important; }
+        .portrait .a4.nomargins { width: 8.27in !important; height: 11.68in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .a4.nomargins.pageSafari { width: 7.2in !important; height: 9.57in !important; }
+
+        .landscape .a4.page { height: 8.25in; width: 11.69in; margin: 0 auto !important; }
+        .landscape .a4.pageIE { height: 6.76in; width: 9.75in; margin: 0 auto !important; }
+        .landscape .a4.pageSafari { height: 6.3in; width: 9.1in; margin: 0 auto !important; }
+        .landscape .a4.nomargins { height: 8.25in !important; width: 11.69in !important; }
+        .landscape .a4.nomargins.pageSafari { height: 6.36in !important; width: 10.02in !important; }
+        /*A4 end*/
+
+        /*A5 */
+        .portrait .a5.page { width: 5.8in; height: 8.3in; margin: 0 auto !important; }
+        .portrait .a5.pageIE { width: 4.6in; height: 6.8in; margin: 0 auto !important; }
+        .portrait .a5.pageSafari { width: 4.2in; height: 6.2in; margin: 0 auto !important; }
+        .portrait .a5.nomargins { width: 5.8in !important; height: 8.3in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .a5.nomargins.pageSafari { width: 4.5in !important; height: 6.62in !important; }
+
+        .landscape .a5.page { height: 5.8in; width: 8.3in; margin: 0 auto !important; }
+        .landscape .a5.pageIE { height: 4.3in; width: 6.35in; margin: 0 auto !important; }
+        .landscape .a5.pageSafari { height: 3.8in; width: 6.7in; margin: 0 auto !important; }
+        .landscape .a5.nomargins { height: 5.8in !important; width: 8.3in !important; }
+        .landscape .a5.nomargins.pageSafari { height: 4.5in !important; width: 6.62in !important; }
+        /*A5 end*/
+
+        /*A6 */
+        .portrait .a6.page { width: 4.1in; height: 5.8in; margin: 0 auto !important; }
+        .portrait .a6.pageIE { width: 2.9in; height: 4.3in; margin: 0 auto !important; }
+        .portrait .a6.pageSafari { width: 2.5in; height: 3.7in; margin: 0 auto !important; }
+        .portrait .a6.nomargins { width: 4.1in !important; height: 5.8in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .a6.nomargins.pageSafari { width: 2.8in !important; height: 3.82in !important; }
+
+        .landscape .a6.page { height: 4.1in; width: 5.8in; margin: 0 auto !important; }
+        .landscape .a6.pageIE { height: 2.6in; width: 3.85in; margin: 0 auto !important; }
+        .landscape .a6.pageSafari { height: 2.1in; width: 3.2in; margin: 0 auto !important; }
+        .landscape .a6.nomargins { height: 4.1in !important; width: 5.8in !important; }
+        .landscape .a6.nomargins.pageSafari { height: 2.8in !important; width: 4.12in !important; }
+        /*A6 end*/
+
+        /*Arch A */
+        .portrait .a.page { width: 9in; height: 12in; margin: 0 auto !important; }
+        .portrait .a.pageIE { width: 7.8in; height: 10.5in; margin: 0 auto !important; }
+        .portrait .a.pageSafari { width: 7.4in; height: 9.9in; margin: 0 auto !important; }
+        .portrait .a.nomargins { width: 9in !important; height: 12in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .a.nomargins.pageSafari { width: 7.7in !important; height: 10.32in !important; }
+
+        .landscape .a.page { height: 9in; width: 12in; margin: 0 auto !important; }
+        .landscape .a.pageIE { height: 7.5in; width: 10.05in; margin: 0 auto !important; }
+        .landscape .a.pageSafari { height: 7in; width: 9.4in; margin: 0 auto !important; }
+        .landscape .a.nomargins { height: 9in !important; width: 12in !important; }
+        .landscape .a.nomargins.pageSafari { height: 7.7in !important; width: 10.32in !important; }
+        /*Arch A end*/
+
+        /*Arch B */
+        .portrait .b.page { width: 12in; height: 18in; margin: 0 auto !important; }
+        .portrait .b.pageIE { width: 10.8in; height: 16.5in; margin: 0 auto !important; }
+        .portrait .b.pageSafari { width: 10.4in; height: 15.9in; margin: 0 auto !important; }
+        .portrait .b.nomargins { width: 12in !important; height: 18in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .b.nomargins.pageSafari { width: 10.7in !important; height: 16.32in !important; }
+
+        .landscape .b.page { height: 12in; width: 18in; margin: 0 auto !important; }
+        .landscape .b.pageIE { height: 10.5in; width: 16.05in; margin: 0 auto !important; }
+        .landscape .b.pageSafari { height: 10in; width: 15.4in; margin: 0 auto !important; }
+        .landscape .b.nomargins { height: 12in !important; width: 18in !important; }
+        .landscape .b.nomargins.pageSafari { height: 10.7in !important; width: 16.32in !important; }
+        /*Arch B end*/
+
+        /*Arch C */
+        .portrait .c.page { width: 18in; height: 24in; margin: 0 auto !important; }
+        .portrait .c.pageIE { width: 16.8in; height: 22.5in; margin: 0 auto !important; }
+        .portrait .c.pageSafari { width: 16.4in; height: 21.9in; margin: 0 auto !important; }
+        .portrait .c.nomargins { width: 18in !important; height: 24in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .c.nomargins.pageSafari { width: 16.7in !important; height: 22.32in !important; }
+
+        .landscape .c.page { height: 18in; width: 24in; margin: 0 auto !important; }
+        .landscape .c.pageIE { height: 16.5in; width: 22.05in; margin: 0 auto !important; }
+        .landscape .c.pageSafari { height: 16in; width: 21.4in; margin: 0 auto !important; }
+        .landscape .c.nomargins { height: 18in !important; width: 24in !important; }
+        .landscape .c.nomargins.pageSafari { height: 16.7in !important; width: 22.32in !important; }
+        /*Arch C end*/
+
+        /*Arch D */
+        .portrait .d.page { width: 24in; height: 36in; margin: 0 auto !important; }
+        .portrait .d.pageIE { width: 22.8in; height: 34.5in; margin: 0 auto !important; }
+        .portrait .d.pageSafari { width: 22.4in; height: 33.9in; margin: 0 auto !important; }
+        .portrait .d.nomargins { width: 24in !important; height: 36in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .d.nomargins.pageSafari { width: 22.7in !important; height: 34.32in !important; }
+
+        .landscape .d.page { height: 24in; width: 36in; margin: 0 auto !important; }
+        .landscape .d.pageIE { height: 22.5in; width: 34.05in; margin: 0 auto !important; }
+        .landscape .d.pageSafari { height: 22in; width: 35.4in; margin: 0 auto !important; }
+        .landscape .d.nomargins { height: 24in !important; width: 36in !important; }
+        .landscape .d.nomargins.pageSafari { height: 22.7in !important; width: 34.32in !important; }
+        /*Arch D end*/
+
+        /*Arch E */
+        .portrait .e.page { width: 36in; height: 48in; margin: 0 auto !important; }
+        .portrait .e.pageIE { width: 34.8in; height: 46.6in; margin: 0 auto !important; }
+        .portrait .e.pageSafari { width: 34.4in; height: 45.9in; margin: 0 auto !important; }
+        .portrait .e.nomargins { width: 36in !important; height: 48in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .e.nomargins.pageSafari { width: 34.7in !important; height: 46.32in !important; }
+
+        .landscape .e.page { height: 36in; width: 48in; margin: 0 auto !important; }
+        .landscape .e.pageIE { height: 34.5in; width: 46.05in; margin: 0 auto !important; }
+        .landscape .e.pageSafari { height: 34in; width: 45.4in; margin: 0 auto !important; }
+        .landscape .e.nomargins { height: 35in !important; width: 48in !important; }
+        .landscape .e.nomargins.pageSafari { height: 34.7in !important; width: 46.32in !important; }
+        /*Arch E end*/
+
+        /*Arch E1 */
+        .portrait .e1.page { width: 30in; height: 42in; margin: 0 auto !important; }
+        .portrait .e1.pageIE { width: 28.8in; height: 40.5in; margin: 0 auto !important; }
+        .portrait .e1.pageSafari { width: 28.4in; height: 39.9in; margin: 0 auto !important; }
+        .portrait .e1.nomargins { width: 30in !important; height: 42in !important; }
+        /* even without margins, Safari enforces the printer's non-printable area */
+        .portrait .e1.nomargins.pageSafari { width: 28.7in !important; height: 40.32in !important; }
+
+        .landscape .e1.page { height: 30in; width: 42in; margin: 0 auto !important; }
+        .landscape .e1.pageIE { height: 28.5in; width: 40.05in; margin: 0 auto !important; }
+        .landscape .e1.pageSafari { height: 28in; width: 39.4in; margin: 0 auto !important; }
+        .landscape .e1.nomargins { height: 30in !important; width: 42in !important; }
+        .landscape .e1.nomargins.pageSafari { height: 28.7in !important; width: 40.32in !important; }
+        /*Arch E1 end*/
+
+        .igAnchor, .igViewerGraphics, .igViewerScroller{
+            width: 100% !important; height: 100% !important;
+        }
+
+        @page {
+            size: {{orientation}};
+            margin: 0cm;
+            white-space: pre;
+        }
+
+        .commentPage, .reasonPage {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0 .25in 0 .25in !important;
+            page-break-after: always;
+        }
+
+        .commentPage h1, .reasonPage h1 {
+            font-size: 28px;
+            margin: .25in 0 0 0 !important;
+            padding: 0;
+        }
+
+        .commentPage ul, .reasonPage ul {
+            font-size: 14px;
+            font-weight: normal;
+            margin: 0 0 0 .3in;
+            padding: 0;
+        }
+
+        .redactionReasonPageHeader ul {
+            padding: 5px;
+        }
+
+        .redactionReasonPageHeader li {
+            list-style-type: none;
+        }
+
+        .pageConversations, .pageReasons {
+            page-break-inside: avoid;
+            margin: 0 !important;
+            padding: .25in 0 0 .1in !important;
+        }
+
+        .pageConversations h2, .pageConversations h3, .pageReasons h2 {
+            margin: 0 0 5px 0;
+            padding: 0;
+        }
+
+        .commentPage hr, .reasonPage hr {
+            margin: .0 0 .05in 0;
+        }
+
+        @media print {
+            .page, .pageIE, .pageSafari { page-break-after: always; }
+            /* required for Firefox to print all pages */
+            * { position: static !important; float: none !important; }
+            foreignObject { overflow: hidden!important; }
+        }
+    </style>
+
+</head>
+<body class='' id='print' data-options='{
+    "vsID": "{{viewingSessionId}}",
+    "pages": "{{pages}}",
+    "handler": "{{handler}}",
+    "orientation": "{{orientation}}",
+    "paperSize": "{{paperSize}}",
+    "isIE": {{isIE}},
+    "isSafari": {{isSafari}},
+    "includeAnnotations": "{{includeAnnotations}}",
+    "includeRedactions": "{{includeRedactions}}",
+    "includeComments": "{{includeComments}}",
+    "includeReasons": "{{includeReasons}}",
+    "margins": "{{margins}}",
+    "redactionViewMode": "{{redactionViewMode}}"}'>
+
+<script src="{{viewerAssetsPath}}/js/print.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,88 @@
+<div class="pcc-overlay-inner">
+    <button class="pcc-overlay-closer" data-pcc-page-redaction="cancel">&#215;</button>
+
+    <% if (typeof(show) !== 'undefined' && show === 'form') { %>
+
+        <div class="pcc-row">
+            <div class="pcc-col-12">
+                <div class="pcc-row">
+                    <h3><%= pageRedactionOverlay.title %></h3>
+                </div>
+                <div class="pcc-row">
+                    <div data-pcc-radio="pageRedaction" data-pcc-page-redaction="redactAllPages">
+                        <span class="pcc-icon pcc-icon-circle"></span>
+                        <label><%= pageRedactionOverlay.allPages %></label>
+                    </div>
+                </div>
+                <div class="pcc-row" data-pcc-page-redaction-field="excludeRange">
+                    <div class="pcc-col-4 pcc-text-center">
+                        <label class="secondary"><%= pageRedactionOverlay.exclude %></label>
+                    </div>
+                    <div class="pcc-col-8">
+                        <input type="text" data-pcc-page-redaction-range="exclude" class="pcc-full" placeholder="<%= rangePlaceholder %>">
+                    </div>
+                </div>
+                <div class="pcc-row">
+                    <div data-pcc-radio="pageRedaction" data-pcc-page-redaction="redactCurrentPage" class="pcc-checked">
+                        <span class="pcc-icon pcc-icon-circle"></span>
+                        <label><%= pageRedactionOverlay.currentPage %></label>
+                    </div>
+                </div>
+                <div class="pcc-row">
+                    <div data-pcc-radio="pageRedaction" data-pcc-page-redaction="redactRange" class="pcc-col-4">
+                        <span class="pcc-icon pcc-icon-circle"></span>
+                        <label><%= pageRedactionOverlay.range %></label>
+                    </div>
+                    <div class="pcc-col-8">
+                        <input type="text" data-pcc-page-redaction-range="include" class="pcc-full" placeholder="<%= rangePlaceholder %>">
+                    </div>
+                </div>
+                <div class="pcc-row">
+                    <% if (reasons && reasons.enableRedactionReasonSelection) { %>
+                    <div class="pcc-col-4">
+                        <label class="primary"><%= pageRedactionOverlay.reason %></label>
+                    </div>
+                    <div class="pcc-col-8">
+                        <div class="pcc-row">
+                            <div class="pcc-select pcc-select-redaction-reason" data-pcc-redaction-reason data-pcc-toggle="dropdown-stamp-label" title="<%= selectLabel %>">
+                                <div class="pcc-label"><%= pageRedactionOverlay.selectReason %></div>
+                                <div class="pcc-arrow-down"></div>
+                                <div data-pcc-toggle-id="dropdown-stamp-label" class="pcc-dropdown">
+                                    <% _.each(reasons.reasons, function(reason, index) { %>
+                                    <div class="<%= (index % 2 === 0) ? 'even' : 'odd' %>"><%= reason.reason %></div>
+                                    <% }); %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pcc-row">
+                            <input type="text" data-pcc-redaction-reason-input>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <div class="pcc-row">
+            <button data-pcc-page-redaction="submit" class="pcc-pull-right"><%= pageRedactionOverlay.submit %></button>
+            <button data-pcc-page-redaction="cancel" class="pcc-pull-left"><%= pageRedactionOverlay.cancel %></button>
+        </div>
+
+    <% } else if (typeof(show) !== 'undefined' && show === 'status') { %>
+
+        <div class="pcc-row">
+            <div data-pcc-page-redaction="resultCount"><%= pageRedactionOverlay.requestingAttributesOf %></div>
+        </div>
+        <div class="pcc-row pcc-percent">
+            <div class="pcc-label">
+                <div class="pcc-load"></div>
+                <div data-pcc-page-redaction="resultPercent"></div>
+            </div>
+            <div data-pcc-page-redaction="loader" class="pcc-bar"></div>
+        </div>
+        <button data-pcc-page-redaction="cancel" class="pcc-center"><%= pageRedactionOverlay.cancel %></button>
+
+    <% } %>
+
+    <div class="pcc-clearfix"></div>
+
+</div>

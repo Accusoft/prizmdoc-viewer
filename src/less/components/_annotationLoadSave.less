@@ -1,0 +1,186 @@
+@import (reference) "../base/_variables.less";
+@import (reference) "../base/_breakpoints.less";
+@import (reference) "../base/_mixins.less";
+@import (reference) "../base/_inputs_custom.less";
+
+// depends on dialogs
+@import (once) "../base/_dialogs.less";
+
+// import annotation review, in order to use a mixin
+@import (reference) "_annotationLayerReview.less";
+
+
+.pccv .pcc-annotation-layers-title {
+    font-size: 16px;
+    line-height: 26px;
+    margin-bottom: 10px;
+}
+
+.pccv .pcc-annotation-layer-load-section {
+    margin-bottom: 10px;
+}
+
+.pccv .pcc-annotation-layer-load-section-title {
+    position: relative;
+    line-height: 26px;
+    padding: 0 5px;
+
+    background-color: @background_middark;
+    color: @font_color_offwhite;
+}
+
+.pccv .pcc-annotation-layer-load-section-content {
+    background-color: @background_offwhite;
+    border-left: 1px solid @background_mid;
+    border-right: 1px solid @background_mid;
+    border-bottom: 1px solid @background_mid;
+    max-height: 15em;
+    
+    .pcc-row { padding: 0 5px; }
+    
+    .pcc-toggle-all {
+      .pccToggleAll();
+      line-height: 26px;
+    }
+    
+    .pcc-loading-container { 
+        text-align: center;
+
+        display: block;
+        background-color: initial;
+        border: none;
+        float: none;
+        margin: 4px auto;
+    }
+
+}
+
+.pccv .pcc-overflow .pcc-annotation-layer-load-section-content {
+    overflow: auto;
+}
+
+// load/save
+.pccv .pcc-dialog-save-annotations,
+.pccv .pcc-dialog-annotation-layer-save {
+
+    input {
+        vertical-align: middle;
+        width: 75%;
+    }
+}
+
+// load/save annotations
+.pccv .pcc-select-load-annotations .pcc-label,
+.pccv .pcc-select-save-annotations .pcc-label {
+    width: 210px
+}
+
+.pccv .pcc-select-load-annotations .pcc-dropdown,
+.pccv .pcc-select-save-annotations .pcc-dropdown {
+    width: 208px;
+}
+
+.pccv .pcc-select-load-annotations .pcc-row {
+    margin: 0!important;
+    padding: 4px!important;
+    border: 1px solid @background_offwhite;
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.pccv .pcc-select-load-annotations .pcc-row.pcc-odd {
+    background: @background_white;
+    border-color: @border_white;
+}
+
+.pccv .pcc-annotation-load-status-msg {
+    font-style: italic;
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+.pccv .pcc-dialog-load-annotation-layers {
+
+    .pcc-annotation-layers-load-title {
+        font-size: 16px;
+        line-height: 26px;
+    }
+
+    .pcc-load {
+        margin-left: -4px;
+        margin-right: 3px;
+    }
+
+    .pcc-checkbox {
+        .checkboxSpan;
+        margin-right: 5px;
+        margin-top: 3px;
+        margin-bottom: 3px;
+    }
+
+    &.pcc-checked .pcc-checkbox {
+        display: inline-block;
+    }
+
+    .pcc-annotation-layers-load-msg {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .pcc-section {
+        margin-bottom: 10px;
+    }
+
+    .pcc-section-content {
+        border-bottom: 1px solid #c2c5ce;
+    }
+
+    .pcc-section.pcc-expand.pcc-dropdown-load-annotation-layers .pcc-section-content{
+        overflow: visible !important;
+    }
+
+    .pcc-select-load-annotation-layers {
+        width: 100%;
+        .pcc-label,
+        .pcc-dropdown{
+            width: inherit;
+        }
+
+        .pcc-row {
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    }
+
+    [data-pcc-load-annotation-layers="done"] {
+        width: 100%;
+    }
+}
+
+// this is used to prevent flickering in IE9 when checking/unchecking the search
+// term boxes, or hovering over certain parts of the filters view
+.pccv .pcc-dialog-load-annotation-layers *,
+.pccv .pcc-dialog-load-annotation-layers .pcc-checkbox{
+    .box-sizing(border-box);
+}
+
+.pccv .pcc-annotation-layer-record {
+
+    .pcc-hide {
+      display: none;
+    }
+
+    margin: 4px 0;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+
+    &.pcc-checked .pcc-checkbox {
+        display: inline-block;
+        background-color: #ffffff;
+
+        svg {
+            display: inline-block;
+        }
+    }
+}

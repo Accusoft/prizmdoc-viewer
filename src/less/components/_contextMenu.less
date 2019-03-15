@@ -1,0 +1,329 @@
+@import (reference) "../base/_variables.less";
+@import (reference) "../base/_breakpoints.less";
+@import (reference) "../base/_mixins.less";
+
+@import (reference) "overlays/_imageStampOverlay.less";
+
+@menuOffset: 10px;
+@scrollbarOffset: 16px;
+@menuTopOffset: @tabset_height + @tabpane_height + @menuOffset;
+@menuRightOffset: @scrollbarOffset + @menuOffset;
+
+// menu positioning
+.pccv .pcc-context-menu {
+    padding: 4px;
+    position: absolute;
+    top: @menuTopOffset;
+    right: @menuRightOffset;
+    margin: 0 -320px 0 0;
+    z-index: 3;
+    border-radius: 2px;
+    background: @background_light;
+    .box-shadow(0 1px 4px 1px rgba(0, 0, 0, 0.4));
+    .transition(margin 400ms);
+    will-change: margin;
+    
+    &.pcc-open {
+        margin: 0;
+    }
+    
+    // offsets
+    &.pcc-vertical-offset-left,
+    &.pcc-vertical-offset-right {
+        top: @menuTopOffset - @tabpane_height;
+    }
+    &.pcc-vertical-offset-right {
+        right: @tabpane_vertical_width + @menuRightOffset;
+    }
+    
+    &.pcc-vertical-offset-left.pcc-move,
+    &.pcc-vertical-offset-right.pcc-move {
+        top: @menuTopOffset + 82px;
+    }
+    
+    &.pcc-move-bottom,
+    &.pcc-vertical-offset-left.pcc-move-bottom {
+        top: auto;
+        bottom: (@tools_height + 10px);
+    }
+
+    // reverse dropdowns when context menu is moved
+    &.pcc-move-bottom .pcc-dropdown {
+        top: auto;
+        bottom: 26px;
+        margin: 150px 0 0;
+        .box-shadow(0 -1px 2px 0 rgba(0, 0, 0, 0.3));
+        
+        &.pcc-open { 
+            margin: 0;
+        }
+    }
+    &.pcc-move-bottom .pcc-select-stamp-label .pcc-dropdown {
+        margin: 80px 0 0;
+    }
+    &.pcc-move-bottom .pcc-select-color .pcc-dropdown {
+        bottom: 32px;
+        margin: 48px 0 0;
+    }
+
+    .mobileView({
+        &.pcc-move { 
+            // horizontal dialog offset on mobile
+            top: 160px; 
+        }
+    });
+}
+
+// positioning of tab content
+.pccv .pcc-context-menu {
+    &>.pcc-pull-right {
+        width: 28px;
+    }
+    & .pcc-pull-right button {
+        margin: 0 0 5px;
+    }
+    & .pcc-pull-left {
+        display: none;
+        margin: 0 4px 0 0;
+        width: 242px;
+        
+        &.pcc-open {
+            display: block;
+        }
+    }
+    & .pcc-row:last-child {
+        margin: 5px 0 0;
+    }
+
+    & .pcc-tabs>div {
+        & .pcc-icon { height: 24px; }
+    }
+    
+    & [data-pcc-esign-preview]{ width: 200px; }
+    & .pcc-esign-preview-container{ width: 100%; }
+
+    & .pcc-tab-content>div {
+        margin: 2px 0 4px;
+    }
+}
+
+// Alternate tabs for context menu
+.pccv .pcc-tabs {
+    display: inline-block;
+    height: 26px;
+    margin: 0 0 5px;
+    width: 85%;
+    border-bottom: 1px solid @background_mid;
+    
+    &>div {
+        display: inline-block;
+        height: 26px;
+        margin: 0 -5px 0 0px;
+        padding: 0 7px;
+        background: darken(@background_light, 6%);
+        border: 1px solid @background_mid;
+        border-radius: 2px 2px 0 0;
+        cursor: pointer;
+    }
+    &>div.pcc-active {
+        border-bottom: 1px solid @background_light;
+        background: none;
+    }
+}
+
+.pccv .pcc-tab-content {
+    display: none;
+    
+    &.pcc-open {
+        display: block;
+        width: 85%;
+    }
+}
+
+// color select
+.pccv .pcc-select-color {
+    position: static;
+    
+    .pcc-label {
+        width: 37px
+    }
+    
+    .pcc-swatch {
+        width: 16px;
+        height: 16px;
+        margin: 5px 0 0px 4px;
+        background: @black;
+        border-radius: 2px;
+        border: 1px inset @border_white;
+        float: left;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .pcc-dropdown {
+        margin: -1px 0 0;
+        left: 4px;
+        top: auto;
+        overflow: hidden;
+        border: 1px solid @background_mid;
+        
+        &.pcc-open {
+            height: 48px;
+        }
+    }
+    .pcc-dropdown div {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin: 4px 0 0 4px;
+        border-radius: 2px;
+        border: 1px inset @background_mid;
+        position: relative;
+    }
+    div.pcc-transparent-effect {
+        background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAMAAADW3miqAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAlQTFRF/5+f/wAA////wXbI3QAAAGhJREFUeNqM1MERACAIA8GF/oumBM63o5BcYt9jlDvKO8pfyjzKzMpeyu6KPoqGis6KF4pfiqeK7wobCj8KYwqHCqsKzwrzSi6U7Cj5UjKo5FTJspJ3pROU3lC6RekfpaPEHvsL8QQYAJP8CXECfmvmAAAAAElFTkSuQmCC') no-repeat center center !important;
+    }
+    
+    .pcc-arrow-down {
+        right: auto;
+        margin: -14px 0 0 24px
+    }
+}
+
+
+// border width select
+.pccv .pcc-select-border .pcc-option {
+    width: 16px;
+    margin: -3px 7px 0 0;
+    background: @background_dark;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.pccv .pcc-select-border .pcc-label {
+    text-indent: 8px;
+}
+
+.pccv .pcc-select-border .pcc-dropdown {
+    width: 78px;
+}
+
+.pccv .pcc-select-border {
+    // use a loop to make the dropdown options
+    .makeOption(@total, @i: 1) when (@i =< @total) {
+        .pcc-option@{i} { 
+            height: (1px * @i);
+        }
+
+        .makeOption(@total, (@i + 1));
+    }
+    
+    .makeOption(8);
+}
+
+// opacity select
+.pccv .pcc-select-opacity .pcc-option {
+    width: 14px;
+    height: 14px;
+    margin: -3px 2px 0 0;
+    background: @background_dark;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.pccv .pcc-select-opacity {
+    .pcc-dropdown {
+        width: 78px
+    }
+    
+    // use a loop to make the dropdown options
+    .makeOpacity(@total, @i: 0) when (@i =< @total) {
+        .pcc-option@{i} { 
+            .opacity((@i));
+        }
+
+        .makeOpacity(@total, (@i + 10));
+    }
+    
+    .makeOpacity(100);
+}
+
+// font select
+.pccv .pcc-select-font {
+    .pcc-label { width: 110px; }
+    .pcc-dropdown { width: 108px; }
+}
+
+.pccv .pcc-select-font-size {
+    .pcc-label { width: 50px; }
+    .pcc-dropdown { width: 48px; }
+}
+
+// stamp select
+.pccv .pcc-select-stamp-label {
+    .pcc-label { width: 95px; }
+    .pcc-dropdown { width: 93px; }
+    .pcc-dropdown.pcc-open { height: 80px; }
+}
+
+// redaction reason select
+.pccv .pcc-select-redaction-reason { 
+    .pcc-label { width: 100%; }
+    .pcc-dropdown { width: 98%; }
+    .pcc-dropdown.pcc-open {
+        height: auto;
+        max-height: 150px;
+    }
+}
+
+// freeform redaction reason display
+.pccv .pcc-context-menu {
+
+  .pcc-select-redaction-reason {
+    width: 195px;
+  }
+
+  [data-pcc-redaction-reason-input] {
+    display: block;
+    width: 196px;
+  }
+
+}
+
+// freeform redaction reason for full page redaction
+.pccv .pcc-overlay-page-redaction {
+
+  .pcc-select-redaction-reason,
+  [data-pcc-redaction-reason-input] {
+    width: 100%;
+  }
+}
+
+// hyperlink display
+.pccv .pcc-context-menu {
+    .pcc-hyperlink-header {
+        position: relative;
+        padding-top: 4px;
+    }
+    
+    [data-pcc-link-input] {
+        margin-top: 5px;
+        display: block;
+        width: 196px;
+    }
+    
+    [data-pcc-link-navigate] {
+        position: absolute;
+        top: -2px;
+        right: -5px;
+    }
+}
+
+// image stamp preview display
+.pccv .pcc-image-stamp-preview {
+    &:extend(.pcc-image-stamp-list ul.grid li);
+    
+    max-width: 200px;
+    max-height: 100px;
+    margin: 0;
+}

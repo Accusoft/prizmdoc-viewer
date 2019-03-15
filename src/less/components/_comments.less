@@ -1,0 +1,247 @@
+@import (reference) "../base/_variables.less";
+@import (reference) "../base/_breakpoints.less";
+@import (reference) "../base/_mixins.less";
+
+// full comments code
+.pccv {
+
+    .pccPageListComments {
+        min-width: 300px;
+
+        .mobileView({
+            min-width: 180px;
+        });
+    }
+
+    .pcc-conversation {
+        position: absolute;
+        left: 10px;
+        right: 0px;
+        z-index:2;
+
+        .box-sizing(border-box);
+        .transition(transform 400ms ease);
+
+        will-change: top, transform;
+    }
+
+    .pcc-conversation-selected {
+        .transform(translateX(-5px));
+    }
+
+    .pcc-conversation-container {
+        position: relative;
+        width: 100%;
+        border-radius: 2px;
+        border: 1px solid @border_light;
+        background: @background_light;
+        text-align: left;
+        color: darken(@background_dark, 10%);
+    }
+    .pcc-conversation-selected .pcc-conversation-container {
+        border-color: @icon_color;
+
+        &:before {
+            content: "";
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-right: 10px solid @icon_color;
+            left: -20px;
+            top: 2px;
+            position: absolute;
+        }
+    }
+
+    .pcc-comment {
+        position: relative;
+        padding: 5px 5px 5px 10px;
+        border-top: 1px solid white;
+        border-bottom: 1px solid @border_light;
+        word-wrap: break-word;
+        white-space: pre-line;
+
+        &.pcc-comment-first {
+            background-color: white;
+            border-radius: 2px 2px 0 0;
+            border: none;
+            padding: 5px;
+        }
+        &.pcc-comment-last {
+            border-bottom: none;
+        }
+        &.pcc-comment-edit-container {
+            padding: 5px;
+        }
+
+        button {
+            margin: 5px 0 0 5px;
+        }
+    }
+
+    .pcc-comment-text {
+        margin-right: 28px;
+        margin-bottom: 10px;
+    }
+
+    .pcc-comment-footer {
+        color: @font_color_d20;
+        font-style: italic;
+    }
+
+    .pcc-comment-owner {
+        height: 15px;
+        line-height: 15px;
+        max-width: 45%;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .pcc-comment-date,
+    .pcc-comment-owner {
+        .mobileView({
+            float: none;
+            max-width: none;
+            text-align: left;
+        });
+    }
+
+    .pcc-comment-edit {
+        display: block;
+        width: 100%;
+        height: 4em;
+        resize: vertical;
+    }
+
+    .pcc-comment-reply-input {
+        display: block;
+        width: 100%;
+        height: 2em;
+        color: @font_color_d20;
+        resize: vertical;
+    }
+
+    .pcc-comment-reply {
+        position: relative;
+        padding: 5px;
+        border-top: 1px solid @border_light;
+        word-wrap: break-word;
+        white-space: pre-line;
+    }
+
+    .pcc-comment-reply:before {
+        content:"";
+        display:block;
+        position:absolute;
+        top:0px;
+        right:0px;
+        left:0px;
+        border-top:1px solid white
+    }
+
+    .pcc-comment-hide {
+        display: none;
+    }
+
+    // skinny comments augmentation
+    .pccPageListComments .pcc-comment-trigger {
+        display: none;
+        cursor: pointer;
+    }
+
+    .pccPageListComments.pcc-skinny-comments {
+        width: 40px;
+        min-width: 40px;
+
+        .pcc-comment-trigger {
+            display: block;
+        }
+
+        .pcc-conversation {
+            width: 28px;
+        }
+
+        .pcc-conversation-container {
+            display: none;
+        }
+
+        .pcc-conversation-container.pcc-expanded {
+            display: block;
+            position: absolute;
+            width: 1000%;
+            width: 180px;
+            top: -3px;
+            right: 0;
+
+            .transform(translateX(-38px));
+        }
+
+        .pcc-conversation-selected .pcc-conversation-container:before {
+            left: auto;
+            top: 5px;
+            right: -10px;
+            border-right: 0px solid transparent;
+            border-left-color: @icon_color;
+        }
+
+        .pcc-comment-date,
+        .pcc-comment-owner {
+            float: none;
+            max-width: none;
+            text-align: left;
+        }
+    }
+
+    // comment options menu
+    [data-pcc-comment-menu] {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 30px;
+        height: 30px;
+        padding: 2px;
+        overflow: hidden;
+
+        .box-sizing(border-box);
+        .transition(width 400ms ease);
+
+        will-change: width;
+    }
+
+    [data-pcc-comment-menu]:hover,
+    [data-pcc-comment-menu].pcc-expanded {
+        width: 85px;
+        background-color: @background_light;
+        border-bottom-left-radius: 2px;
+
+        -webkit-animation-duration: 1s;
+                animation-duration: 1s;
+        -webkit-animation-timing-function: ease;
+                animation-timing-function: ease;
+        -webkit-animation-name: pcc-comment-menu-enter;
+                animation-name: pcc-comment-menu-enter;
+    }
+
+    [data-pcc-comment-menu] button,
+    .pcc-comment-menu-trigger {
+        margin: 0;
+        display: inline-block;
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+
+        // the float reverses the button order in the DOM
+        float: right;
+    }
+}
+
+@-webkit-keyframes pcc-comment-menu-enter {
+    0% { max-width: 30px; }
+    100% { max-width: 100%; }
+}
+
+@keyframes pcc-comment-menu-enter {
+    0% { max-width: 30px; }
+    100% { max-width: 100%; }
+}

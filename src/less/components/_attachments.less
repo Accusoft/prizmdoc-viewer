@@ -1,0 +1,84 @@
+@import (reference) "../base/_variables.less";
+@import (reference) "../base/_breakpoints.less";
+@import (reference) "../base/_mixins.less";
+@import (reference) "../base/_icons.less";
+
+@import (reference) "../base/_inputs_custom.less";
+
+@import (once) "../base/_dialogs.less";
+
+.pcc-attachments-section{
+    height: 100%;
+    overflow: hidden;
+}
+
+.pccv .pcc-attachments-section-title {
+    position: relative;
+    line-height: 26px;
+    padding: 0 5px;
+
+    background-color: @background_middark;
+    color: @font_color_offwhite;
+}
+
+.pccv .pcc-attachments-section .pcc-attachments-section-content {
+   	padding: 0;
+    overflow: auto;
+    background-color: @background_offwhite;
+    border-left: 1px solid @background_mid;
+    border-right: 1px solid @background_mid;
+    border-bottom: 1px solid #c2c5ce;
+   	max-height: 90%;
+
+    .pcc-row {
+    	padding: 10px;
+        margin: 0 !important;
+        border: 1px solid @background_offwhite;
+        line-height: 1.5;
+        cursor: pointer;
+        clear: both;
+        word-break: break-word;
+        
+        &.pcc-odd {
+            background: @background_white;
+            border-color: @border_white;
+        }
+        
+        div {
+            padding: 3px;
+            font-size: 12px;
+        }
+        span {
+            font-weight: bold;
+        }
+
+        &.pcc-active {
+            background: @highlight_select;
+            border-color: @highlight_select_dark;
+            
+            .pcc-col-8 { 
+                border-color: @highlight_select_dark;
+            }
+        }
+        
+        .pcc-col-2 {
+            color: @font_color_d20;
+        }
+        
+        .pcc-col-8 { 
+            border: 1px solid @background_offwhite;
+            border-top: none;
+            border-bottom: none;
+            min-height: 30px;
+            word-wrap: break-word;
+        }
+
+        a {
+			text-decoration: none;
+			display: block;
+			height: 100%;
+			width: 100%;
+			color: @font_color_dark;
+        }
+    }
+}

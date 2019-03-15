@@ -1,0 +1,134 @@
+@import (reference) "../base/_variables.less";
+@import (reference) "../base/_breakpoints.less";
+@import (reference) "../base/_mixins.less";
+
+// the default menu behavior, without the hover trigger
+.pcc-immediate-action-menu {
+    position: absolute;
+    z-index: 200;
+    border: 1px solid @border_light;
+    border-radius: 2px;
+    background: @background_light;
+    box-shadow: 0 1px 4px 1px rgba(0, 0, 0, 0.4);
+    color: @font_color_dark;
+    will-change: top, left, opacity;
+    white-space:nowrap;
+    
+    max-width: 300px;
+    max-height: 50%;
+    overflow: auto;
+    
+    -webkit-animation-duration: 400ms;
+            animation-duration: 400ms;
+    -webkit-animation-timing-function: ease-in;
+            animation-timing-function: ease-in;
+    -webkit-animation-name: pcc-menuEnter;
+            animation-name: pcc-menuEnter;
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        background: @background_light;
+        border-top: 1px solid white;
+        border-bottom: 1px solid @border_light;
+        padding: 6px 8px;
+        cursor: pointer;
+        will-change: background;
+        
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &:first-of-type {
+            border-top: none;
+        }
+        &:last-of-type {
+            border-bottom: none;
+        }
+        &:hover {
+            background: @background_offwhite;
+        }
+    }
+
+    &.pcc-hover-trigger ul {
+        &:extend(.pccv .pcc-icon-list);
+    }
+}
+
+@-webkit-keyframes pcc-menuEnter {
+    0% { opacity: 0; }
+    100% { opacity: auto; }
+}
+@keyframes pcc-menuEnter {
+    0% { opacity: 0; }
+    100% { opacity: auto; }
+}
+
+.mobileView({
+    .pcc-immediate-action-menu {
+        // override any inline styles
+        top: auto !important;
+        bottom: 0 !important;
+        left: 15% !important;
+        right: 15% !important;
+        max-width: initial;
+        // remove the bottom border decorations
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom: none;
+        font-size: 1rem;
+        background-image: none !important;
+
+        .pcc-icon {
+            display: none;
+        }
+
+        li {
+            // make the buttons bigger
+            padding: 10px;
+        }
+    }
+});
+
+.desktopView({
+    // immediate action menu hover trigger
+    // this will be used in modern desktop browsers
+    // (no IE8 and mobile viewports)
+	.pcc-immediate-action-menu.pcc-hover-trigger {
+        width: 26px;
+        height: 26px;
+        opacity: .8;
+        overflow: hidden;
+        
+        .transition(opacity 300ms ease-in-out);
+        will-change: width, height, opacity;
+
+        // expand the menu on hover
+        &:hover,
+        &.pcc-expanded {
+            width: auto;
+            height: auto;
+            opacity: 1;
+            background-image: none;
+            overflow-y: auto;
+
+            .pcc-icon {
+                display: none;
+            }
+        }
+        
+        // hide child content for hover trigger
+        // use display:none instead of opacity to support touch screens
+        li {
+            display: none;
+        }
+        // show child content when the menu is open
+        &:hover li,
+        &.pcc-expanded li { 
+            display: block; 
+        }
+    }
+});

@@ -1,0 +1,5 @@
+root = true
+
+[/src/**]
+indent_size = 4
+trim_trailing_whitespace = none

@@ -1,0 +1,11 @@
+{
+    "autoApplyDefaultReason": true,
+    "enableRedactionReasonSelection": true,
+    "enableFreeformRedactionReasons": true,
+    "maxLengthFreeformRedactionReasons": 40,
+    "reasons": [
+        {"reason": "Client Privilege"},
+        {"reason": "Privacy Information"},
+        {"reason": "Redacted"}
+    ]
+}

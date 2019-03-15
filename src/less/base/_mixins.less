@@ -1,0 +1,52 @@
+.text-size-adjust (@percent: 100%) {
+    -webkit-text-size-adjust: @percent;
+        -ms-text-size-adjust: @percent;
+            text-size-adjust: @percent;
+}
+
+.user-select (@val) {
+    -webkit-user-select: @val;
+       -moz-user-select: @val;
+        -ms-user-select: @val;
+            user-select: @val;
+}
+
+.box-sizing(@val: content-box) {
+    -webkit-box-sizing: @val;
+       -moz-box-sizing: @val;
+            box-sizing: @val;
+}
+
+.box-shadow(@val) {
+    -webkit-box-shadow: @val;
+            box-shadow: @val;
+}
+
+.transition(@val) {
+    -webkit-transition: @val;
+            transition: @val;
+}
+
+.transform(@val) {
+    -webkit-transform: @val;
+        -ms-transform: @val;
+            transform: @val;
+}
+
+.background-size(@val) {
+    -webkit-background-size: @val @val;
+            background-size: @val;
+}
+
+.opacity(@val) {
+    -moz-opacity: (@val / 100);
+         opacity: (@val / 100);
+    
+    filter: Alpha(Opacity=@val);
+}
+
+.textInput() {
+    &::-ms-clear {
+        display: none;
+    }
+}

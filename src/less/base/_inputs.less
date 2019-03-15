@@ -1,0 +1,258 @@
+@import (reference) "_variables.less";
+@import (reference) "_breakpoints.less";
+@import (reference) "_mixins.less";
+@import (reference) "_icons.less";
+
+.pccv ::-webkit-input-placeholder {
+   color: @font_color_d20;
+}
+
+.pccv :-moz-placeholder { /* Firefox 18- */
+   color: @font_color_d20;  
+}
+
+.pccv ::-moz-placeholder {  /* Firefox 19+ */
+   color: @font_color_d20;  
+}
+
+.pccv :-ms-input-placeholder {  
+   color: @font_color_d20;
+}
+
+// form elements
+.pccv .pcc-select .pcc-label,
+.pccv button,
+.pccv input[type=text],
+.pccv input[type=number] {
+    height: 26px;
+    line-height: 26px;
+    vertical-align: middle;
+    border: 1px solid @background_mid;
+    border-radius: 2px;
+    outline: none;
+}
+
+.pccv button {
+    line-height: 26px;
+    padding: 0 7px;
+    background: @background_offwhite;
+    .box-shadow(0 1px 1px rgba(0, 0, 0, .1));
+    
+    &.pcc-align-left {
+        float: left;
+        margin: 7px 0;
+    }
+    
+    &.pcc-align-right {
+        float: right;
+        margin: 7px 0;
+    }
+}
+
+.pccv button:active {
+    background-color: @background_light;
+    .box-shadow(0 1px 1px rgba(0, 0, 0, .1) inset);
+}
+
+.pccv button.pcc-secondary {
+    background: @background_light;
+}
+
+.pccv button.pcc-muted {
+    background: none;
+    border: none;
+    .box-shadow(none);
+}
+
+.pccv button.pcc-icon,
+.pccv .pcc-search-group-input button {
+    border: none;
+    background-color: transparent;
+    .box-shadow(none);
+}
+
+.pccv .pcc-search-group-buttons button {
+    border: 1px solid @background_mid;
+    background-color: @background_offwhite;
+    opacity: 1;
+}
+
+// adjust icon position for button border
+.pccv .pcc-search-group-buttons button { 
+    padding: 0;
+    
+    .pcc-icon {
+        position: relative;
+        top: -2px;
+        left: 0;
+    }
+}
+
+.pccv input[type=text],
+.pccv input[type=number] {
+    .box-shadow(inset 0 1px 1px rgba(0, 0, 0, .2));
+    text-indent: 6px
+}
+
+.pccv input[type=text].pccError {
+    border-color: @highlight_red;
+}
+
+.pccv input[disabled],
+.pccv button[disabled],
+.pccv button.pcc-disabled {
+    color: @background_mid;
+    .opacity(70);
+}
+
+.pccv input[disabled] {
+    background: @background_light;
+}
+
+.pccv .pcc-dialog-search .pcc-pull-right.pcc-hide-lg button {
+    font-size: 21px;
+    line-height: 21px
+}
+
+// overwrite inputs in status bar
+.pccv .pcc-status-bar input {
+    width: 3em;
+    height: 20px;
+    line-height: 13px;
+    vertical-align: baseline;
+    text-align: center;
+    text-indent: 0;
+    background: darken(@background_dark, 10%);
+    background: darken(@background_dark, 10%);
+    border: 1px inset lighten(@background_dark, 20%);;
+    border-radius: 2px;
+    margin: 0 3px;
+    color: white;
+}
+
+.pccv input[data-pcc-pageselect].pccError {
+    background-color: @highlight_red;
+}
+
+// overwrite spinner arrows in Webkit/Gecko, only in status bar
+.pccv .pcc-status-bar input::-webkit-outer-spin-button,
+.pccv .pcc-status-bar input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+.pccv .pcc-status-bar input[type='number'] {
+    -moz-appearance: textfield;
+}
+
+// dropdown menus
+@dropdown_width: 225px;
+.pccv .pcc-dropdown {
+    position: absolute;
+    background: @background_white;
+    background: fade(@background_white, 90%);
+    width: @dropdown_width;
+    height: 0px;
+    overflow: auto;
+    z-index: 2;
+    top: 26px;
+    left: 0;
+    visibility: hidden;
+    border: 1px solid @background_mid;
+    border-top: none;
+    
+    .box-shadow(0 2px 2px 0 (fade(@black, 30%)));
+    .transition(all 0);
+    .box-sizing(content-box);
+    
+    &.pcc-open {
+        height: 150px;
+        visibility: visible;
+        .transition(height 200ms);
+    }
+    
+    &.pcc-dropup {
+        top: auto;
+        bottom: 26px;
+        border-top: 1px solid @background_mid;
+    }
+    
+    &.pcc-align-right {
+        left: auto;
+        right: 0;
+    }
+    
+    &>div.even {
+        background-color: @row_highlight_light;
+    }
+    &>div.odd {
+        background-color: lighten(@row_highlight_light, 20%);
+    }
+}
+
+.pccv .pcc-dropdown>div,
+.pccv .pcc-dropdown label {
+    display: block;
+    line-height: 26px;
+    padding: 0 0 0 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+// select boxes
+.pccv .pcc-select {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    
+    .pcc-icon {
+        display: block;
+        height: 26px;
+        float: left;
+        background-color: @background_offwhite;
+        border-radius: 2px 0 0 2px;
+        border: 1px solid @background_mid;
+        border-right: none;
+    }
+    
+    .pcc-arrow-down {
+        position: absolute;
+        right: 5px;
+        margin: -14px 0 0;
+    }
+
+    .pcc-toolbar {
+        height: 30px;
+        line-height: 29px;
+        padding: 0 8px;
+        font-weight: bold;
+    }
+    
+    &>.pcc-label {
+        display: inline-block;
+        width: 54px;
+        background: @background_offwhite;
+        text-indent: 3px;
+        position: relative;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 0 11px 0 0
+    }
+    
+    &.pcc-align-right {
+        text-align: right;
+    }
+    &.pcc-align-right .pcc-label,
+    &.pcc-align-right .pcc-dropdown {
+        text-align: left;
+    }
+}
+
+.pccv .pcc-width-100>.pcc-label {
+    width: 100%;
+    max-width: @dropdown_width;
+}
+
+// import the custom checkbox and radio controls
+@import "_inputs_custom.less";

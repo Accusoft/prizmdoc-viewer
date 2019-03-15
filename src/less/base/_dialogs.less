@@ -1,0 +1,105 @@
+@import (reference) "_variables.less";
+@import (reference) "_breakpoints.less";
+@import (reference) "_mixins.less";
+
+// dialog
+@defaultLineHeight: 20px;
+@defaultPadding: 10px;
+
+.pccv .pcc-dialog {
+    position: absolute;
+    width: @dialog_width;
+    top: (@tabset_height + @tabpane_height);
+    bottom: @tools_height;
+    margin: 0 0 0 -100%;
+    padding: @defaultPadding;
+    line-height: @defaultLineHeight;
+    background: @background_light;
+    visibility: hidden;
+    z-index: 2;
+    .box-shadow(0 1px 4px 1px rgba(0, 0, 0, 0.4));
+
+    will-change: margin, width;
+
+    [data-pcc-checkbox] {
+        display: inline;
+    }
+
+    [data-pcc-checkbox].pcc-disabled {
+        color: @font_color_dark;
+        .opacity(50);
+    }
+
+    [data-pcc-section="searchQuickActionRedactOptions"] {
+        position: relative;
+
+        .pcc-load {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            z-index: 1;
+        }
+    }
+}
+.pccv .pcc-dialog.pcc-open {
+    margin: 0;
+    visibility: visible;
+    overflow: auto;
+}
+
+.pccv .pcc-dialog .pcc-dialog-wrapper {
+    position: relative;
+    height: 100%;
+    overflow: auto;
+}
+
+.pccv .pcc-dialog .pcc-row {
+    float: left;
+    &.pcc-row-results-header { margin: 0; }
+
+    h4 {
+        margin: 0;
+        font-weight: normal;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.pccv .pcc-dialog .pcc-container-disabled {
+    color: @font_color_dark;
+        .opacity(50);
+    pointer-events: none;
+}
+
+.mobileView({
+    // dialogs on mobile
+    .pccv .pcc-dialog {
+        width: 100%;
+        left: 0;
+        right: 0;
+        height: 0;
+        line-height: 30px;
+    }
+    .pccv .pcc-dialog.pcc-dialog-search.pcc-open,
+    .pccv .pcc-dialog.pcc-dialog-revision.pcc-open {
+        padding: 0 10px;
+        bottom: auto;
+    }
+    .pccv .pcc-dialog.pcc-open {
+        height: auto;
+        
+        &.pcc-download-preview {
+            height: 0;
+            padding: 0;
+        }
+    }
+
+    .pccv .pcc-dialog-load-annotations,
+    .pccv .pcc-dialog-save-annotations {
+        line-height: @defaultLineHeight;
+    }
+});

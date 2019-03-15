@@ -1,0 +1,35 @@
+// grid
+.pccv .pcc-row { 
+    width:100%; 
+}
+.pccv [class*=pcc-col-] { 
+    height: auto; 
+    float: left; 
+}
+
+// automatically calculate column widths
+.makeColumns(@total, @i: 0) when (@i =< @total) {
+    .pcc-col-@{i} { 
+        width: (@i * 100% / @total); 
+    }
+    
+    .makeColumns(@total, (@i + 1));
+}
+
+.pccv {
+    .makeColumns(12);
+}
+
+// some additions to columns
+.pccv .pcc-col-0 {
+    height: 0;
+    overflow: hidden;
+}
+.pccv .pcc-col-6>* {
+    width: 95% !important;
+}
+.pccv .pcc-col-6 + .pcc-col-6>* {
+    margin-left: 5%
+}
+
+.pccv .pcc-full { width: 100%; }

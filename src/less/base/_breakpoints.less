@@ -1,0 +1,33 @@
+
+.modernView(@rules) {
+    @media (min-width: 0) { @rules(); }
+}
+
+.mobileView(@rules) {
+    @media (max-width: 767px) { @rules(); }
+}
+
+.desktopView(@rules) {
+    @media (min-width: 768px) { @rules(); }
+}
+
+// default breakpoint trigger
+// this allows us to place JS hooks for breakpoint actions, while still keeping breakpoint
+// definitions in the CSS code
+.pccv .pcc-breakpoint-trigger { 
+    // IE will ignore it if display is none
+    width: 0;
+    height: 0;
+}
+.pccv .pcc-breakpoint-trigger:after { 
+    content: 'initial'; // we will check this value in the JS
+    display: none;
+}
+
+.mobileView({
+    .pccv .pcc-breakpoint-trigger:after { content: 'mobile'; }
+});
+
+.desktopView({
+    .pccv .pcc-breakpoint-trigger:after { content: 'desktop'; }
+});

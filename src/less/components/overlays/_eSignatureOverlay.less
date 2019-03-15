@@ -1,0 +1,153 @@
+@import (reference) "../../base/_variables.less";
+@import (reference) "../../base/_breakpoints.less";
+@import (reference) "../../base/_mixins.less";
+
+// this requires the regular overlay code to be included in the final sheet,
+// import here only if it has not been imported before
+@import (once) "../_overlay.less";
+
+.pccv .pcc-overlay-esign .pcc-overlay-inner {
+    padding: 9px;
+    margin: auto;
+    position: absolute;
+    width: 95%;
+    height: 95%;
+    max-width: 600px;
+    max-height: 400px;
+}
+.pccv .pcc-overlay-esign .pcc-viewset {
+    height: 100%;
+    margin-bottom: -62px;
+    position: relative;
+    z-index: 1;
+}
+.pccv .pcc-viewset.pcc-tall { margin-bottom: -26px; }
+
+.pccv .pcc-overlay-esign .pcc-layer-up-relative{
+    position: relative;
+    z-index: 100;
+}
+.pccv .pcc-overlay-esign .pcc-view-content {
+    position: absolute;
+    top: 0px;
+    bottom: 70px;
+    width: 100%;
+    overflow: auto;
+}
+.pccv .pcc-view-content.pcc-tall { bottom: 40px; }
+
+.pccv .pcc-overlay-esign .pcc-tabs {
+    height: 36px; 
+    line-height: 36px; 
+    width: 100%; 
+    text-align: center;
+}
+.pccv .pcc-overlay-esign {
+    .pcc-tabs.pcc-tabs-3>div { height: 36px; padding: 0; width: 33.3%; }
+    .pcc-tabs.pcc-tabs-4>div { height: 36px; padding: 0; width: 25%; }
+}
+
+.pccv .pcc-overlay-esign .pcc-row {
+    margin: 0 0 10px;
+}
+.pccv .pcc-overlay-esign .pcc-esign-draw-context { 
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px 5%;
+    background: @background_offwhite;
+    border: 1px solid @background_mid;
+}
+.pccv .pcc-overlay-esign .pcc-esign-draw-context svg {
+    width: 100%;
+    max-height: 130px;
+}
+.pccv .pcc-overlay-esign .pcc-esign-draw-pad {
+    overflow: hidden;
+    position: relative;
+    background: @background_white;
+    border: 1px inset @background_mid;
+    width: 100%;
+    height: 100%;
+}
+.pccv .pcc-overlay-esign .pccError { 
+    border: 1px solid @highlight_red;
+}
+.pccv .pcc-overlay-esign .pcc-esign-draw-line {
+    position: absolute;
+    left: 6%;
+    bottom: 10%;
+    width: 86%;
+    height: 1px;
+    background: @background_mid;
+}
+.pccv .pcc-overlay-esign .pcc-col-4 button {
+    width: 95%;
+}
+
+.pccv .pcc-esign-manage .pcc-esign-display {
+    width: 100%;
+    max-width: 400px;
+    margin: 5px auto 20px;
+    overflow: hidden;
+}
+
+.pccv .pcc-esign-preview-container {
+    .box-sizing(border-box);
+    padding: 10px;
+    border-radius: 3px;
+    border: 1px solid @border_light;
+    cursor: pointer;
+    overflow: hidden;
+}
+.pccv .pcc-esign-preview-container.pcc-esign-active {
+    background-color: @background_offwhite;
+}
+.pccv .pcc-esign-preview {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto; 
+    position: relative;
+}
+
+.pccv .pcc-esign-text-preview.pcc-esign-text-preview {
+    width: 100%;
+    height: auto;
+    font-size: 2em;
+    line-height: 2em;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+    float: none;
+    padding: 0 0px 0 10px;
+    margin: 10px auto;
+    
+    background: @background_offwhite;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+    border: 1px solid @background_mid;
+    border-radius: 2px;
+    cursor: pointer;
+}
+.pccv .pcc-esign-text-preview:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 2em;
+    box-shadow: -35px 0px 10px -20px @background_offwhite inset;
+}
+
+.pccv .pcc-esign-text-preview.pcc-esign-text-active { 
+    background-color: @highlight_select; 
+    border: 1px solid @highlight_select_dark;
+}
+.pccv .pcc-esign-text-preview.pcc-esign-text-active:after { 
+    box-shadow: -35px 0px 10px -20px @highlight_select inset;
+}
+
+.pccv [data-pcc-esign="textInput"] {
+    margin: 15px auto;
+    width: 100%;
+    max-width: 18em;
+}

@@ -1,0 +1,34 @@
+@import (reference) "../../base/_variables.less";
+@import (reference) "../../base/_breakpoints.less";
+@import (reference) "../../base/_mixins.less";
+
+// this requires the regular overlay code to be included in the final sheet,
+// import here only if it has not been imported before
+@import (once) "../_overlay.less";
+
+.pccv .pcc-copy-overlay.pcc-overlay-inner {
+    width: 95%;
+    height: 95%;
+    max-height: 200px;
+    max-width: 400px;
+    padding: 25px;
+}
+
+.pccv .pcc-copy-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 2em;
+}
+.pccv .pcc-copy-textarea {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    -webkit-user-select: text;
+}
+
+
+.pccv .pcc-copy-label {
+    font-style: italic;
+    margin-top: 10px;
+}

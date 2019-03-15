@@ -1,0 +1,178 @@
+@import (reference) "../base/_variables.less";
+@import (reference) "../base/_breakpoints.less";
+@import (reference) "../base/_mixins.less";
+@import (reference) "../base/_inputs_custom.less";
+
+@import (once) "../base/_dialogs.less";
+
+.pccToggleAll() {
+    border-bottom: 1px solid @background_mid;
+    background-color: @background_white;
+
+    margin: 0;
+    margin-bottom: 4px;
+    padding: 5px;
+
+    cursor: pointer;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 0.9em;
+    
+    &.pcc-checked .pcc-checkbox svg {
+        display: inline-block;
+    }
+}
+
+.pccv .pcc-annotation-layer-review-merge {
+    font-size: 9pt;
+    width: 100%;
+}
+
+.pccv .pcc-annotation-layer-review-section {
+    margin-bottom: 20px;
+    
+    .pcc-toggle-all {
+        .pcc-checkbox {
+            .checkboxSpan;
+            margin-right: 5px;
+        }
+        
+        .pccToggleAll();
+    }
+}
+
+.pccv .pcc-annotation-layer-review-section-title {
+    position: relative;
+    line-height: 26px;
+    padding: 0 5px;
+
+    background-color: @background_middark;
+    color: @font_color_offwhite;
+
+    .pcc-icon {
+        background-color: @background_middark;
+        border: none;
+    }
+
+    .pcc-select {
+        display: block;
+
+        button.pcc-icon {
+            background-color: @background_middark;
+        }
+
+        &.pcc-active button.pcc-icon {
+            background-color: darken(@background_middark, 15%);
+        }
+    }
+
+    .pcc-dropdown {
+        color: @background_middark;
+        height: auto;
+        left: auto;
+        right: -4px;
+        width: 150px;
+
+        button {
+            background: none;
+            border: none;
+            box-shadow: none;
+            display: block;
+            text-align: left;
+            width: 100%;
+        }
+    }
+}
+
+.pccv .pcc-dialog .pcc-annotation-layer-review-section-content {
+    padding: 0;
+    overflow: auto;
+    -ms-overflow-style: none;
+    background-color: @background_offwhite;
+    border-left: 1px solid @background_mid;
+    border-right: 1px solid @background_mid;
+    border-bottom: 1px solid #c2c5ce;
+    max-height: 15em;
+}
+
+// Review annotation layers other than the current annotation layer
+.pccv .pcc-dialog .pcc-annotation-layer-review-current,
+.pccv .pcc-dialog .pcc-annotation-layer-review-other {
+    position: relative;
+    padding: 4px;
+
+    .pcc-icon {
+        background-color: @background_offwhite;
+        margin: -4px 0 0 0;
+        cursor: pointer;
+    }
+
+    .pcc-checkbox {
+        .checkboxSpan;
+        margin-right: 5px;
+        cursor: pointer;
+    }
+
+    &.pcc-checked .pcc-checkbox svg {
+        display: inline-block;
+    }
+
+    &:nth-child(odd) {
+        background-color: @white;
+
+        .pcc-icon {
+            background-color: @background_white;
+        }
+    }
+
+    .pcc-current-layer-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 170px;
+    }
+
+    .pcc-hide {
+        display: none;
+    }
+}
+
+.pccv .pcc-annotation-layer-review-merge-actions {
+    text-align: center;
+
+    button {
+        margin-bottom: 8px;
+    }
+}
+
+// this is used to prevent flickering in IE9 when checking/unchecking the annotation layer
+// boxes, or hovering over certain parts of the review view
+.pccv .pcc-annotation-layer-review-section[data-pcc-annotation-layer-review-section=current] *,
+.pccv .pcc-annotation-layer-review-section[data-pcc-annotation-layer-review-section=current] .pcc-checkbox,
+.pccv .pcc-annotation-layer-review-section[data-pcc-annotation-layer-review-section=other] *,
+.pccv .pcc-annotation-layer-review-section[data-pcc-annotation-layer-review-section=other] .pcc-checkbox{
+    .box-sizing(border-box);
+}
+
+.mobileView({
+    // annotation layer dialog on mobile
+    .pccv .pcc-dialog.pcc-open.pcc-expand {
+        bottom: 40px;
+        overflow: hidden;
+    }
+
+    // annotation layer view on mobile
+    .pccv [data-pcc-annotation-layer-review-container-toggle=results] { display: inline-block; }
+
+    .pccv [data-pcc-nav-tab="annotation-layer-review"] .pcc-left {
+        width: 100%;
+    }
+
+    .pccv .pcc-annotation-layer-review-header {
+        margin: 4px 0 0;
+    }
+
+    .pccv .pcc-annotation-layer-review-current .pcc-current-layer-name {
+        width: 250px;
+    }
+});

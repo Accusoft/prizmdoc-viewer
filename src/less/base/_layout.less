@@ -1,0 +1,244 @@
+@import (reference) "_variables.less";
+@import (reference) "_breakpoints.less";
+@import (reference) "_mixins.less";
+
+// Sample Viewer
+.pccv {
+    width: 600px;
+    height: 800px;
+    border: 1px solid @border_mid;
+    display: none; // show with js, prevents flash of unstyled content (FOUC)
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACAgMAAAAP2OW3AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACVBMVEUAAAAAAAAAAACDY+nAAAAAAnRSTlMAGovxNEIAAAABYktHRACIBR1IAAAACXBIWXMAAAsSAAALEgHS3X78AAAADElEQVQI12NwYBAAAADUAFGBftGUAAAAAElFTkSuQmCC');
+    background-color: @background_light;
+    .transition(background-color 300ms ease-in-out);
+    position: relative;
+    overflow: hidden;
+    font-family: @font_family_main;
+    font-size: 13px;
+    color: @font_color_dark;
+
+    .text-size-adjust(100%);
+
+    // this is to support optimization of the full-screen viewer in modern browsers
+    will-change: top, left, width, height;
+
+    &.pcc-full-screen {
+        position: fixed;
+        margin: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        left: 0;
+        top: 0;
+        border: none
+    }
+
+    &.pcc-preview-mode {
+        background-color: @background_middark;
+        .transition(background-color 300ms ease-in-out);
+    }
+}
+
+// main tab navigation
+.pccv .pcc-nav-tabset {
+    position: absolute;
+    z-index: 3;
+    width: 100%;
+    height: @tabset_height;
+    background: @background_dark;
+}
+
+.pccv .pcc-tab-item,
+.pccv .pcc-status-bar {
+    height: @tabset_height;
+    line-height: @tabset_height;
+    color: @font_color_d35;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .5);
+    padding: 0 10px;
+}
+
+.pccv .pcc-nav-tabset .pcc-tab-item {
+    background: @background_dark;
+    cursor: pointer;
+
+    &.pcc-active {
+        color: @font_color_white;
+
+        .pcc-icon {
+            opacity: 1;
+        }
+    }
+}
+
+.pccv .pcc-status-bar {
+    background: @background_dark;
+    width: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 5;
+
+    &, span {
+        text-align: right;
+        color: @font_color_white;
+    }
+
+    .pcc-icon {
+        margin-top: -3px;
+    }
+}
+
+.pccv .pcc-tab {
+    display: inline-block;
+    float: left;
+    z-index: 1;
+
+    .pcc-tab-item {
+        display: block;
+        top: 0;
+        z-index: 5;
+    }
+}
+
+.pccv .pcc-tab-pane {
+    visibility: hidden;
+    position: absolute;
+    height: @tabpane_height;
+    top: @tabset_height;
+    left: 0;
+    right: 0;
+    line-height: 37px;
+    padding: 0 10px;
+    background: @background_offwhite;
+    z-index: 4; // less than .pcc-tab-item
+
+    .box-shadow(0 0 4px 1px rgba(0, 0, 0, 0.4));
+
+    &.pcc-open {
+        visibility: visible;
+    }
+
+    .pcc-left {
+        height: @tabpane_height;
+        overflow: hidden;
+    }
+
+    .pcc-separator {
+        display: inline-block;
+        vertical-align: middle;
+        height: 26px;
+        margin: 0 2px 0 5px;
+        border-right: 2px groove @border_white;
+    }
+}
+
+.pccv .pcc-tab-preview {
+    display: none;
+    position: absolute;
+    height: @tabpane_height;
+    top: @tabset_height;
+    left: 0;
+    right: 0;
+    line-height: 37px;
+    padding: 0 10px;
+    background: @background_offwhite;
+    z-index: 4; // less than .pcc-tab-item
+
+    .box-shadow(0 0 4px 1px rgba(0, 0, 0, 0.4));
+}
+
+// vertical tabs
+@height_large: 24000px;
+.pccv .pcc-tab-pane.pcc-tab-vertical{
+    top: 29px;
+    height: @height_large;
+    width: @tabpane_vertical_width;
+    padding: 0 7px;
+
+    &.pcc-right { left: auto; }
+    &.pcc-left { right: auto; }
+
+    .pcc-pull-right { float: none; }
+    .pcc-left { height: auto; }
+    .pcc-separator { display: none; }
+}
+
+// mobile overflow buttons on tab panes
+.pccv .pcc-mobile-overflow-trigger { display: none; }
+.pccv .pcc-mobile-overflow { display: inline-block; }
+
+.mobileView({
+    // mobile tabsets
+    .pccv .pcc-trigger {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 5;
+        color: @font_color_white;
+        cursor: pointer;
+
+        .pcc-icon {
+            opacity: 1;
+        }
+
+        &:after {
+            content: "";
+            display: inline-block;
+            margin: 0 0 1px 12px;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 7px solid @icon_color;
+        }
+    }
+
+    .pccv .pcc-nav-tabset .pcc-tab {
+        width: 100%
+    }
+
+    .pccv .pcc-nav-tabset .pcc-tab:not(.pcc-open) .pcc-tab-item {
+        display: none;
+    }
+
+    .pccv .pcc-nav-tabset .pcc-tab.pcc-open {
+        display: block
+    }
+
+    .pccv .pcc-nav-tabset .pcc-tab .pcc-tab-item.pcc-open {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        display: block;
+        z-index: 5;
+        border-bottom: 1px solid @border_dark;
+        opacity: .9;
+    }
+
+    .pccv .pcc-nav-tabset .pcc-tab .pcc-tab-item.pcc-hide {
+        display: none;
+    }
+
+    // mobile overflow tools
+    .pccv .pcc-tab-pane.pcc-tab-advanced,
+    .pccv .pcc-tab-pane.pcc-tab-advanced .pcc-left {
+        height: auto;
+        min-height: 40px;
+    }
+
+    .pccv .pcc-tab-pane.pcc-tab-vertical {
+        height: @height_large;
+    }
+
+    .pccv .pcc-mobile-overflow-trigger { display: inline-block; }
+    .pccv .pcc-mobile-overflow {
+        display: none;
+
+        &.pcc-open { display: block; }
+    }
+
+    // disable overflow on vertical toolbars
+    .pccv .pcc-tab-vertical {
+        .pcc-mobile-overflow { display: block; }
+        .pcc-mobile-overflow-trigger { display: none; }
+    }
+});

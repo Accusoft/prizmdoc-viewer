@@ -1,0 +1,150 @@
+// legacy CSS rules for IE8
+
+@import (reference) "base/_variables.less";
+@import (reference) "base/_mixins.less";
+
+.pccv .pcc-nav-tabset .pcc-tab-item .pcc-icon {
+    filter: Alpha(Opacity=60);
+}
+.pccv .pcc-nav-tabset .pcc-tab-item.pcc-active .pcc-icon,
+.pccv .pcc-slider .pcc-slider-thumb {
+    filter: Alpha(Opacity=100);
+}
+
+// border in place of drop shadow
+.pccv .pcc-nav-tabset .pcc-tab-pane {
+    border-bottom: 1px solid @border_mid;
+}
+.pccv .pcc-nav-tabset .pcc-tab-pane.pcc-tab-vertical {
+    border-bottom: none;
+    border-right: 1px solid @border_mid;
+}
+.pccv .pcc-nav-tabset .pcc-tab-pane.pcc-tab-vertical.pcc-right {
+    border-bottom: none;
+    border-left: 1px solid @border_mid;
+}
+.pccv .pcc-context-menu {
+    border: 1px solid @border_mid;
+}
+.pccv .pcc-context-menu.pcc-move-bottom .pcc-dropdown {
+    border-top: 1px solid @background_mid;
+}
+
+// background colors fix alpha transparency artifacts
+.pccv .pcc-nav-tabset .pcc-tab-pane .pcc-icon {
+    background-color: @background_offwhite;
+}
+.pccv .pcc-dialog .pcc-icon,
+.pccv .pcc-context-menu .pcc-icon,
+.pccv .pcc-overlay-esign .pcc-icon {
+    background-color: @background_light;
+}
+
+.pccv .pcc-context-menu .pcc-tabs div .pcc-icon {
+    background-color: darken(@background_light, 6%);;
+}
+.pccv .pcc-context-menu .pcc-tabs div.pcc-active .pcc-icon {
+    background-color: @background_light;
+}
+
+.pccv .pcc-nav-tabset .pcc-tab-pane .pcc-active.pcc-icon,
+.pccv .pcc-dialog .pcc-active.pcc-icon,
+.pccv .pcc-context-menu .pcc-active.pcc-icon {
+    background-color: @background_mid;
+    border-top: 1px solid @background_mid;
+}
+.pccv .pcc-dialog .pcc-icon {
+    background-color: @background_light;
+}
+
+.pccv .pcc-nav-tabset .pcc-tab-pane .pcc-icon.pcc-disabled,
+.pccv .pcc-icon.pcc-disabled {
+    filter: Alpha(Opacity=20);
+}
+
+// Adjust E-Signature drawing pad
+.pccv .pcc-overlay-esign .pcc-esign-draw-context {
+    height: 130px;
+    position: relative;
+    overflow: hidden;
+}
+
+// helpers from the desktop media query
+.pccv .pcc-hide-lg {
+    display: none;
+}
+.pccv .pcc-show-lg {
+    display: block !important;
+}
+.pccv .pcc-icon.pcc-show-lg {
+    display: inline-block !important;
+}
+.pccv .pcc-hide-lg {
+    display: none !important;
+}
+
+// adjust dialogs
+.pccv .pcc-dialog {
+    border-right: 1px solid @border_mid;
+}
+.pccv .pcc-dialog [class*=col] {
+    margin: 0;
+}
+
+.pccv .pcc-dialog .pcc-row {
+    float: left;
+    margin: 4px 0;
+}
+
+.pccv [data-pcc-notify] {
+    margin: auto;
+    width: 300px;
+}
+
+.pccv .pcc-annotation-save-msg {
+    padding: 3px 0 5px 0;
+    line-height: 17px;
+}
+
+.pccv .pcc-overlay-esign .pcc-overlay-inner {
+    height: 400px\9;
+}
+.pccv .pcc-view-content.pcc-tall {
+    -ms-overflow-x: hidden;
+}
+
+.pcc-valign-mid {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.pcc-cell-content {
+    overflow: hidden;
+}
+
+.pcc-conversation-selected {
+    margin-left: -5px;
+    margin-right: 5px;
+}
+.pccv .pcc-skinny-comments.pccPageListComments .pcc-expanded.pcc-conversation-container {
+    top: -3px;
+    right: 38px;
+}
+
+.pcc-image-stamp-img {
+    height: auto;
+    max-height: available;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+}
+
+// thumbnail legacy CSS
+.pccv .pccThumbnail.pcc-thumbnail-selected .pccThumbnailView {
+    outline: 2px solid @border_mid;
+}
+
+// immediate action menu
+ul.pcc-immediate-action-menu {
+    background-image: none !important;
+}

@@ -1,0 +1,109 @@
+@import (reference) "_variables.less";
+@import (reference) "_breakpoints.less";
+@import (reference) "_mixins.less";
+
+.pccv .pcc-icon {
+    padding: 0;
+}
+
+// set the icon image resource
+.pccv .pcc-icon svg,
+.pccv .pcc-load svg,
+.pcc-hyperlink .pcc-icon svg,
+.pcc-redaction-reason .pcc-icon svg,
+.pccv .pcc-tools-tabset .pcc-icon.pcc-active.pcc-locked svg,
+.pcc-immediate-action-menu.pcc-hover-trigger svg,
+.pccv [data-pcc-checkbox] .pcc-icon svg,
+.pccv [data-pcc-radio] .pcc-icon svg,
+.pccv .pcc-checked > span.pcc-checkbox svg {
+    fill: @icon_color;
+    height: @icon_size;
+    width: @icon_size;
+}
+
+.pccv .pcc-tab-item .pcc-icon svg,
+.pccv .pcc-status-bar .pcc-icon svg,
+.pccv .pcc-icon.pcc-active.pcc-locked svg,
+.pccv .pcc-tools-tabset .pcc-icon svg,
+.pccv .pcc-light-icon svg {
+    fill: @white;
+}
+
+// style various icon options
+.pccv .pcc-icon,
+.pccv .pcc-load,
+.pcc-hyperlink .pcc-icon,
+.pcc-redaction-reason .pcc-icon {
+    display: inline-block;
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    width: 26px;
+    height: 26px;
+    font-smoothing: antialiased;
+}
+
+.pccv .pcc-nav-tabset .pcc-tab-item .pcc-icon { .opacity(60); }
+.pccv .pcc-tab-item .pcc-icon {
+    margin: -4px -3px 0 -3px;
+}
+
+.pccv .pcc-icon.pcc-active {
+    background-color: @icon_active_light !important;
+    border-bottom: 1px solid @border_white;
+    border-radius: 2px;
+    .box-shadow(inset 0 1px 1px rgba(0, 0, 0, .4));
+}
+
+.pccv .pcc-icon.pcc-active.pcc-locked {
+    background-color: @icon_active_dark !important;
+}
+
+.pccv .pcc-icon.pcc-disabled,
+.pccv .pcc-icon[disabled] {
+    color: @font_color_d40;
+    border-color: @font_color_d40;
+    opacity: .3;
+    filter: alpha(opacity=30);
+    cursor: default !important;
+}
+
+.pccv [data-pcc-radio].pcc-disabled {
+    color: @font_color_d40;
+    border-color: none;
+    opacity: .3;
+    filter: alpha(opacity=30);
+    cursor: default !important;
+}
+
+.pccv button .pcc-icon {
+    position: relative;
+    top: -2px;
+    left: -5px;
+}
+
+.pccv .pcc-icon-height {
+    // used to style text with the same height as icons
+    line-height: 26px;
+}
+
+.pccv .pccEditMarkButton {
+    background: no-repeat @url_editTextMark;
+    border: none;
+    height: 26px;
+    width: 26px;
+    .box-shadow(none);
+}
+
+.pccv .pcc-arrow-up,
+.pccv .pcc-arrow-down {
+    width: 0;
+    height: 0;
+    display: block;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 4px solid @icon_color;
+}
+.pccv .pcc-arrow-down {
+    border-bottom: none;
+    border-top: 4px solid @icon_color;
+}

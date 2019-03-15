@@ -1,0 +1,44 @@
+// all helper files are imported by reference
+@import (reference) "base/_variables.less";
+@import (reference) "base/_mixins.less";
+
+// fonts should always be first
+@import "base/_fonts.less";
+
+// import base modules
+@import "base/_breakpoints.less";
+@import "base/_overrides.less";
+@import "base/_grid.less";
+@import "base/_icons.less";
+@import "base/_inputs.less";
+@import "base/_slider.less";
+@import "base/_dialogs.less";
+// load helpers toward the end of base
+@import "base/_helpers.less";
+
+// base layout items
+@import "base/_layout.less";
+@import "base/_offsets.less";
+
+// import all components
+@import "components/_notification.less";
+@import "components/_annotationLoadSave.less";
+@import "components/_contextMenu.less";
+@import "components/_tools.less";
+
+@import "components/_overlay.less";
+@import "components/overlays/_copyOverlay.less";
+@import "components/overlays/_eSignatureOverlay.less";
+@import "components/overlays/_imageStampOverlay.less";
+@import "components/overlays/_printOverlay.less";
+
+@import "components/_compare.less";
+@import "components/_search.less";
+@import "components/_immediateActionMenu.less";
+@import "components/_hyperlinkMenu.less";
+@import "components/_redactionReasonMenu.less";
+@import "components/_comments.less";
+@import "components/_thumbnails.less";
+@import "components/_annotationLayerReview.less";
+@import "components/_download.less";
+@import "components/_attachments.less";

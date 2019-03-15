@@ -1,0 +1,24 @@
+@import (reference) "_variables.less";
+@import (reference) "_breakpoints.less";
+@import (reference) "_mixins.less";
+
+html,
+html body {
+    height: 100%;
+}
+
+.pccv,
+.pccv:before,
+.pccv:after,
+.pccv *,
+.pccv *:before,
+.pccv *:after {
+    .box-sizing(border-box);
+}
+
+// do not text select when quickly clicking
+.pccv .pcc-tabset,
+.pccv .pcc-dialog,
+.pccv .pcc-overlay {
+    .user-select(none);
+}

@@ -1,0 +1,122 @@
+@import (reference) "../base/_variables.less";
+@import (reference) "../base/_breakpoints.less";
+@import (reference) "../base/_mixins.less";
+
+@import (reference) "_immediateActionMenu.less";
+
+// extend from the immediate action menu, in order to inherit the general style
+.pcc-redaction-reason-menu {
+    &:extend(.pcc-immediate-action-menu);
+
+    &, & * {
+        .box-sizing(border-box);
+    }
+    
+    max-width: 600px;
+};
+
+.pcc-redaction-reason .pcc-icon {
+    border-style: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background-color: @background_light;
+}
+
+.pcc-redaction-reason-edit .pcc-icon-check {
+    &:extend(.pccv .pcc-icon-check);
+}
+
+.pcc-redaction-reason {
+    padding: 5px;
+    min-width: 200px;
+    
+    &.pcc-redaction-reason-edit {
+        min-width: 500px;
+    }
+    & button {
+        // prevent incorrect border-box calculation on iOS
+        padding: 0;
+    }
+    
+    .pcc-redaction-reason-input {
+        line-height: normal;
+        position: absolute;
+        left: 90px;
+        right: 35px;
+        z-index: 0;
+        
+        input {
+            position: absolute;
+            border: 0;
+            width: 100%;
+            height: 100%;
+            padding-left: 5px;
+            padding-right: 26px;
+            z-index: 1;
+            
+            .textInput;
+        }
+    }
+}
+
+.pcc-redaction-reason-edit .pcc-redaction-reason-input,
+.pcc-redaction-reason-edit .pcc-redaction-reason-label,
+.pcc-redaction-reason-edit button[data-pcc-redaction-reason="clear"] {
+    height: 26px;
+    line-height: 26px;
+}
+
+.pcc-redaction-reason .pcc-redaction-reason-label {
+    width: 80px;
+    text-align: center;
+    float: left;
+}
+
+.pcc-redaction-reason-edit button[data-pcc-redaction-reason="clear"] {
+    position: relative;
+    float: right;
+    border: 0;
+    background: none;
+    .box-shadow(none);
+    font-size: 26px;
+    padding-right: 5px;
+    z-index: 2;
+}
+
+.pcc-redaction-reason .pcc-redaction-reason-right {
+    float: right;
+}
+
+.pcc-redaction-reason-view button {
+    position: absolute;
+    right: 5px;
+}
+
+.pcc-redaction-reason-view [data-pcc-link-navigate] {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 26px;
+    height: 26px;
+    width: 100%;
+    min-width: 200px;
+    padding-right: 30px;
+    float: left;
+}
+
+.pcc-redaction-reason button[disabled] {
+    .opacity(20);
+}
+
+.mobileView({
+    .pcc-redaction-reason-menu {
+        // override any inline styles
+        left: 5px !important;
+        right: 5px !important;
+        max-width: initial;
+    }
+    .pcc-redaction-reason,
+    .pcc-redaction-reason.pcc-redaction-reason-edit {
+        min-width: 0;
+    }
+});

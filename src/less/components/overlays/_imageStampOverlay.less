@@ -1,0 +1,101 @@
+@import (reference) "../../base/_variables.less";
+@import (reference) "../../base/_breakpoints.less";
+@import (reference) "../../base/_mixins.less";
+
+// this requires the regular overlay code to be included in the final sheet,
+// import here only if it has not been imported before
+@import (once) "../_overlay.less";
+
+.pcc-overlay-image-stamp {
+    .pcc-overlay-inner {
+        padding: 10px;
+    }
+    
+    h1 {
+        margin: 0 0 10px;
+        font-weight: 100;
+        color: rgba(0, 0, 0, 0.4);
+        letter-spacing: .04em;
+    }
+}
+
+.pcc-image-stamp-list {
+    max-height: 330px;
+    overflow: auto;
+    margin-bottom: 10px;
+}
+
+.pcc-image-stamp-list ul.grid {
+    margin: 0 0 0 -2.5% !important;
+    list-style: none;
+    font-size: 0px;
+    margin-left: -2.5%;
+}
+
+.stampPreview() {
+    display: inline-block;
+    padding: 6px;
+    margin: 0 0 2.5% 2.5%;
+    background: @background_offwhite;
+    border: 1px solid @border_light;
+    font-size: 16px;
+    font-size: 1rem;
+    vertical-align: top;
+    cursor: pointer;
+    border-radius: 3px;
+
+    .box-sizing(border-box);
+}
+
+.pcc-image-stamp-list ul.grid li { 
+    .stampPreview; 
+
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+    
+    h3 {
+        margin: 0 0 5px;
+    }
+    p {
+        font-size: .9em;
+        line-height: 1.5em;
+        color: @font_color_d25;
+    }
+}
+
+@offsetPercent: 2.5;
+// class for 2 columns
+.pcc-image-stamp-list ul.grid.columns-2 li {
+    width: (50% - @offsetPercent);
+}
+// class for 3 columns
+.pcc-image-stamp-list ul.grid.columns-3 li {
+    width: (33% - @offsetPercent);
+}
+// class for 4 columns
+.pcc-image-stamp-list ul.grid.columns-4 li {
+    width: (25% - @offsetPercent);
+}
+
+.mobileView({
+    .pcc-overlay-image-stamp h1 {
+        font-size: 22px !important;
+    }
+    
+    .pcc-image-stamp-list {
+        ul.grid {
+            margin-left: 0 !important;
+        }
+        ul.grid li {
+            width: 47.5% !important;
+            margin: 0 0 10px;
+        }
+        ul.grid li.odd {
+            margin-right: 10px;
+        }
+    }
+});

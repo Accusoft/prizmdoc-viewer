@@ -1,0 +1,33 @@
+<div class="pcc-overlay-inner">
+    <button class="pcc-overlay-closer" data-pcc-image-stamp="closer">&#215;</button>
+
+    <h1><%= imageStampOverlayHeader %></h1>
+
+    <div class="pcc-image-stamp-list">
+            <% if (waiting) {%>
+                <div class=".pcc-load"><%= imageStampLoading %></div>
+            <% } else if (imageStampList.imageStamps.length) { %>
+
+                <ul class="grid columns-3">
+                <% _.each(imageStampList.imageStamps, function(imageStampObj, index) { %>
+                    <li class="pcc-image-stamp-list-item <%= ((index+1) % 2 === 0) ? 'even' : 'odd' %>" data-image-stamp-id="<%= imageStampObj.id%>">
+                        <img src="<%= imageStampObj.url %>" alt="<%= imageStampObj.displayName %>" title="<%= imageStampObj.displayName%>">
+                    </li>
+                <% }); %>
+            <% } %>
+        </ul>
+    </div>
+
+    <% if (!waiting && sortBy && sortBy.length) { %>
+        <div class="pcc-select pcc-select-image-stamp-sort" data-pcc-image-stamp-sort data-pcc-toggle="dropdown-image-stamp-sort" title="">
+            <span><%= imageStampSortBy %></span>
+            <div class="pcc-label"><%= (typeof sortName !== 'undefined') ? sortName : imageStampDropSelect%><div class="pcc-arrow-down"></div></div>
+
+            <div data-pcc-toggle-id="dropdown-image-stamp-sort" class="pcc-dropdown pcc-dropup pcc-align-right">
+                <% _.forEach(sortBy, function(sortByOption) { %>
+                <div data-image-stamp-sort-item='<%= sortByOption %>'><%= sortByOption %></div>
+                <% }); %>
+            </div>
+        </div>
+    <% } %>
+</div>

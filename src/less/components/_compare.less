@@ -1,0 +1,29 @@
+.pccv .pcc-revision-header { 
+    margin: -4px 0 6px;
+    line-height: 32px;
+    position: relative;
+    z-index: 0;
+    
+    & > .pcc-pull-right { 
+        position: relative;
+        z-index: 2; 
+    }
+    
+    & > .pcc-left { 
+        position: relative;
+        z-index: 1;
+    }
+    
+    span {
+        position: relative;
+        top: 4px;
+    }
+    
+    span > span {
+        top: -3px;
+    }
+
+    [data-pcc-search=msg] {
+        cursor: pointer;
+    }
+}

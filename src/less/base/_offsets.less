@@ -1,0 +1,94 @@
+@import (reference) "_variables.less";
+@import (reference) "_breakpoints.less";
+@import (reference) "_mixins.less";
+
+@pageListTopOffset: @tabset_height + @tabpane_height;
+@pageListBottomOffset: @tools_height;
+
+// page list offests for tab panes
+.pccv [data-pcc-pagelist] {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-top: @pageListTopOffset;
+    padding-bottom: @pageListBottomOffset;
+}
+.pccv [data-pcc-pagelist].pcc-vertical-offset-left{
+    padding-left: @tabpane_vertical_width;
+    padding-top: @tabset_height;
+}
+.pccv [data-pcc-pagelist].pcc-vertical-offset-right{
+    padding-right: @tabpane_vertical_width;
+    padding-top: @tabset_height;
+}
+
+// page list offsets for dialogs
+.pccv [data-pcc-pagelist].pcc-dialog-offset { 
+    padding-left: @dialog_width; 
+}
+.pccv [data-pcc-pagelist].pcc-dialog-offset.pcc-vertical-offset-left {
+    padding-left: (@dialog_width + @tabpane_vertical_width);
+}
+.pccv [data-pcc-pagelist].pcc-dialog-offset.pcc-vertical-offset-right {
+    padding-left: @dialog_width;
+    padding-right: @tabpane_vertical_width;
+}
+.pccv [data-pcc-pagelist].pcc-dialog-offset.pcc-dialog-offset-secondary {
+    padding-left: (@dialog_width * 2);
+}
+.pccv .pcc-dialog.pcc-open.pcc-open-as-secondary {
+    margin-left: @dialog_width;
+}
+
+// offsets for vertical toolbars
+.pccv .pcc-dialog.pcc-vertical-offset-left,
+.pccv .pcc-dialog.pcc-vertical-offset-right {
+    left: 0;
+    top: @tabset_height;
+}
+
+.pccv .pcc-dialog.pcc-vertical-offset-left {
+    left: @tabpane_vertical_width;
+}
+
+.mobileView({
+
+    .pccv .pcc-dialog.pcc-vertical-offset-left,
+    .pccv .pcc-dialog.pcc-vertical-offset-right {
+        width: auto;
+    }
+
+    .pccv .pcc-dialog.pcc-vertical-offset-left {
+        right: 0;
+    }
+
+    .pccv .pcc-dialog.pcc-vertical-offset-right {
+        right: @tabpane_vertical_width;
+    }
+
+    // on mobile, add a larger offset
+    .pccv [data-pcc-pagelist].pcc-dialog-offset { 
+        // 74px is the automatic height of the search dialog
+        padding-top: (@pageListTopOffset + 74px);
+        padding-left: 0;
+        
+        &.pcc-download-preview {
+            padding-top: @pageListTopOffset;
+        }
+    }
+    // there is no offset for vertical menus
+    .pccv [data-pcc-pagelist].pcc-dialog-offset.pcc-vertical-offset-left,
+    .pccv [data-pcc-pagelist].pcc-dialog-offset.pcc-vertical-offset-right { 
+        // 74px is the automatic height of the search dialog
+        padding-top: (@tabset_height + 74px);
+    }
+
+    .pccv [data-pcc-pagelist].pcc-dialog-offset.pcc-vertical-offset-left {
+        padding-left: @tabpane_vertical_width;
+    }
+
+    .pccv [data-pcc-pagelist].pcc-dialog-offset.pcc-vertical-offset-right {
+        padding-left: 0;
+        padding-right: @tabpane_vertical_width;
+    }
+});

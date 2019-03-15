@@ -1,0 +1,199 @@
+<div class="pcc-overlay-inner">
+
+    <div class="pcc-row">
+        <div class="pcc-col-6">
+            <div class="pcc-row">
+                <h3 class="page-title"><%= printTitle %></h3>
+            </div>
+        </div>
+        <div class="pcc-col-6">
+            <div class="pcc-row">
+                <button class="pcc-overlay-closer" data-pcc-print="cancel">&#215;</button>
+            </div>
+        </div>
+    </div>
+    <% if (typeof(show) !== 'undefined' && show === 'form') { %>
+    <div class="pcc-row">
+        <!-- Pages -->
+        <div class="pcc-col-6">
+            <div class="pcc-print-pages">
+                <div class="pcc-row">
+                    <h4><%= printPages %></h4>
+                </div>
+                <div class="pcc-row">
+                    <div data-pcc-radio="printPage" data-pcc-print-page="printAllPages" class="pcc-checked">
+                        <span class="pcc-icon pcc-icon-circle"></span>
+                        <label><%= printAll %></label>
+                    </div>
+                </div>
+                <div class="pcc-row">
+                    <div data-pcc-radio="printPage" data-pcc-print-page="printCurrentPage">
+                        <span class="pcc-icon pcc-icon-circle"></span>
+                        <label><%= printCurrent %></label>
+                    </div>
+                </div>
+                <div class="pcc-row">
+                    <div data-pcc-radio="printPage" data-pcc-print-page="printRange">
+                        <span class="pcc-icon pcc-icon-circle"></span>
+                        <input type="text" data-pcc-print="range" placeholder="<%= rangePlaceholder %>"
+                                            title="<%= printRange %>">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Orientation -->
+        <div class="pcc-col-6">
+            <div class="pcc-print-orientation pcc-row">
+                <div class="pcc-row">
+                    <h4><%= printOrientation %></h4>
+                </div>
+                <div class="pcc-row">
+                    <select data-pcc-select="orientation" class="pcc-print-select">
+                        <option value="portrait"><%= printPortrait %></option>
+                        <option value="landscape"><%= printLandscape %></option>
+                    </select>
+                </div>
+            </div>
+            <!--Paper Sizes -->
+            <div class="pcc-print-paper-sizes pcc-row">
+                <div class="pcc-row">
+                    <h4><%= paperSize %></h4>
+                </div>
+                <div class="pcc-row">
+                    <select data-pcc-select="paperSize" class="pcc-print-select">
+                        <!-- US and International -->
+                        <option value="letter"><%= paperSizes.letter %></option>
+                        <option value="legal"><%= paperSizes.legal %></option>
+                        <option value="tabloid"><%= paperSizes.tabloid %></option>
+                        <option value="foolscap"><%= paperSizes.foolscap %></option>
+                        <!-- A Size Formats -->
+                        <option value="a3"><%= paperSizes.a3 %></option>
+                        <option value="a4"><%= paperSizes.a4 %></option>
+                        <option value="a5"><%= paperSizes.a5 %></option>
+                        <!-- Architectural -->
+                        <option value="a6"><%= paperSizes.a6 %></option>
+                        <option value="a"><%= paperSizes.a %></option>
+                        <option value="b"><%= paperSizes.b %></option>
+                        <option value="c"><%= paperSizes.c %></option>
+                        <option value="d"><%= paperSizes.d %></option>
+                        <option value="e"><%= paperSizes.e %></option>
+                        <option value="e1"><%= paperSizes.e1 %></option>
+
+                    </select>
+                </div>
+            </div>
+            <% if (!canPrintMarks) { %>
+                <div class="pcc-row">
+                    <div data-pcc-checkbox="printMargins" class="pcc-checkbox pcc-checked">
+                        <span class="pcc-icon pcc-icon-check"></span>
+                        <label><%= printAutoFitMargins %></label>
+                    </div>
+                </div>
+            <% } %>
+
+        </div>
+    </div>
+
+    <% if (canPrintMarks) { %>
+    <div class="pcc-print-more-options pcc-row pcc-hide">
+        <div class="pcc-col-6">
+            <div class="pcc-row">
+                <span><%= printShow %></span>
+            </div>
+            <!-- Annotations -->
+            <div class="pcc-row">
+                <div data-pcc-checkbox="printAnnotations" class="pcc-checkbox pcc-checked">
+                    <span class="pcc-icon pcc-icon-check"></span>
+                    <label><%= printAnnotations %></label>
+                </div>
+            </div>
+
+            <!-- Redactions -->
+            <div class="pcc-row">
+                <div data-pcc-checkbox="printRedactions" class="pcc-checkbox pcc-checked">
+                    <span class="pcc-icon pcc-icon-check"></span>
+                    <label><%= printRedactions %></label>
+                </div>
+            </div>
+
+            <!-- printRedactionViewMode -->
+            <div class="pcc-row">
+                <div data-pcc-checkbox="printRedactionViewMode" class="pcc-checkbox">
+                    <span class="pcc-icon pcc-icon-check"></span>
+                    <label><%= printRedactionViewMode %></label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="pcc-col-6">
+            <div class="pcc-row">
+                <div data-pcc-checkbox="printMargins" class="pcc-checkbox pcc-checked">
+                    <span class="pcc-icon pcc-icon-check"></span>
+                    <label><%= printAutoFitMargins %></label>
+                </div>
+            </div>
+            <div class="pcc-print-comments pcc-row">
+                <div class="pcc-row">
+                    <h4><%= printComments %></h4>
+                </div>
+                <div class="pcc-row">
+                    <select data-pcc-select="printComments" class="pcc-print-select">
+                        <option value="none"><%= printCommentsNone %></option>
+                        <option value="followingPage"><%= printCommentsAfterEachPage %></option>
+                        <option value="documentEnd"><%= printCommentsAtEnd %></option>
+                    </select>
+                </div>
+            </div>
+            <div class="pcc-print-marks pcc-row">
+                <div class="pcc-row">
+                    <h4><%= printReasons %></h4>
+                </div>
+                <div class="pcc-row">
+                    <select data-pcc-select="printReasons" class="pcc-print-select">
+
+                        <option value="none"><%= printReasonsNone %></option>
+                        <option value="followingPage"><%= printReasonsAfterEachPage %></option>
+                        <option value="documentEnd"><%= printReasonsAtEnd %></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %> <!--if (canPrintMarks)-->
+
+
+    <div class="pcc-row">
+        <% if (canPrintMarks) { %>
+        <div class="pcc-col-6">
+            <div class="pcc-toggle-options" data-pcc-print="optionsToggle">
+                <label><%= printMoreOptions %></label>
+                <span class="pcc-arrow-down"></span>
+            </div>
+        </div>
+        <div class="pcc-col-6">
+            <% } else { %>
+            <div class="pcc-col-12">
+            <% } %> <!--if (canPrintMarks)-->
+            <div class="pcc-row">
+                <button data-pcc-print="submit" class="pcc-pull-right"><%= printButton %></button>
+            </div>
+        </div>
+    </div>
+
+    <% } else { %>
+
+    <div class="pcc-row">
+        <div data-pcc-print="resultCount"><%= printPreparingPage %></div>
+    </div>
+    <div class="pcc-row pcc-percent">
+        <div class="pcc-label">
+            <div class="pcc-load"></div>
+            <div data-pcc-print="resultPercent"></div>
+        </div>
+        <div data-pcc-print="loader" class="pcc-bar"></div>
+    </div>
+    <button data-pcc-print="cancel" class="pcc-center"><%= cancelButton %></button>
+
+    <% } %>
+</div>
