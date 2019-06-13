@@ -14,10 +14,6 @@ your viewer's look and feel, you can clone this repository locally and use it as
 a starting point to build a custom version of the viewer's HTML, CSS, and
 JavaScript client assets.
 
-## Associated Product Version
-
-This client assets produced by this build are specifically designed for [PrizmDoc Viewer 13.6](https://help.accusoft.com/PrizmDoc/v13.6/HTML/webframe.html#release-notes.html). However, you should be able to use the client assets with any [PrizmDoc Viewer] backend running version 13.0 or higher.
-
 ## Building client assets
 
 The build compiles the files in `src/` and outputs assets in the `dist/`

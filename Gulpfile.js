@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var src = gulp.src;
 var dest = gulp.dest;
+var rename = gulp.rename;
 var series = gulp.series;
 var parallel = gulp.parallel;
 var watch = gulp.watch;
@@ -36,8 +37,18 @@ const img = function() {
   return src('src/img/*.+(png|gif|jpg|jpeg|cur)').pipe(dest('dist/viewer-assets/img'));
 }
 
-const viewerCore = function() {
-  return src('node_modules/@prizmdoc/viewer-core/viewercontrol.js').pipe(dest('dist/viewer-assets/js'))
+const viewerCoreJs = function() {
+  return src('node_modules/@prizmdoc/viewer-core/viewercontrol.js').pipe(dest('dist/viewer-assets/js'));
+}
+
+const viewerCoreLicense = function() {
+  return src('node_modules/@prizmdoc/viewer-core/LICENSE').pipe(rename('viewercontrol-LICENSE.txt')).pipe(dest('dist/viewer-assets/js'));
+}
+
+const viewerCore = parallel(viewerCoreJs, viewerCoreLicense);
+
+const license = function() {
+  return src('LICENSE').pipe(dest('dist/viewer-assets'));
 }
 
 const icons = function() {
@@ -139,7 +150,7 @@ const viewerCustomizationsJs = series(icons, function viewerCustomizationsJs(don
 });
 
 const build = series(clean, parallel(
-  less, css, fonts, img,  js, viewerCustomizationsJs, viewerCore
+  less, css, fonts, img,  js, viewerCustomizationsJs, viewerCore, license
 ));
 
 const watchTask = series(build, function registerWatchRules(done) {

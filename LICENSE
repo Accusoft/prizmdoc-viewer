@@ -1,8 +1,37 @@
-Copyright © 2018 Accusoft Corporation
+MIT License except where otherwise stated
 
-Fonts, located in the src/fonts/ directory, are each copyright by their
-respective authors and licensed separately. See the associated LICENSE.txt file
-for each font.
+Copyright © 2018-2019 Accusoft Corporation
+
+
+Exceptions:
+
+    - viewercontrol.js is copyright Accusoft Corporation and licensed
+      separately. See its associated LICENSE in the @prizmdoc/viewer-core npm
+      package (https://www.npmjs.com/package/@prizmdoc/viewer-core).
+
+    - jQuery 1.10.2 is copyright the jQuery Foundation, Inc. and licensed under
+      the MIT license. See https://jquery.org/license/.
+
+    - jQuery Hotkeys Plugin is copyright John Resig and dual licensed under the
+      MIT license or the GPL Version 2 license. See
+      https://plugins.jquery.com/hotkeys/.
+
+    - Underscore 1.8.3 is copyright Jeremy Ashkenas, DocumentCloud and
+      Investigative Reporters & Editors and is licensed under the MIT license.
+      See https://underscorejs.org.
+
+    - The HTML5 Shiv (html5shiv.js) 3.7.0 is dual licensed under the MIT license
+      or the GPL Version 2 license. See https://github.com/aFarkas/html5shiv.
+
+    - normalize.css 3.0.0 is copyright Nicolas Gallagher and Jonathan Neal and
+      is licensed under the MIT license. See
+      https://github.com/necolas/normalize.css.
+
+    - Fonts are each copyright by their respective authors and are each licensed
+      under the SIL Open Font License. See the associated LICENSE.txt file for
+      each font (named similarly to the font file itself and put in the same
+      directory as the font).
+
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
