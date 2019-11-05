@@ -5630,7 +5630,9 @@ var PCCViewer = window.PCCViewer || {};
                 searchResultsCount = 0;
                 activeSearchResultId = undefined;
                 $(allResultsFragment).children().off();
-                $(allResultsFragment).empty();
+                while (allResultsFragment.firstChild) {
+                    allResultsFragment.removeChild(allResultsFragment.firstChild);
+                }
                 redactionMarks = [];
             };
 

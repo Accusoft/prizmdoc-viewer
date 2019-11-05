@@ -116,7 +116,7 @@ application has been configured to map requests to `viewer/js/...` to the `js`
 subdirectory:
 
 ```html
-<script src="viewer/js/jquery-1.10.2.min.js"></script>
+<script src="viewer/js/jquery-3.4.1.min.js"></script>
 <script src="viewer/js/jquery.hotkeys.min.js"></script>
 <script src="viewer/js/underscore.min.js"></script>
 <script src="viewer/js/viewercontrol.js"></script>
