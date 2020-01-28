@@ -216,6 +216,7 @@ var PCCViewer = window.PCCViewer || {};
         this.currentFitType = PCCViewer.FitType.FullWidth;
         this.isFitTypeActive = true;
         this.documentHasText = false;
+        this.viewerReady = false;
 
         // full page redaction dialog
         this.isPageRedactionCanceled = false;
@@ -3377,6 +3378,7 @@ var PCCViewer = window.PCCViewer || {};
 
         // Viewer Ready event handler
         function viewerReadyHandler () {
+            viewer.viewerReady = true;
             // pre-load signature fonts
             fontLoader.preLoad();
             commentUIManager.init({
@@ -6335,7 +6337,9 @@ var PCCViewer = window.PCCViewer || {};
 
                 resetSearchParams();
                 // clear the search in viewer control
-                viewer.viewerControl.clearSearch();
+                if (viewer.viewerReady) {
+                    viewer.viewerControl.clearSearch();
+                }
                 // clear comment highlights
                 clearAllCommentResults(searchResults);
                 // clear mark highlights
@@ -7527,6 +7531,10 @@ var PCCViewer = window.PCCViewer || {};
                             hideRecordLoading(viewer.viewerNodes.$annotationLayersDropdown);
                         }
 
+                        //skip notify dialog if the license error occurs
+                        if (reason && reason.code === "LicenseCouldNotBeVerified")
+                            return;
+
                         //closeLoadDialog();
                         viewer.notify({
                             message: PCCViewer.Language.data.annotations.load.listFailure
@@ -8551,6 +8559,9 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             function onSaveFailure(reason) {
+                //skip notify dialog if a license error occurs
+                if (reason && reason.code === "LicenseCouldNotBeVerified")
+                    return;
                 notify({ message: language.annotations.save.failure + (language.error[reason.code] || '') });
             }
 
@@ -10920,7 +10931,9 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             function destroy() {
-                $commentsPanel.off().find('*').off();
+                if ($commentsPanel) {
+                    $commentsPanel.off().find('*').off();
+                }
             }
 
             function externalCommentEvent(eventName) {
