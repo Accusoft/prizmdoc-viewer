@@ -70,12 +70,13 @@ const less = function() {
 
 const viewerCustomizationsJs = series(icons, function viewerCustomizationsJs(done) {
   function writeFile(path, contents, cb) {
-    mkdirp(getDirName(path), function (err) {
-      if (err) {
-        return cb(err);
-      }
-      fs.writeFile(path, contents, cb);
-    });
+    mkdirp(getDirName(path))
+      .then(function() {
+        fs.writeFile(path, contents, cb);
+      })
+      .catch(function(err) {
+        cb(err);
+      });
   };
 
   const createIconSvgObject = function(callback) {

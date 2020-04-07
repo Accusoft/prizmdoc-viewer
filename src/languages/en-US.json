@@ -8,6 +8,7 @@
         "noAnnotationsForReview": "No annotations for review.",
         "mergeAllLayerSuccess": "All annotations were merged to your layer, and then removed.",
         "mergeLayerSuccess": "The selected annotations were merged to your layer, and then removed.",
+        "mergeLayerError": "The annotation layers failed to merge.",
         "mergeSelected": "Merge Selected to My Annotations",
         "annotationLayers": "Annotation Layers",
         "unnamed": "Unnamed",

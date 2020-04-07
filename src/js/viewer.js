@@ -8184,45 +8184,58 @@ var PCCViewer = window.PCCViewer || {};
                     mergeMode('off');
                 });
 
-                function mergeMarkupLayers(markupLayers) {
+                function mergeMarkupLayers(markupLayers, onMerged, onError) {
                     var $annotationLayerElements = $('.pcc-annotation-layer-review-other');
 
                     mergeMode('off');
 
-                    currentLayer.copyLayers(markupLayers);
+                    var uniquePages = _.chain(markupLayers)
+                        .map(function (layer) { return layer.getMarks(); })
+                        .flatten()
+                        .map(function (mark) { return mark.getPageNumber(); })
+                        .uniq()
+                        .value();
+                    var pageAttributePromises = _.map(uniquePages, viewer.viewerControl.requestPageAttributes, viewer.viewerControl);
+                    PCCViewer.Promise.all(pageAttributePromises).then(
+                        function onFulfilled() {
+                            currentLayer.copyLayers(markupLayers);
 
-                    // Loop through the marks on the current layer and restore their interaction mode
-                    // to unlock the copied marks that were originally unlocked.
-                    _.forEach(currentLayer.getMarks(), function (mark) {
-                        var originalInteractionMode = mark.getData('Accusoft-originalInteractionMode');
+                            // Loop through the marks on the current layer and restore their interaction mode
+                            // to unlock the copied marks that were originally unlocked.
+                            _.forEach(currentLayer.getMarks(), function (mark) {
+                                var originalInteractionMode = mark.getData('Accusoft-originalInteractionMode');
 
-                        if (originalInteractionMode !== undefined) {
-                            mark.setInteractionMode(originalInteractionMode);
-                            mark.setData('Accusoft-originalInteractionMode', undefined);
-                        }
-                    });
+                                if (originalInteractionMode !== undefined) {
+                                    mark.setInteractionMode(originalInteractionMode);
+                                    mark.setData('Accusoft-originalInteractionMode', undefined);
+                                }
+                            });
 
-                    _.forEach(markupLayers, function (markupLayer) {
+                            _.forEach(markupLayers, function (markupLayer) {
 
-                        // Remove the item from the review panel
-                        $annotationLayerElements.filter('[data-pcc-other-layer="' + markupLayer.getId() + '"]').remove();
+                                // Remove the item from the review panel
+                                $annotationLayerElements.filter('[data-pcc-other-layer="' + markupLayer.getId() + '"]').remove();
 
-                        viewer.viewerControl.deleteMarks(markupLayer.getMarks());
-                        markupLayer.destroy();
-                        markupLayer.setSessionData('Accusoft-state', 'merged');
-                    });
+                                viewer.viewerControl.deleteMarks(markupLayer.getMarks());
+                                markupLayer.destroy();
+                                markupLayer.setSessionData('Accusoft-state', 'merged');
+                            });
 
-                    $annotationLayerElements = $('.pcc-annotation-layer-review-other');
-                    if ($annotationLayerElements.length === 0) {
-                        var text = createElem('div', 'pcc-annotation-layer-review-other');
-                        text.appendChild(document.createTextNode(PCCViewer.Language.data.annotationLayerReview.noAnnotationsForReview));
-                        $('[data-pcc-annotation-layer-review-section=other] .pcc-annotation-layer-review-section-content').append(text);
+                            $annotationLayerElements = $('.pcc-annotation-layer-review-other');
+                            if ($annotationLayerElements.length === 0) {
+                                var text = createElem('div', 'pcc-annotation-layer-review-other');
+                                text.appendChild(document.createTextNode(PCCViewer.Language.data.annotationLayerReview.noAnnotationsForReview));
+                                $('[data-pcc-annotation-layer-review-section=other] .pcc-annotation-layer-review-section-content').append(text);
 
-                        viewer.viewerNodes.$annotationLayerShowAll.attr('disabled', true);
-                        viewer.viewerNodes.$annotationLayerHideAll.attr('disabled', true);
-                        viewer.viewerNodes.$annotationLayerMergeMode.attr('disabled', true);
-                        viewer.viewerNodes.$annotationLayerMergeAll.attr('disabled', true);
-                    }
+                                viewer.viewerNodes.$annotationLayerShowAll.attr('disabled', true);
+                                viewer.viewerNodes.$annotationLayerHideAll.attr('disabled', true);
+                                viewer.viewerNodes.$annotationLayerMergeMode.attr('disabled', true);
+                                viewer.viewerNodes.$annotationLayerMergeAll.attr('disabled', true);
+                            }
+
+                            onMerged();
+                        },
+                        onError);
                 }
 
                 // Merge selected layers onto the currently editable layer
@@ -8236,12 +8249,18 @@ var PCCViewer = window.PCCViewer || {};
                         return viewer.viewerControl.getMarkupLayerCollection().getItem(layer);
                     });
 
-                    mergeMarkupLayers(checkedMarkupLayers);
-
-                    viewer.notify({
-                        message: PCCViewer.Language.data.annotationLayerReview.mergeLayerSuccess,
-                        type: 'success'
-                    });
+                    mergeMarkupLayers(checkedMarkupLayers,
+                        function onMerged() {
+                            viewer.notify({
+                                message: PCCViewer.Language.data.annotationLayerReview.mergeLayerSuccess,
+                                type: 'success'
+                            });
+                        },
+                        function onError() {
+                            viewer.notify({
+                                message: PCCViewer.Language.data.annotationLayerReview.mergeLayerError
+                            });
+                        });
                 });
 
                 // Merge all layers onto the currently editable layer
@@ -8463,6 +8482,7 @@ var PCCViewer = window.PCCViewer || {};
                     var divClassName = 'pcc-annotation-layer-review-' + classFragment + ' pcc-' + classFragment + '-layer pcc-row',
                         div = createElem('div', divClassName),
                         checkbox = createElem('span', 'pcc-checkbox pcc-hide'),
+                        icon = createElem('span', 'pcc-icon pcc-icon-check'),
                         text = createElem('span'),
                         visibilityToggle = createElem('span', 'pcc-icon ' + visibilityIcon + ' pcc-pull-right');
 
@@ -8471,9 +8491,11 @@ var PCCViewer = window.PCCViewer || {};
 
                     text.appendChild(document.createTextNode(annotationLayer.getName() || ''));
 
+                    checkbox.appendChild(icon);
                     div.appendChild(checkbox);
                     div.appendChild(text);
                     div.appendChild(visibilityToggle);
+                    parseIcons($(div));
 
                     div.setAttribute('data-pcc-' + classFragment + '-layer', annotationLayer.getId());
 

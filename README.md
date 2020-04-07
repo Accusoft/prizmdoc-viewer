@@ -32,24 +32,17 @@ npm install
 
 ### Building your changes
 
-You use `gulp` to build your changes. The examples below assume you have gulp
-globally installed (via `npm install gulp --global`). Alternately, if you are
-using npm 5.2 or higher, you can easily invoke the locally-installed gulp with
-[npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b).
-Just replace `gulp` with `npx gulp` in the examples below (for example, `gulp
-build` becomes `npx gulp build`).
-
 You can do a one-time build of your changes with:
 
 ```
-gulp build
+npm run build
 ```
 
 Or you can watch for changes and automatically run a development build on each
 change with:
 
 ```
-gulp watch
+npm run watch
 ```
 
 ## Integrating the viewer into your web application
@@ -149,7 +142,8 @@ initialize the viewer will look something like this:
       viewerAssetsPath: 'viewer',
       language: viewerCustomizations.languages['en-US'],
       template: viewerCustomizations.template,
-      icons: viewerCustomizations.icons
+      icons: viewerCustomizations.icons,
+      annotationsMode: 'LayeredAnnotations'
     });
   });
 </script>
@@ -160,10 +154,8 @@ Let's explain the various parts of this function call:
 - `documentID` is assigned the `viewingSessionId` for the PrizmDoc viewing session your web application just created.
 - `imageHandlerUrl` is the base route you setup earlier to proxy requests to PrizmDoc. The viewer will use this base route for all requests it makes for document content.
 - `viewerAssetsPath` is the base route to get the static CSS and JavaScript (e.g. `viewer/css/...` and `viewer/js/...`) assets. This is used by the viewer at print time.
-
-The last three properties, `language`, `template`, and `icons`, are how
-pre-built viewer customizations are passed in. You can effectively treat this as
-boilerplate.
+- `language`, `template`, and `icons` are how pre-built viewer customizations are passed in. You can effectively treat this as boilerplate.
+- `annotationsMode` is set to `'LayeredAnnotations'` so that the viewer saves and loads annotation data in our newer JSON markup format.
 
 ## Customizing your viewer
 
