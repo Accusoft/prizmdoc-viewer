@@ -361,7 +361,16 @@
                     <div class="pcc-arrow-down"></div>
                     <div data-pcc-qa-toggle-id="dropdown-quick-action-redaction-reason" class="pcc-dropdown">
                         <% _.each(reasons.reasons, function(reason, index) { %>
-                        <div class="<%= (index % 2 === 0) ? 'even' : 'odd' %> <%= (reason.reason === redactionReasonClear) ? 'pcc-must-hide' : ''  %>" <%= (reason.reason === redactionReasonClear) ? 'data-clear-item' : ''  %>><%= reason.reason %></div>
+                            <% if (reason.selectable) { %>
+                            <div data-pcc-checkbox="redaction-reasons" class="pcc-checkbox <%= (index % 2 === 0) ? 'even' : 'odd' %>" title="<%= reason.reason %><%= (reason.description) ? ': ' + reason.description : '' %>">
+                                <% if (reasons.enableMultipleRedactionReasons) { %>
+                                <span class="pcc-icon pcc-icon-check"></span>
+                                <% } %>
+                                <span><em class="pcc-select-multiple-redaction-reason"><%= reason.reason %></em><% if (reason.description) { %>: <span class="pcc-select-multiple-redaction-description"><%= reason.description %></span><% } %></span>
+                            </div>
+                            <% } else { %>
+                            <div class="pcc-close-dropdown <%= reason.class %>  <%= (index % 2 === 0) ? 'even' : 'odd' %>" title="<%= reason.reason %>"><span><%= reason.reason %></span></div>
+                            <% } %>
                         <% }); %>
                     </div>
                 </div>

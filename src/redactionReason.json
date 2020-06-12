@@ -3,9 +3,10 @@
     "enableRedactionReasonSelection": true,
     "enableFreeformRedactionReasons": true,
     "maxLengthFreeformRedactionReasons": 40,
+    "enableMultipleRedactionReasons": false,
     "reasons": [
-        {"reason": "Client Privilege"},
-        {"reason": "Privacy Information"},
-        {"reason": "Redacted"}
+        {"reason": "1.a", "description": "Client Privilege"},
+        {"reason": "1.b", "description": "Privacy Information"},
+        {"reason": "1.c", "description": "Redacted"}
     ]
 }

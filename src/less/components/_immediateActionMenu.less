@@ -13,6 +13,8 @@
     color: @font_color_dark;
     will-change: top, left, opacity;
     white-space:nowrap;
+    display: block;
+    font-size: 16px;
     
     max-width: 300px;
     max-height: 50%;
@@ -58,6 +60,17 @@
     }
 }
 
+.pcc-immediate-action-menu-item {
+    > div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .pcc-icon {
+        margin-right: 5px;
+    }
+}
+
 @-webkit-keyframes pcc-menuEnter {
     0% { opacity: 0; }
     100% { opacity: auto; }
@@ -75,6 +88,8 @@
         left: 15% !important;
         right: 15% !important;
         max-width: initial;
+        width: auto;
+        height: auto;
         // remove the bottom border decorations
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
@@ -82,7 +97,7 @@
         font-size: 1rem;
         background-image: none !important;
 
-        .pcc-icon {
+        > .pcc-icon {
             display: none;
         }
 
@@ -101,7 +116,7 @@
         width: 26px;
         height: 26px;
         opacity: .8;
-        overflow: hidden;
+        overflow: visible;
         
         .transition(opacity 300ms ease-in-out);
         will-change: width, height, opacity;
@@ -114,8 +129,9 @@
             opacity: 1;
             background-image: none;
             overflow-y: auto;
+            .transition(none);
 
-            .pcc-icon {
+            > .pcc-icon {
                 display: none;
             }
         }

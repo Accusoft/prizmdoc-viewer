@@ -149,14 +149,17 @@ var PCCViewer = window.PCCViewer || {};
         {};
 
         this.redactionReasonsExtended = $.extend(true, {}, this.redactionReasons);
+
         if (typeof this.redactionReasons.reasons !== 'undefined' && this.redactionReasons.reasons.length) {
 
+            this.redactionReasonsExtended.reasons.forEach(function (reason) {
+                reason.selectable = true;
+            });
             if (this.redactionReasons.enableFreeformRedactionReasons === true) {
-                this.redactionReasonsExtended.reasons.unshift({"reason": PCCViewer.Language.data.redactionReasonFreeform});
+                this.redactionReasonsExtended.reasons.unshift({"reason": PCCViewer.Language.data.redactionReasonFreeform, "class": "pcc-custom-redaction-reasons"});
             }
 
-            this.redactionReasonsExtended.reasons.unshift({"reason": PCCViewer.Language.data.redactionReasonClear});
-
+            this.redactionReasonsExtended.reasons.unshift({"reason": PCCViewer.Language.data.redactionReasonClear, "class": "pcc-clear-redaction-reasons"});
         }
 
         this.annotationsModeEnum = {
@@ -171,6 +174,10 @@ var PCCViewer = window.PCCViewer || {};
         if (options.annotationsMode === undefined) {
             //set the default
             options.annotationsMode = this.annotationsModeEnum.LegacyAnnotations;
+        }
+
+        if (this.redactionReasons.enableMultipleRedactionReasons && options.annotationsMode === this.annotationsModeEnum.LegacyAnnotations) {
+            throw new Error("When enableMultipleRedactionReasons is true, annotationsMode must be set to \"LayeredAnnotations\"");
         }
 
         var downloadFormats = [
@@ -194,7 +201,8 @@ var PCCViewer = window.PCCViewer || {};
             reasons: this.redactionReasonsExtended,
             annotationsMode: options.annotationsMode,
             downloadFormats: downloadFormats,
-            annotationFormats: annotationFormats
+            annotationFormats: annotationFormats,
+            enableMultipleRedactionReasons: options.enableMultipleRedactionReasons
         },PCCViewer.Language.data)))
             .addClass('pccv')
             .show();
@@ -269,13 +277,13 @@ var PCCViewer = window.PCCViewer || {};
         // This list is extended using one of the config options.
         this.immediateActionMenuActions = _.extend({
             comment: true,
-            select: true,
+            select: false,
             copy: true,
             highlight: true,
             redact: true,
             hyperlink: true,
             strikethrough: true,
-            cancel: true,
+            cancel: false,
             'delete': true
         }, options.immediateActionMenuActionsFilter);
 
@@ -290,6 +298,9 @@ var PCCViewer = window.PCCViewer || {};
 
         // Save the options to the viewer object
         this.viewerControlOptions = options;
+
+        // Pass enableMultipleRedactionReasons option to the ViewerControll
+        this.viewerControlOptions.enableMultipleRedactionReasons = !!(options.redactionReasons && options.redactionReasons.enableMultipleRedactionReasons);
 
         this.viewerControl = {};
         // DOM Nodes
@@ -478,6 +489,12 @@ var PCCViewer = window.PCCViewer || {};
             // Update the breakpoint when the window resizes.
             // This will be throttled a bit to same some costs on rapid events.
             viewer.getBreakpoint();
+
+            // Update context menu dropdowns max-height property
+            updateContextMenuDropdownsMaxHeight();
+
+            // Update full page redaction dropdown max-height property
+            updateFullPageRedactionDropdownsMaxHeight();
         });
 
         //for keyboard keys
@@ -539,22 +556,30 @@ var PCCViewer = window.PCCViewer || {};
                 }
 
                 if (viewer.redactionReasons.autoApplyDefaultReason === true) {
-
-                    var defaultCount = 0;
+                    var defaultReasons = [];
 
                     _.each(viewer.redactionReasons.reasons, function (reasonObj) {
 
                         if (typeof reasonObj.defaultReason !== 'undefined' && reasonObj.defaultReason === true) {
-                            defaultCount++;
-                            PCCViewer.MouseTools.getMouseTool('AccusoftRectangleRedaction').getTemplateMark().setReason(reasonObj.reason);
-                            PCCViewer.MouseTools.getMouseTool('AccusoftTextSelectionRedaction').getTemplateMark().setReason(reasonObj.reason);
-                            viewer.autoApplyRedactionReason = reasonObj.reason;
+                            defaultReasons.push(reasonObj.reason);
                         }
 
                     });
 
-                    if (defaultCount > 1) {
+                    if (!options.enableMultipleRedactionReasons && defaultReasons.length > 1) {
                         viewer.notify({message: PCCViewer.Language.data.redactionErrorDefault});
+                    }
+
+                    if (defaultReasons.length) {
+                        if (options.enableMultipleRedactionReasons) {
+                            PCCViewer.MouseTools.getMouseTool('AccusoftRectangleRedaction').getTemplateMark().setReasons(defaultReasons);
+                            PCCViewer.MouseTools.getMouseTool('AccusoftTextSelectionRedaction').getTemplateMark().setReasons(defaultReasons);
+                            viewer.autoApplyRedactionReason = defaultReasons;
+                        } else {
+                            PCCViewer.MouseTools.getMouseTool('AccusoftRectangleRedaction').getTemplateMark().setReason(defaultReasons[0]);
+                            PCCViewer.MouseTools.getMouseTool('AccusoftTextSelectionRedaction').getTemplateMark().setReason(defaultReasons[0]);
+                            viewer.autoApplyRedactionReason = defaultReasons[0];
+                        }
                     }
                 }
 
@@ -707,6 +732,8 @@ var PCCViewer = window.PCCViewer || {};
             viewer.viewerNodes.$fullScreen.on('click', function (ev) {
                 viewer.$dom.toggleClass('pcc-full-screen');
                 viewer.viewerNodes.$fullScreen.toggleClass('pcc-active');
+                updateContextMenuDropdownsMaxHeight();
+                updateFullPageRedactionDropdownsMaxHeight();
                 if (viewer.isFitTypeActive === true) { viewer.viewerControl.fitContent(viewer.currentFitType); }
             });
 
@@ -879,7 +906,8 @@ var PCCViewer = window.PCCViewer || {};
                         // indicates that the page redaction overlay will show the form to redact page(s)
                         show: 'form',
                         reasons: viewer.redactionReasonsExtended,
-                        enableCustomRedactionReason: false
+                        enableCustomRedactionReason: false,
+                        enableMultipleRedactionReasons: options.enableMultipleRedactionReasons
                     }, PCCViewer.Language.data);
 
                     // Show the page redaction overlay and backdrop (fade)
@@ -887,15 +915,11 @@ var PCCViewer = window.PCCViewer || {};
                     viewer.viewerNodes.$overlayFade.show();
 
                     parseIcons(viewer.viewerNodes.$pageRedactionOverlay);
+                    updateFullPageRedactionDropdownsMaxHeight();
 
                     // If there is an auto apply redaction reason, set the fullPageRedactionReason to that value.
                     if (viewer.autoApplyRedactionReason) {
                         viewer.fullPageRedactionReason = viewer.autoApplyRedactionReason;
-                    }
-
-                    // Update the redaction reason label with the last used full page redaction reason
-                    if (viewer.fullPageRedactionReason && viewer.fullPageRedactionReason.length > 0) {
-                        viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-redaction-reason]').find('.pcc-label').text(viewer.fullPageRedactionReason);
                     }
 
                     viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-redaction-reason-input]')
@@ -906,8 +930,36 @@ var PCCViewer = window.PCCViewer || {};
                                 viewer.notify({message: PCCViewer.Language.data.redactionReasonFreeforMaxLengthOver});
                                 $(this).val(val.substring(0, viewer.redactionReasons.maxLengthFreeformRedactionReasons));
                             }
-                            viewer.fullPageRedactionReason = $(this).val();
+                            viewer.fullPageRedactionReason = options.enableMultipleRedactionReasons ? [val] : val;
                         });
+
+                    // Update the redaction reason label with the last used full page redaction reason
+                    if (viewer.fullPageRedactionReason && viewer.fullPageRedactionReason.length > 0) {
+
+                        var redactionReasonsText = options.enableMultipleRedactionReasons
+                            ? getMultipleRedactionReasonsText(viewer.fullPageRedactionReason)
+                            : viewer.fullPageRedactionReason;
+
+                        if (!redactionReasonMenu.isPreloadedRedactionReason(viewer.fullPageRedactionReason)) {
+                            // Activate free form redaction
+                            viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-redaction-reason-input]').val(redactionReasonsText).show().focus();
+                            setPageRedactionDropdownLabel(PCCViewer.Language.data.redactionReasonFreeform);
+                        } else {
+                            if (options.enableMultipleRedactionReasons) {
+                                // Activate selected reasons
+                                var $pageRedactionReasons = viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-checkbox="redaction-reasons"]');
+                                $pageRedactionReasons.each(function () {
+                                    var $this = $(this);
+                                    if (viewer.fullPageRedactionReason.indexOf($this.find('.pcc-select-multiple-redaction-reason').text()) >= 0) {
+                                        $this.addClass('pcc-checked');
+                                    } else {
+                                        $this.removeClass('pcc-checked');
+                                    }
+                                });
+                            }
+                            setPageRedactionDropdownLabel(redactionReasonsText);
+                        }
+                    }
 
                     placeholderPolyfill();
                     updatePageRedactionOverlayRangeInputs();
@@ -1014,6 +1066,11 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
+            // Helper for the page redaction overlay. This method set the label of redaction reasons dropdown
+            function setPageRedactionDropdownLabel(text) {
+                viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-redaction-reason]').find('.pcc-label').text(text);
+            }
+
             // Redact page redaction modal
             viewer.viewerNodes.$pageRedactionOverlay
                 // Cancel button
@@ -1031,6 +1088,7 @@ var PCCViewer = window.PCCViewer || {};
                     viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-radio="' + $el.data('pccRadio') + '"]').not(this).removeClass('pcc-checked');
 
                     updatePageRedactionOverlayRangeInputs();
+                    updateFullPageRedactionDropdownsMaxHeight();
                 })
 
                 // Validate include range if required
@@ -1069,36 +1127,55 @@ var PCCViewer = window.PCCViewer || {};
                 // Select box dropdown menu click
                 .on('click', '.pcc-dropdown div', function (ev) {
                     var $target = $(ev.target),
-                        $parent = $target.parents('.pcc-select'),
-                        option = $target.text();
-                    viewer.fullPageRedactionReason = '';
+                        $div = $(this),
+                        $parent = $target.parents('.pcc-select');
 
-                    // Handle nested element clicks
-                    if ($target[0].nodeName.toLowerCase() === 'span') {
-                        option = $target.parent().text();
-                    }
+                    if (options.enableMultipleRedactionReasons) {
+                        if ($div.hasClass('pcc-clear-redaction-reasons')) {
+                            viewer.fullPageRedactionReason = [];
 
-                    //  Redaction reason
-                    if ($parent.data().pccRedactionReason !== undefined) {
+                            // Update the UI
+                            setPageRedactionDropdownLabel(PCCViewer.Language.data.pageRedactionOverlay.selectReason);
+                            $parent.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked').removeClass('pcc-checked');
+                        } else if ($div.hasClass('pcc-custom-redaction-reasons')) {
+                            var freeformReason = getMultipleRedactionReasonsText(viewer.fullPageRedactionReason);
+                            viewer.fullPageRedactionReason = [freeformReason];
 
-                        if (option === PCCViewer.Language.data.redactionReasonFreeform) {
-                            viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-redaction-reason-input]').show().focus();
-                            $parent.find('.pcc-label').text(PCCViewer.Language.data.redactionReasonFreeform);
-                            return;
+                            // Update the UI
+                            viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-redaction-reason-input]').val(freeformReason).show().focus();
+                            $parent.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked').removeClass('pcc-checked');
+                            setPageRedactionDropdownLabel(PCCViewer.Language.data.redactionReasonFreeform);
                         } else {
-                            viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-redaction-reason-input]').hide();
+                            ev.stopPropagation();
+                            $div.toggleClass('pcc-checked');
+
+                            // collect all checked reasons
+                            var $checkedReasons = $parent.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked');
+                            var reasons = [];
+                            $checkedReasons.each(function(index){
+                                reasons.push($(this).find('.pcc-select-multiple-redaction-reason').text());
+                            });
+                            viewer.fullPageRedactionReason = reasons;
+                            setPageRedactionDropdownLabel(getMultipleRedactionReasonsText(viewer.fullPageRedactionReason));
                         }
-
-                        viewer.fullPageRedactionReason = option;
-
-                        if (viewer.fullPageRedactionReason === PCCViewer.Language.data.redactionReasonClear) {
+                    } else {
+                        if ($div.hasClass('pcc-clear-redaction-reasons')) {
                             viewer.fullPageRedactionReason = '';
-                            $parent.find('.pcc-label').text(PCCViewer.Language.data.pageRedactionOverlay.selectReason);
+                            setPageRedactionDropdownLabel(PCCViewer.Language.data.pageRedactionOverlay.selectReason);
+                        } else if ($div.hasClass('pcc-custom-redaction-reasons')) {
+                            viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-redaction-reason-input]').val(viewer.fullPageRedactionReason);
+                            setPageRedactionDropdownLabel(PCCViewer.Language.data.redactionReasonFreeform);
                         } else {
-                            $parent.find('.pcc-label').text(viewer.fullPageRedactionReason);
+                            viewer.fullPageRedactionReason = $div.find('.pcc-select-multiple-redaction-reason').text();
+                            setPageRedactionDropdownLabel(viewer.fullPageRedactionReason);
                         }
                     }
 
+                    if ($div.hasClass('pcc-custom-redaction-reasons')) {
+                        viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-redaction-reason-input]').show().focus();
+                    } else {
+                        viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-redaction-reason-input]').hide();
+                    }
                 })
 
                 // Submit
@@ -1179,7 +1256,11 @@ var PCCViewer = window.PCCViewer || {};
                                         // If a redaction reason was set by the user in the page redaction overlay form,
                                         // then we apply the redaction reason here.
                                         if (viewer.fullPageRedactionReason && viewer.fullPageRedactionReason.length > 0) {
-                                            redaction.setReason(viewer.fullPageRedactionReason);
+                                            if (options.enableMultipleRedactionReasons) {
+                                                redaction.setReasons(viewer.fullPageRedactionReason);
+                                            } else {
+                                                redaction.setReason(viewer.fullPageRedactionReason);
+                                            }
                                         }
                                     });
                                 }
@@ -1417,6 +1498,8 @@ var PCCViewer = window.PCCViewer || {};
                 .on('click', '.pcc-dropdown div', function (ev) {
                     var $target = $(ev.target),
                         $parent = $target.parents('.pcc-select'),
+                        $dropdown = $parent.find('.pcc-dropdown'),
+                        $div = $(this),
                         option = $target.text(),
                         mark = viewer.currentMarks[0],
                         fillColor = '',
@@ -1443,6 +1526,8 @@ var PCCViewer = window.PCCViewer || {};
                             $parent.find('.pcc-swatch').removeClass('pcc-transparent-effect').css('background-color', $target.css('background-color'));
                         }
 
+                    } else if ($parent.hasClass('pcc-select-redaction-reason')) {
+                        $div.toggleClass('pcc-checked');
                     } else {
                         $parent.find('.pcc-label').text(option);
                     }
@@ -1528,32 +1613,54 @@ var PCCViewer = window.PCCViewer || {};
 
                         // Redaction reason
                         if ($parent.data().pccRedactionReason !== undefined) {
-                            redactionReason = (option === PCCViewer.Language.data.redactionReasonClear) ? '' : option;
+                            var remainActive = false;
+                            var isRedactionItem = $div.hasClass('pcc-checkbox');
 
-                            if (redactionReason === PCCViewer.Language.data.redactionReasonFreeform) {
-                                updateContextMenu({
-                                    showContextMenu: true,
-                                    enableCustomRedactionReason: true,
-                                    showAllEditControls: mark.getPageNumber() !== 0 // Don't show edit controls for template marks
-                                });
-                                viewer.viewerNodes.$contextMenu.find('[data-pcc-redaction-reason-input]').focus();
-
-                                // on small screens the context menu will refresh in a collapsed mode so open it to
-                                // continue adding a freeform redaction reason
-                                var $activateMenuButton = viewer.viewerNodes.$contextMenu.find('.pcc-icon-list');
-                                if (!$activateMenuButton.hasClass('pcc-active')) {
-                                    $activateMenuButton.click();
+                            if (options.enableMultipleRedactionReasons) {
+                                if ($div.hasClass('pcc-clear-redaction-reasons')) {
+                                    mark.setReasons([]);
+                                } else if ($div.hasClass('pcc-custom-redaction-reasons')) {
+                                    var freeformReason = getMultipleRedactionReasonsText(mark.getReasons());
+                                    mark.setReasons([freeformReason]);
+                                    remainActive = true;
+                                } else {
+                                    // collect all checked reasons
+                                    var $checkedReasons = $parent.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked');
+                                    var reasons = [];
+                                    $checkedReasons.each(function(index){
+                                        reasons.push($(this).find('.pcc-select-multiple-redaction-reason').text());
+                                    });
+                                    mark.setReasons(reasons);
+                                    remainActive = true;
                                 }
-
                             } else {
+                                if ($div.hasClass('pcc-clear-redaction-reasons')) {
+                                    mark.setReason('');
+                                } else if ($div.hasClass('pcc-custom-redaction-reasons')) {
+                                    remainActive = true;
+                                    // no need to change mark reason
+                                } else {
+                                    var reason = $div.find('.pcc-select-multiple-redaction-reason').text();
+                                    mark.setReason(reason);
+                                }
+                            }
 
-                                mark.setReason(redactionReason);
+                            updateContextMenu({
+                                showContextMenu: true,
+                                enableCustomRedactionReason: $div.hasClass('pcc-custom-redaction-reasons'),
+                                scrollTop: $dropdown.scrollTop(),
+                                remainActive: remainActive,
+                                showAllEditControls: mark.getPageNumber() !== 0 // Don't show edit controls for template marks
+                            });
 
-                                updateContextMenu({
-                                    showContextMenu: true,
-                                    enableCustomRedactionReason: false,
-                                    showAllEditControls: mark.getPageNumber() !== 0 // Don't show edit controls for template marks
-                                });
+                            if (isRedactionItem && options.enableMultipleRedactionReasons) {
+                                var $contextMenu = viewer.$dom.find('.pcc-context-menu');
+                                var $redactionReasonsSelect = $contextMenu.find('.pcc-select-redaction-reason');
+                                var $redactionReasonsDropdown = $redactionReasonsSelect.find('.pcc-dropdown');
+
+                                $redactionReasonsSelect.addClass('pcc-active');
+                                $redactionReasonsDropdown.addClass('pcc-open');
+                                ev.stopPropagation();
                             }
                         }
                     }
@@ -1619,6 +1726,7 @@ var PCCViewer = window.PCCViewer || {};
                 // Move context menu up/down button
                 .on('click', '[data-pcc-move-context-menu]', function (ev) {
                     viewer.viewerNodes.$contextMenu.toggleClass('pcc-move-bottom');
+                    updateContextMenuDropdownsMaxHeight();
                 })
 
                 // Move mark layer order
@@ -1975,6 +2083,33 @@ var PCCViewer = window.PCCViewer || {};
             if (viewer.esignContext && viewer.esignContext.resize) {
                 viewer.esignContext.resize();
             }
+        }
+
+        // A helper to dynamically adjust the max-height of context menu dropdowns
+        // depends on the height of the Viewer
+        function updateContextMenuDropdownsMaxHeight() {
+            var $dropdowns = viewer.viewerNodes.$contextMenu.find('.pcc-dropdown');
+            var heightDecrease = viewer.viewerNodes.$contextMenu.hasClass('pcc-move-bottom') ? 190 : 250;
+            if (viewer.viewerNodes.$contextMenu.hasClass('pcc-move')) {
+                heightDecrease += 80
+            }
+            var dropdownMaxHeight = Math.max(150, viewer.$dom.height() - heightDecrease);
+            $dropdowns.css({'max-height': dropdownMaxHeight + 'px'});
+        }
+
+        // A helper to dynamically adjust the max-height of full page redaction dropdowns
+        // depends on the height of the Viewer
+        function updateFullPageRedactionDropdownsMaxHeight() {
+            var $dropdowns = viewer.viewerNodes.$pageRedactionOverlay.find('.pcc-dropdown');
+            var $redactAllPagesRadio = viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-radio="pageRedaction"][data-pcc-page-redaction="redactAllPages"]');
+            var heightDecrease = $redactAllPagesRadio.hasClass('pcc-checked') ? 395 : 360;
+            var dropdownMaxHeight = Math.max(150, viewer.$dom.height() - heightDecrease);
+            $dropdowns.css({'max-height': dropdownMaxHeight + 'px'});
+        }
+
+        // Function to return separated reasons string for the reasons array
+        function getMultipleRedactionReasonsText(reasons) {
+            return reasons.join('; ');
         }
 
         //Bind Keyboard shortcuts
@@ -2593,6 +2728,8 @@ var PCCViewer = window.PCCViewer || {};
             } else {
                 $elContextMenu.removeClass('pcc-move');
             }
+
+            updateContextMenuDropdownsMaxHeight();
         }
 
         function openDialog (opts){
@@ -2705,10 +2842,12 @@ var PCCViewer = window.PCCViewer || {};
                     activateImageTab: false,
                     showTransparentFillColor: false,
                     showTransparentBorderColor: false,
-                    enableCustomRedactionReason: false
+                    enableCustomRedactionReason: false,
+                    enableMultipleRedactionReasons: false
                 };
 
                 menuOptions.enableCustomRedactionReason = (args.enableCustomRedactionReason) ? args.enableCustomRedactionReason : false;
+                menuOptions.enableMultipleRedactionReasons = (options.enableMultipleRedactionReasons) ? options.enableMultipleRedactionReasons : false;
 
                 // collapse menu
                 if (multipleMarksSelected) {
@@ -2816,8 +2955,8 @@ var PCCViewer = window.PCCViewer || {};
                     });
                 }
 
-                if (mark.getReason) {
-
+                var customRedactionReason = '';
+                if (mark.getReason && !options.enableMultipleRedactionReasons) {
                     if (mark.getReason().length && !redactionReasonMenu.isPreloadedRedactionReason(mark.getReason())) {
                         menuOptions.enableCustomRedactionReason = true;
                         args.enableCustomRedactionReason = true;
@@ -2825,12 +2964,37 @@ var PCCViewer = window.PCCViewer || {};
 
                     if (args.enableCustomRedactionReason) {
                         menuOptions.redactionReasonLabel = PCCViewer.Language.data.redactionReasonFreeform;
+                        customRedactionReason = mark.getReason();
                     } else if (mark.getReason().length) {
                         menuOptions.redactionReasonLabel = mark.getReason();
                     } else {
                         menuOptions.redactionReasonLabel = PCCViewer.Language.data.redactionReasonSelect;
                     }
+                }
+                if (mark.getReasons && options.enableMultipleRedactionReasons) {
 
+                    if(mark.getReasons().length && !redactionReasonMenu.isPreloadedRedactionReason(mark.getReasons())){
+                        menuOptions.enableCustomRedactionReason = true;
+                        args.enableCustomRedactionReason = true;
+                    }
+
+                    var _reasons = mark.getReasons();
+                    if (menuOptions.enableCustomRedactionReason) {
+                        menuOptions.redactionReasonLabel = PCCViewer.Language.data.redactionReasonFreeform;
+                        customRedactionReason = getMultipleRedactionReasonsText(_reasons);
+                    } else {
+                        if (_reasons.length) {
+                            menuOptions.redactionReasonLabel = getMultipleRedactionReasonsText(_reasons);
+                        } else {
+                            menuOptions.redactionReasonLabel = PCCViewer.Language.data.redactionReasonSelect;
+                        }
+                    }
+
+                    viewer.redactionReasonsExtended.reasons.forEach(function (reason) {
+                        if(reason.selectable){
+                            reason.checked = _reasons.indexOf(reason.reason) >= 0;
+                        }
+                    });
                 }
 
                 // Define template vars and load context menu template
@@ -2841,11 +3005,13 @@ var PCCViewer = window.PCCViewer || {};
                     showSignaturePreview: isSignatureTool,
                     paragraphAlignTitle: mark.getHorizontalAlignment ? lang['paragraphAlign' + mark.getHorizontalAlignment().charAt(0).toUpperCase() + mark.getHorizontalAlignment().slice(1)] : '',
                     reasons: viewer.redactionReasonsExtended,
+                    customRedactionReason: customRedactionReason,
                     menuOptions: menuOptions
                 }, lang);
 
                 $contextMenu.addClass(className).html(_.template(options.template.contextMenu)(tmplData));
 
+                updateContextMenuDropdownsMaxHeight();
                 parseIcons($contextMenu);
                 disableContextMenuTabbing();
                 removeUIElements($contextMenu);
@@ -2887,14 +3053,21 @@ var PCCViewer = window.PCCViewer || {};
 
                 if (args.enableCustomRedactionReason) {
                     $input = $contextMenu.find('[data-pcc-redaction-reason-input]');
-                    $input.val(mark.getReason())
+                    var reasonsValue = options.enableMultipleRedactionReasons
+                        ? getMultipleRedactionReasonsText(mark.getReasons())
+                        : mark.getReason();
+                    $input.val(reasonsValue)
                         .on('input', function(ev) {
                             var val = $(this).val();
                             if (viewer.redactionReasons.maxLengthFreeformRedactionReasons && val.length > viewer.redactionReasons.maxLengthFreeformRedactionReasons){
                                 viewer.notify({message: PCCViewer.Language.data.redactionReasonFreeforMaxLengthOver});
                                 $(this).val(val.substring(0, viewer.redactionReasons.maxLengthFreeformRedactionReasons));
                             }
-                            mark.setReason($(this).val());
+                            if (options.enableMultipleRedactionReasons) {
+                                mark.setReasons([$(this).val()]);
+                            } else {
+                                mark.setReason($(this).val());
+                            }
                         });
                 }
 
@@ -2919,9 +3092,14 @@ var PCCViewer = window.PCCViewer || {};
                 }
 
                 // On larger viewports expand the context menu options
-                if (windowWidth > viewer.tabBreakPoint) {
+                if (windowWidth > viewer.tabBreakPoint || args.remainActive) {
                     $contextMenu.find('.pcc-pull-left').addClass(className);
                     $contextMenu.find('[data-pcc-toggle=context-menu-options]').toggleClass('pcc-active');
+                }
+
+                // Scroll Dropdown if needed
+                if(args.scrollTop){
+                    $contextMenu.find('.pcc-dropdown').scrollTop(args.scrollTop);
                 }
             }
         }
@@ -3563,6 +3741,7 @@ var PCCViewer = window.PCCViewer || {};
 
             var revisionView = _.clone(genericView);
 
+            // This method creates and returns DOM for the revision item
             revisionView.revisionBuild = function(revision){
                 var revisionItem,
                     revisionType,
@@ -3612,12 +3791,7 @@ var PCCViewer = window.PCCViewer || {};
                     viewer.viewerControl.setPageNumber(revision.getEndPageNumber());
                 });
 
-                revisionsCount++;
-
-                var revisionsVerbiage = (revisionsCount === 1) ? PCCViewer.Language.data.changeFound : PCCViewer.Language.data.changesFound;
-                viewer.viewerNodes.$revisionCount.html(revisionsCount + ' ' + revisionsVerbiage);
                 allRevisionsFragment.appendChild(revisionItem);
-                showRevisionSubset(currentRevisionPageStartIndex);
                 return revisionItem;
             };
 
@@ -3690,11 +3864,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 // update revision UI to reflect selection
                 updateRevisionPrevNextButtons();
-
-                var index = $activeRevision.index() + 1 + currentRevisionPageStartIndex,
-                    total = revisionsCount;
-
-                viewer.viewerNodes.$revisionCount.html(PCCViewer.Language.data.change + index + ' / ' + total);
+                updateRevisionCountText();
 
                 // collapse the expanded panel
                 viewer.viewerNodes.$revisionDialog.removeClass('pcc-expand')
@@ -3792,9 +3962,21 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
+            // Updates the text to display revisions count and currently selected revision index
+            var updateRevisionCountText = function() {
+                if (activeRevisionId !== undefined) {
+                    var index = activeRevisionId + 1;
+                    viewer.viewerNodes.$revisionCount.html(PCCViewer.Language.data.change + index + ' / ' + revisionsCount);
+                } else {
+                    var revisionsVerbiage = (revisionsCount === 1) ? PCCViewer.Language.data.changeFound : PCCViewer.Language.data.changesFound;
+                    viewer.viewerNodes.$revisionCount.html(revisionsCount + ' ' + revisionsVerbiage);
+                }
+            }
 
+            // This method re-creates revisions list to display revisions from startIndex
+            // to the last available revision, but no more than revisionsPageLength revisions.
             var showRevisionSubset = function (startIndex) {
-                var subsetFragment = document.createDocumentFragment();
+                var indexChanged = (startIndex !== currentRevisionPageStartIndex);
                 currentRevisionPageStartIndex = startIndex;
 
                 if (currentRevisionPageStartIndex > 0) {
@@ -3815,33 +3997,46 @@ var PCCViewer = window.PCCViewer || {};
                     endIndex = revisionsCount;
                 }
 
-                // Clone the revisions that should be showing currently.
-                var i;
-                for (i = currentRevisionPageStartIndex; i < endIndex; i++) {
-                    var subsetRevisions = $(allRevisionChildren[i]).clone(true);
-                    subsetFragment.appendChild(subsetRevisions[0]);
-                }
+                if (indexChanged || viewer.viewerNodes.$revisions.children().length < revisionsPageLength) {
+                    var scrollTop = viewer.viewerNodes.$revisions.scrollTop();
+                    var subsetFragment = document.createDocumentFragment();
 
-                viewer.viewerNodes.$revisions.empty();
-                viewer.viewerNodes.$revisions.append(subsetFragment);
-                viewer.viewerNodes.$revisions.scrollTop(0);
+                    // Clone the revisions that should be showing currently.
+                    for (var i = currentRevisionPageStartIndex; i < endIndex; i++) {
+                        var subsetRevisions = $(allRevisionChildren[i]).clone(true);
+                        subsetFragment.appendChild(subsetRevisions[0]);
+                    }
 
-                viewer.viewerNodes.$revisions.find('.pcc-row:even').removeClass('pcc-odd');
-                viewer.viewerNodes.$revisions.find('.pcc-row:odd').addClass('pcc-odd');
+                    viewer.viewerNodes.$revisions.empty();
+                    viewer.viewerNodes.$revisions.append(subsetFragment);
+                    viewer.viewerNodes.$revisions.scrollTop(0);
 
-                if (activeRevisionId !== undefined) {
-                    var $activeRevision = viewer.viewerNodes.$revisions.find("[data-pcc-search-result-id='" + activeRevisionId + "']");
-                    $activeRevision.addClass('pcc-active');
-                    if (allRevisionsFragment.childNodes.length > activeRevisionPageStartIndex + revisionsPageLength && activeRevisionPageStartIndex > 0) {
-                        updateRevisionPrevNextButtons();
+                    viewer.viewerNodes.$revisions.find('.pcc-row:even').removeClass('pcc-odd');
+                    viewer.viewerNodes.$revisions.find('.pcc-row:odd').addClass('pcc-odd');
+
+                    if (activeRevisionId !== undefined) {
+                        var $activeRevision = viewer.viewerNodes.$revisions.find("[data-pcc-revision-id='" + activeRevisionId + "']");
+                        if ($activeRevision.length) {
+                            $activeRevision.addClass('pcc-active');
+                            viewer.viewerNodes.$revisions.scrollTop(scrollTop);
+                        }
+                        if (allRevisionsFragment.childNodes.length > activeRevisionPageStartIndex + revisionsPageLength && activeRevisionPageStartIndex > 0) {
+                            updateRevisionPrevNextButtons();
+                        }
                     }
                 }
+
+                updateRevisionCountText();
             };
 
+            // Adds new revisions chunk to the revisions panel.
             function addRevisions(results) {
                 results.forEach(function(result) {
                     revisionView.revisionBuild(result);
                 });
+                revisionsCount += results.length;
+
+                showRevisionSubset(currentRevisionPageStartIndex);
             }
 
             // The publicly accessible methods for the revision module
@@ -4038,6 +4233,11 @@ var PCCViewer = window.PCCViewer || {};
                     // title accordingly.
                     viewer.viewerNodes.$searchQuickActionsSearchTerms.find('.pcc-section-title').html(PCCViewer.Language.data.searchQuickActions.selectionList);
 
+                    // Reset redaction dropdown
+                    viewer.viewerNodes.$searchQuickActionRedactionDropdown.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked').removeClass('pcc-checked');
+                    viewer.viewerNodes.$searchQuickActionRedactionDropdownLabel.text(PCCViewer.Language.data.searchQuickActions.redactionReasonDropdownSelect);
+                    viewer.viewerNodes.$searchQuickActionRedactionInput.addClass('pcc-hide').val('');
+
                     //Show the processing icon and text
                     viewer.viewerNodes.$searchQuickActions.find('.pcc-redaction-processing').show();
 
@@ -4128,50 +4328,65 @@ var PCCViewer = window.PCCViewer || {};
 
                 // When a specific redaction reason is selected from the drop down list, apply it to the just created
                 // redaction marks.
-                viewer.viewerNodes.$searchQuickActionRedactionDropdown.on('click', function(ev) {
+                viewer.viewerNodes.$searchQuickActionRedactionDropdown.find('>div').on('click', function(ev) {
 
-                    // Get the reason string
-                    var reason = ev.target.innerHTML;
+                    // Clicked element
+                    var $div = $(this),
+                        $parent = viewer.viewerNodes.$searchQuickActionRedactionDropdown,
+                        reason;
 
-                    // Get the list item used for clearing reasons from marks
-                    var $clearItem = viewer.viewerNodes.$searchQuickActionRedactionDropdown.find('[data-clear-item]');
-
-                    // Depending on the selected list item type, handle the selection with the supporting actions
-                    if (reason === PCCViewer.Language.data.redactionReasonFreeform) {
-
-                        // Show the UI needed for the user to type in a redaction reason
-                        viewer.viewerNodes.$searchQuickActionRedactionInput.removeClass('pcc-hide');
-                        viewer.viewerNodes.$searchQuickActionRedactionDropdownLabel.html($(ev.target).html());
-                    } else if (reason === PCCViewer.Language.data.redactionReasonClear) {
-
-                        // Clear the working set of marks of any just applied redaction reasons
-                        viewer.viewerNodes.$searchQuickActionRedactionInput.addClass('pcc-hide');
-                        _.each(redactionMarks, function(redactionMark) {
-                            redactionMark.setReason('');
-                        });
-
-                        // Hide the 'clear reason' list item since that action was just executed
-                        $clearItem.addClass('pcc-must-hide');
-
-                        // Set the default label for the redaction reason dropdown list
-                        viewer.viewerNodes.$searchQuickActionRedactionDropdownLabel.html(PCCViewer.Language.data.searchQuickActions.redactionReasonDropdownSelect);
-
-                    } else {
-
-                        // Apply the selected reason to the marks that were just created
-                        viewer.viewerNodes.$searchQuickActionRedactionDropdownLabel.html($(ev.target).html());
-                        viewer.viewerNodes.$searchQuickActionRedactionInput.addClass('pcc-hide');
-                        _.each(redactionMarks, function(redactionMark) {
-                            if(redactionMark) {
-                                redactionMark.setReason(reason);
+                    if (options.enableMultipleRedactionReasons) {
+                        if ($div.hasClass('pcc-clear-redaction-reasons')) {
+                            reason = [];
+                            viewer.viewerNodes.$searchQuickActionRedactionDropdownLabel.text(PCCViewer.Language.data.searchQuickActions.redactionReasonDropdownSelect);
+                            $parent.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked').removeClass('pcc-checked');
+                        } else if ($div.hasClass('pcc-custom-redaction-reasons')) {
+                            reason = [viewer.viewerNodes.$searchQuickActionRedactionInput.val()];
+                            $parent.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked').removeClass('pcc-checked');
+                        } else {
+                            // collect all checked reasons
+                            $div.toggleClass('pcc-checked');
+                            var $checkedReasons = $parent.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked');
+                            reason = [];
+                            $checkedReasons.each(function(index){
+                                reason.push($(this).find('.pcc-select-multiple-redaction-reason').text());
+                            });
+                            if (reason.length) {
+                                viewer.viewerNodes.$searchQuickActionRedactionDropdownLabel.text(getMultipleRedactionReasonsText(reason));
+                            } else {
+                                viewer.viewerNodes.$searchQuickActionRedactionDropdownLabel.text(PCCViewer.Language.data.searchQuickActions.redactionReasonDropdownSelect);
                             }
-                        });
-
-                        // Show the 'clear reason' list item in case the user decides to remove the reason from the marks
-                        $clearItem.removeClass('pcc-must-hide');
-
+                            // Don't close dropdown
+                            ev.stopPropagation();
+                        }
+                    } else {
+                        if ($div.hasClass('pcc-clear-redaction-reasons')) {
+                            reason = '';
+                            viewer.viewerNodes.$searchQuickActionRedactionDropdownLabel.text(PCCViewer.Language.data.searchQuickActions.redactionReasonDropdownSelect);
+                        } else if ($div.hasClass('pcc-custom-redaction-reasons')) {
+                            reason = viewer.viewerNodes.$searchQuickActionRedactionInput.val();
+                        } else {
+                            reason = $div.find('.pcc-select-multiple-redaction-reason').text();
+                            viewer.viewerNodes.$searchQuickActionRedactionDropdownLabel.text(reason);
+                        }
                     }
 
+                    if ($div.hasClass('pcc-custom-redaction-reasons')) {
+                        viewer.viewerNodes.$searchQuickActionRedactionDropdownLabel.text(PCCViewer.Language.data.redactionReasonFreeform);
+                        viewer.viewerNodes.$searchQuickActionRedactionInput.removeClass('pcc-hide');
+                    } else {
+                        viewer.viewerNodes.$searchQuickActionRedactionInput.addClass('pcc-hide');
+                    }
+
+                    _.each(redactionMarks, function(redactionMark) {
+                        if(redactionMark) {
+                            if (options.enableMultipleRedactionReasons) {
+                                redactionMark.setReasons(reason);
+                            } else {
+                                redactionMark.setReason(reason);
+                            }
+                        }
+                    });
                 });
 
                 // When the done button is selected, cleanup the UI and transition back to the search results
@@ -4207,7 +4422,11 @@ var PCCViewer = window.PCCViewer || {};
                     if(ev.type === 'blur' ||
                         (ev.type === 'keypress' && ev.keyCode === 13)) {
                         _.each(redactionMarks, function(redactionMark) {
-                            redactionMark.setReason(reason);
+                            if (options.enableMultipleRedactionReasons) {
+                                redactionMark.setReasons([reason]);
+                            } else {
+                                redactionMark.setReason(reason);
+                            }
                         });
 
                         if (reason.length) {
@@ -4268,12 +4487,14 @@ var PCCViewer = window.PCCViewer || {};
                         reasons = reasons.concat(viewer.viewerControlOptions.redactionReasons.reasons);
                     }
                     // Add the case where no reason was defined
-                    reasons = reasons.concat([{reason: PCCViewer.Language.data.searchFilters.reasonUndefined}]);
+                    reasons = reasons.concat([{
+                      reason: PCCViewer.Language.data.searchFilters.reasonUndefined,
+                      _reasonUndefined: true
+                    }]);
 
                     // Display all reasons in the filter UI
                     _.forEach(reasons, function(obj){
-                        var textNode = document.createTextNode(obj.reason),
-                            div = resultView.elem('div', { className: 'pcc-search-filter pcc-filter-marks' }),
+                        var div = resultView.elem('div', { className: 'pcc-search-filter pcc-filter-marks' }),
                             checkbox = resultView.elem('div', { className: 'pcc-checkbox pcc-checked' }),
                             icon = resultView.elem('span', { className: 'pcc-icon pcc-icon-check' });
 
@@ -4282,7 +4503,31 @@ var PCCViewer = window.PCCViewer || {};
 
                         checkbox.appendChild(icon);
                         div.appendChild(checkbox);
-                        div.appendChild(textNode);
+
+                        if (obj._reasonUndefined) {
+                          var textNode = document.createTextNode(obj.reason);
+                          div.appendChild(textNode);
+                        } else {
+                          var reasonSpan= resultView.elem('span'),
+                              reasonEm = resultView.elem('em', { text: obj.reason });
+                          reasonSpan.appendChild(reasonEm);
+                          div.appendChild(reasonSpan);
+
+                          if (obj.description) {
+                            var separatorNote = document.createTextNode(': '),
+                                descriptionSpan = resultView.elem('span', {
+                                  class: 'pcc-select-multiple-redaction-description',
+                                  text: obj.description
+                                });
+                            div.appendChild(separatorNote);
+                            div.appendChild(descriptionSpan);
+                          }
+                        }
+
+                        var tooltip = obj.description
+                            ? obj.reason + ': ' + obj.description
+                            : obj.reason;
+                        div.setAttribute('title', tooltip);
 
                         parseIcons($(div));
 
@@ -4416,8 +4661,13 @@ var PCCViewer = window.PCCViewer || {};
                     text = PCCViewer.Language.data.markType["ArrowAnnotation"];
                 }
 
-                if (type === 'redaction' && mark.getReason) {
+                if (type === 'redaction' && mark.getReason && !options.enableMultipleRedactionReasons) {
                     var reason = mark.getReason() || PCCViewer.Language.data.searchFilters.reasonUndefined;
+                    text += ' - ' + reason;
+                }
+
+                if (type == 'redaction' && mark.getReasons && options.enableMultipleRedactionReasons) {
+                    var reason = getMultipleRedactionReasonsText(mark.getReasons()) || PCCViewer.Language.data.searchFilters.reasonUndefined;
                     text += ' - ' + reason;
                 }
 
@@ -6075,11 +6325,19 @@ var PCCViewer = window.PCCViewer || {};
 
                     // check if each redaction has a requested reason
                     _.forEach(redactionReasons, function(mark){
-                        var thisReason = mark.getReason() || PCCViewer.Language.data.searchFilters.reasonUndefined;
-                        if (_.contains(reasonsToShow, thisReason)){
+                        var thisReasons;
+                        if (options.enableMultipleRedactionReasons) {
+                            var thisReasons = mark.getReasons();
+                            if (thisReasons.length === 0) {
+                                thisReasons = [PCCViewer.Language.data.searchFilters.reasonUndefined];
+                            }
+                        } else {
+                            thisReasons = [mark.getReason() || PCCViewer.Language.data.searchFilters.reasonUndefined];
+                        }
+                        if (_.intersection(reasonsToShow, thisReasons).length > 0) {
                             pushResults(mark, [{}]);
                         }
-                    });
+                });
                 }
 
                 // Display all drawing-based marks added to local collections
@@ -9547,9 +9805,17 @@ var PCCViewer = window.PCCViewer || {};
                 var div = document.createElement('div');
                 div.className = 'pcc-redaction-reason-menu';
 
+                var customRedactionReason;
+                if (options.enableMultipleRedactionReasons) {
+                    customRedactionReason = getMultipleRedactionReasonsText(opts.mark.getReasons());
+                } else {
+                    customRedactionReason = opts.mark.getReason();
+                }
+
                 $(div).html(_.template(template)({
                     language: language,
-                    mark: opts.mark
+                    mark: opts.mark,
+                    customRedactionReason: customRedactionReason
                 }));
 
                 return div;
@@ -9607,7 +9873,11 @@ var PCCViewer = window.PCCViewer || {};
                         viewer.notify({message: PCCViewer.Language.data.redactionReasonFreeforMaxLengthOver});
                         $(this).val(val.substring(0, viewer.redactionReasons.maxLengthFreeformRedactionReasons));
                     }
-                    opts.mark.setReason($(this).val());
+                    if (options.enableMultipleRedactionReasons) {
+                        opts.mark.setReasons([$(this).val()]);
+                    } else {
+                        opts.mark.setReason($(this).val());
+                    }
                 });
 
                 var dismissed = false;
@@ -9633,7 +9903,11 @@ var PCCViewer = window.PCCViewer || {};
 
                 var $clear = $(opts.dom).find('[data-pcc-redaction-reason="clear"]').click(function(){
                     $input.val('').focus();
-                    opts.mark.setReason('');
+                    if (options.enableMultipleRedactionReasons) {
+                        opts.mark.setReasons([]);
+                    } else {
+                        opts.mark.setReason('');
+                    }
                     $done.attr('disabled', 'disabled');
                 });
 
@@ -9715,7 +9989,16 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             function isPreloadedRedactionReason(reason) {
-                return ( preloadedRedactionReasons[reason] === true);
+                if(Array.isArray(reason)){
+                    for (var i=0;i<reason.length;i++) {
+                        if (preloadedRedactionReasons[reason[i]] !== true) {
+                            return false;
+                        }
+                    }
+                    return true;
+                } else {
+                    return ( preloadedRedactionReasons[reason] === true);
+                }
             }
 
             function init(viewerControl, languageOptions, redactionReasonMenuTemplate, redactionReasons, maxLength){
@@ -9905,8 +10188,10 @@ var PCCViewer = window.PCCViewer || {};
                 destroyFunction = function(ev){
                     ev = ev || { manualDismiss: true };
 
+                    var $target = $(ev.target);
+
                     if (dom && dom.parentElement && (
-                            (ev.target && typeof ev.target.className !== 'undefined' && !ev.target.className.toString().match(itemClass)) ||
+                            ($target.length && !$target.hasClass(menuClass) && !$target.parents().hasClass(menuClass)) ||
                              ev.type === 'move' ||
                              ev.type === 'scroll' ||
                              ev.manualDismiss)
@@ -9946,15 +10231,77 @@ var PCCViewer = window.PCCViewer || {};
 
                 _.each(redactionReasons.reasons, function(reason) {
                     actions.push({
-                        name: language.redactionReasonApply + reason.reason,
-                        action: function(ev, mark) {
+                        name: reason.reason,
+                        dom: function() {
+                            var $span = $('<span>');
+                            if (!reason.selectable) {
+                                $span.text(reason.reason);
+                            } else {
+                                $span.append(
+                                    $('<em>').addClass('pcc-select-multiple-redaction-reason').text(reason.reason)
+                                );
+                                if (reason.description) {
+                                    $span
+                                        .append(': ')
+                                        .append(
+                                            $('<span>')
+                                                .addClass('pcc-select-multiple-redaction-description')
+                                                .text(reason.description)
+                                        );
+                                }
+                            }
+                            var $div = $('<div>')
+                                .attr('title', reason.reason + (reason.description ? ': ' + reason.description : ''))
+                                .append($span);
+
+                            // Add checkbox
+                            if (options.enableMultipleRedactionReasons && reason.selectable) {
+                                $div
+                                    .addClass('pcc-checkbox')
+                                    .attr('data-pcc-checkbox', 'redaction-reasons')
+                                    .prepend(
+                                        $('<span>').addClass('pcc-icon').addClass('pcc-icon-check')
+                                    );
+
+                                if (reason.checked) {
+                                    $div.addClass('pcc-checked');
+                                }
+                                parseIcons($div);
+                            }
+
+                            return $div[0];
+                        },
+                        action: function(ev, mark, domElement) {
+                            var closeMenu = true;
                             if (reason.reason === language.redactionReasonClear) {
-                                mark.setReason('');
+                                if (options.enableMultipleRedactionReasons) {
+                                    mark.setReasons([]);
+                                } else {
+                                    mark.setReason('');
+                                }
                             } else if (reason.reason === PCCViewer.Language.data.redactionReasonFreeform) {
                                 redactionReasonMenuTrigger(ev);
                             } else {
-                                mark.setReason(reason.reason);
+                                if (options.enableMultipleRedactionReasons) {
+                                    var $parent = $(domElement).parents('.pcc-immediate-action-menu');
+                                    var $div = $(domElement).find('[data-pcc-checkbox]');
+
+                                    // check/uncheck clicked item
+                                    $div.toggleClass('pcc-checked');
+
+                                    // collect all checked reasons
+                                    var $checkedReasons = $parent.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked');
+                                    var reasons = [];
+                                    $checkedReasons.each(function(){
+                                        reasons.push($(this).find('.pcc-select-multiple-redaction-reason').text());
+                                    });
+                                    mark.setReasons(reasons);
+                                    closeMenu = false;
+                                } else {
+                                    mark.setReason(reason.reason);
+                                }
                             }
+                            return closeMenu;
                         },
                         valid: function(event, type, elem) {
                             return (type === 'RectangleRedaction' || type === "TextSelectionRedaction") && event.toLowerCase() !== PCCViewer.EventType.Click.toLowerCase();
@@ -9970,7 +10317,7 @@ var PCCViewer = window.PCCViewer || {};
                 if (fileDownloadManager.isInPreviewMode() !== true) {
                     var eventType = ev.getType().toLowerCase(),
                         list = document.createElement('ul'),
-                        newClassName = elem.className + ' ' + menuClass;
+                        newClassName = elem.className + ' ' + menuClass + ' pccv';
 
                     elem.className = newClassName;
 
@@ -9978,7 +10325,10 @@ var PCCViewer = window.PCCViewer || {};
                         if (item.valid(eventType, mark && mark.getType(), elem)) {
                             var li = document.createElement('li');
                             // escape any possible unsafe characters in the name
-                            li.appendChild(document.createTextNode(language[item.languageKey] || item.name));
+                            var itemDom = item.dom
+                                ? item.dom()
+                                : document.createTextNode(language[item.languageKey] || item.name);
+                            li.appendChild(itemDom);
                             li.className = itemClass;
 
                             // add event handler - Note that when using PointerEvent.preventDefault,
@@ -9986,11 +10336,11 @@ var PCCViewer = window.PCCViewer || {};
                             // use a click event here, the menu will not usable on a Windows Touch device.
                             // Instead, we will use 'mouseup touchend' to detect a click.
                             $(li).on('mouseup touchend', function ($ev) {
-                                var retValue = item.action(ev, mark);
+                                $ev.preventDefault();
+                                var retValue = item.action(ev, mark, this);
 
                                 // destroy the menu after any item is clicked
                                 if (retValue !== false) {
-                                    $ev.preventDefault();
                                     destroyFunction();
                                 }
                             });
@@ -10151,9 +10501,6 @@ var PCCViewer = window.PCCViewer || {};
                     if (useHoverEnter) {
                         var $dom = $(dom);
 
-                        touchstart = (window.navigator.pointerEnabled) ? 'pointerdown' :
-                                         (window.navigator.msPointerEnabled) ? 'MSPointerDown' : 'touchstart';
-
                         touchstartHandler = function(ev) {
                             if (/pointer/i.test(ev.type) && ev.originalEvent.pointerType === 'touch') {
                                 // Do not cancel events if the viewport is already mobile
@@ -10169,7 +10516,7 @@ var PCCViewer = window.PCCViewer || {};
                                     ev.stopPropagation();
                                     return false;
                                 }
-                            } else if (ev.target.tagName.toLowerCase() !== 'li') {
+                            } else if (!$(ev.target).hasClass('pcc-immediate-action-menu-item') && !$(ev.target).parents().hasClass('pcc-immediate-action-menu-item')) {
                                 // In all other touch events, if the target is not an li, stop this
                                 // event from continuing to a click -- this is used to expand a hover menu.
                                 ev.preventDefault();
@@ -10179,19 +10526,38 @@ var PCCViewer = window.PCCViewer || {};
                         };
 
                         // fix for touch screens and the hover menu
-                        $dom.on(touchstart, touchstartHandler);
+                        $dom.on('pointerdown', touchstartHandler);
                     }
 
                     // destroy the menu if anything other than the menu is clicked
                     $(document.body).on('mousedown touchstart', destroyFunction);
 
+                    // expand the menu if it is hovered
+                    $(dom).on('mouseenter', function(){
+                        $(this).addClass('pcc-expanded');
+                    });
+
                     // add a proximity desctory, to remove the menu if the user moves away from it
                     proximityDismiss.add({
                         clientX: ev.clientX,
                         clientY: ev.clientY,
-                        dom: dom
+                        dom: dom,
+                        useDistanceToDomRect: true,
+                        mouseMoveCallback: mouseMoveCallback,
+                        distanceTolerance: 200
                     }, destroyFunction);
                 }
+            }
+
+            function mouseMoveCallback(opts) {
+                var opacityTreshhold = 0.75;
+                var opacity = 1;
+
+                var opacityTreshholdDistance = opts.distanceTolerance * opacityTreshhold;
+                if (opts.currentDistance > opacityTreshholdDistance) {
+                    opacity = Math.max(0, 1 - (opts.currentDistance - opacityTreshholdDistance) / (opts.distanceTolerance - opacityTreshholdDistance));
+                }
+                opts.dom.style.opacity = opacity;
             }
 
             function initCopy(text){
@@ -12771,15 +13137,35 @@ var PCCViewer = window.PCCViewer || {};
                 onDismiss,
                 proximityEnabled = false,
                 firstMoveRecorded = false,
-                // 300 pixels away is the tolerance -- use 300^2 to improve performance
-                distanceTolerance = 300 * 300,
                 noop = function(){};
 
-            function squaredDistance(x0, y0, x1, y1) {
+            function distance(x0, y0, x1, y1) {
                 var xs = x0 - x1,
                     ys = y0 - y1;
 
-                return (xs * xs) + (ys * ys);
+                return Math.sqrt((xs * xs) + (ys * ys));
+            }
+
+            function distanceToDom(x, y) {
+                var rect = globalOpts.dom.getBoundingClientRect();
+                var distX = 0,
+                    distY = 0;
+
+                // calc X offset
+                if (x < rect.left) {
+                    distX = rect.left - x;
+                } else if(x > rect.left + rect.width) {
+                    distX = x - (rect.left + rect.width);
+                }
+
+                // calc Y offset
+                if (y < rect.top) {
+                    distY = rect.top - y;
+                } else if(y > rect.top + rect.height) {
+                    distY = y - (rect.top + rect.height);
+                }
+
+                return Math.sqrt((distX * distX) + (distY * distY));
             }
 
             function trackMouse(ev){
@@ -12796,7 +13182,7 @@ var PCCViewer = window.PCCViewer || {};
                     var rect = globalOpts.dom.getBoundingClientRect();
 
                     // if the menu is far away on the first move, we will track the actual menu point instead of the options control point
-                    if (squaredDistance(ev.clientX, ev.clientY, rect.left, rect.top) > distanceTolerance) {
+                    if (distance(ev.clientX, ev.clientY, rect.left, rect.top) > globalOpts.distanceTolerance) {
                         // The menu is far away from the mouse, so we will wait to enable proximity tracking. We will also use the
                         // actual menu location, and dismiss based on that.
                         globalOpts.controlX = rect.left;
@@ -12814,7 +13200,21 @@ var PCCViewer = window.PCCViewer || {};
                     return;
                 }
 
-                var isFarAway = squaredDistance(ev.clientX, ev.clientY, globalOpts.controlX, globalOpts.controlY) > distanceTolerance;
+                var currentDistance;
+                if (globalOpts.useDistanceToDomRect) {
+                    currentDistance = distanceToDom(ev.clientX, ev.clientY);
+                } else {
+                    currentDistance = distance(ev.clientX, ev.clientY, globalOpts.controlX, globalOpts.controlY);
+                }
+
+                var isFarAway = currentDistance > globalOpts.distanceTolerance;
+
+                // Send callback
+                globalOpts.mouseMoveCallback({
+                    currentDistance: currentDistance,
+                    distanceTolerance: globalOpts.distanceTolerance,
+                    dom: globalOpts.dom
+                });
 
                 // Set to true once the mouse moves close to the menu. Once set to true, it will never reset.
                 // This way we start tracking only after they have moved close enough.
@@ -12848,7 +13248,7 @@ var PCCViewer = window.PCCViewer || {};
                 if (scrollTimeout) {
                     clearTimeout(scrollTimeout);
                     scrollTimeout = undefined;
-            }
+                }
 
                 if (resizeTimeout) {
                     clearTimeout(resizeTimeout);
@@ -12887,11 +13287,18 @@ var PCCViewer = window.PCCViewer || {};
                     globalOpts = _.extend({
                         // default is to use both triggers
                         useScrollTrigger: true,
-                        useMoveTrigger: true
+                        useMoveTrigger: true,
+                        useDistanceToDomRect: false,
+                        mouseMoveCallback: noop,
+                        distanceTolerance: 300
                     }, opts);
                     onDismiss = function(ev) {
                         dismissFunc(ev);
                     };
+
+                    if (globalOpts.useDistanceToDomRect && !globalOpts.dom) {
+                        throw Error('When useDistanceToDomRect is true, dom must be specified.');
+                    }
 
                     // add events that will dismiss the menu
                     if (globalOpts.useMoveTrigger) {
