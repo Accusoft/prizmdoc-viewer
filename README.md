@@ -143,7 +143,8 @@ initialize the viewer will look something like this:
       language: viewerCustomizations.languages['en-US'],
       template: viewerCustomizations.template,
       icons: viewerCustomizations.icons,
-      annotationsMode: 'LayeredAnnotations'
+      annotationsMode: 'LayeredAnnotations',
+      attachmentViewingMode: 'ThisViewer'
     });
   });
 </script>
@@ -156,6 +157,7 @@ Let's explain the various parts of this function call:
 - `viewerAssetsPath` is the base route to get the static CSS and JavaScript (e.g. `viewer/css/...` and `viewer/js/...`) assets. This is used by the viewer at print time.
 - `language`, `template`, and `icons` are how pre-built viewer customizations are passed in. You can effectively treat this as boilerplate.
 - `annotationsMode` is set to `'LayeredAnnotations'` so that the viewer saves and loads annotation data in our newer JSON markup format.
+- `attachmentViewingMode` is set to `'ThisViewer'` so that the viewer opens email attachments in the same window where you are viewing the original email.
 
 ## Customizing your viewer
 

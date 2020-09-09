@@ -7,7 +7,6 @@
         <div class="pcc-tab-pane">
             <div class="pcc-pull-right">
                 <button class="pcc-icon pcc-icon-document-compare pcc-hide" data-pcc-toggle="dialog-revision" title="<%= docRevision %>"></button>
-                <button data-pcc-toggle="dialog-attachments" data-pcc-removable-id="attachments" class="pcc-icon pcc-icon-paperclip pcc-hide" title="<%= attachments.tooltip %>"></button>
                 <button class="pcc-icon pcc-icon-print" title="<%= printButton %>" data-pcc-print="launch" data-pcc-removable-id="printing"></button>
                 <button data-pcc-toggle="dialog-download" data-pcc-removable-id="download" class="pcc-icon pcc-icon-download" title="<%= download %>"></button>
             </div>
@@ -47,6 +46,35 @@
                             </div>
                         </div>
                         <div data-pcc-image-tools-slider-svg-stroke-value  class="pcc-image-tools-slider-value">1</div>
+                    </div>
+                </div>
+                <button data-pcc-attachments class="pcc-icon pcc-icon-paperclip pcc-hide" data-pcc-removable-id="attachments" title="<%= attachments.tooltip %>">
+                    <span class="pcc-icon-badge">0</span>
+                </button>
+                <div data-pcc-attachments-panel class="pccv pcc-hide pcc-attachments-panel" tabindex=-1>
+                    <div class="pcc-dialog-wrapper">
+                        <div class="pcc-attachments-section pcc-attachments-section-current-email">
+                            <div class="pcc-attachments-section-title">
+                                <%= attachments.email %>
+                            </div>
+                            <div class="pcc-attachments-section-content">
+                                <div class="pcc-attachments-current-email pcc-row">
+                                    <span class="pcc-icon pcc-icon-email"></span>
+                                    <a class="pcc-attachments-current-email-name" href="#"></a>
+                                    <span class="pcc-icon pcc-icon-check"></span>
+                                </div>
+                            </div>
+                            <button class="pcc-attachments-to-prev-email pcc-disabled">
+                                <span class="pcc-icon pcc-icon-arrow-left"></span>
+                                <a href="#"><%= attachments.returnToPrevEmail%></a>
+                            </button>
+                        </div>
+                        <div class="pcc-attachments-section">
+                            <div data-pcc-attachments-panel-list-title class="pcc-attachments-section-title">
+                                <%= attachments.title %>
+                            </div>
+                            <div data-pcc-attachments-panel-list class="pcc-attachments-section-content"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -282,38 +310,55 @@
         </div>
     </div>
     <div class="pcc-row">
-        <h4><%= fileDownloadInclude %></h4>
+        <hr>
     </div>
     <div class="pcc-row">
-        <div class="pcc-col-6">
-            <div data-pcc-checkbox="burnMarks" data-pcc-download-annotations data-pcc-esign-save="true" class="pcc-checkbox pcc-disabled">
-                <span class="pcc-icon pcc-icon-check"></span>
-                <label><%= fileDownloadAnnotations %></label>
+        <h4><%= fileDownloadIncludeInDownload %></h4>
+    </div>
+    <div class="pcc-row">
+        <h4><%= fileDownloadAnnotations %></h4>
+    </div>
+    <div class="pcc-row">
+        <div data-pcc-toggle="dropdown-download-annotations" class="pcc-select-download pcc-select pcc-disabled">
+            <div class="pcc-label"><%= fileDownloadAnnotationsNone %></div>
+            <div class="pcc-arrow-down"></div>
+            <div data-pcc-toggle-id="dropdown-download-annotations" class="pcc-dropdown">
+                <% _.forEach(annotationDownloads, function(annotationDownload, index) { %>
+                <div class="<%= (index % 2 === 0) ? 'even' : 'odd' %>"><%= annotationDownload %></div>
+                <% }); %>
             </div>
         </div>
-        <div class="pcc-col-6">
-            <div data-pcc-toggle="dropdown-download-annotations-format" class="pcc-select pcc-disabled">
-                <div class="pcc-label"><%= fileDownloadAllAnnotations %></div>
-                <div class="pcc-arrow-down"></div>
-                <div data-pcc-toggle-id="dropdown-download-annotations-format" class="pcc-dropdown">
-                    <% _.forEach(annotationFormats, function(annotationFormat, index) { %>
-                    <div class="<%= (index % 2 === 0) ? 'even' : 'odd' %>"><%= annotationFormat %></div>
-                    <% }); %>
-                </div>
+    </div>
+    <div class="pcc-row">
+        <h4><%= fileDownloadRedactions %></h4>
+    </div>
+    <div class="pcc-row">
+        <div data-pcc-toggle="dropdown-download-redactions" class="pcc-select-download pcc-select pcc-disabled">
+            <div class="pcc-label"><%= fileDownloadRedactionsNone %></div>
+            <div class="pcc-arrow-down"></div>
+            <div data-pcc-toggle-id="dropdown-download-redactions" class="pcc-dropdown">
+                <% _.forEach(redactionDownloads, function(redactionDownload, index) { %>
+                <div class="<%= (index % 2 === 0) ? 'even' : 'odd' %>"><%= redactionDownload %></div>
+                <% }); %>
             </div>
         </div>
     </div>
     <div class="pcc-row">
-        <div data-pcc-checkbox="burnMarks" data-pcc-download-redactions data-pcc-esign-save="true" class="pcc-checkbox pcc-disabled">
-            <span class="pcc-icon pcc-icon-check"></span>
-            <label><%= fileDownloadRedactions %></label>
+        <h4><%= fileDownloadESignature %></h4>
+    </div>
+    <div class="pcc-row">
+        <div data-pcc-toggle="dropdown-download-esignatures" class="pcc-select-download pcc-select pcc-disabled">
+            <div class="pcc-label"><%= fileDownloadESignaturesNone %></div>
+            <div class="pcc-arrow-down"></div>
+            <div data-pcc-toggle-id="dropdown-download-esignatures" class="pcc-dropdown">
+                <% _.forEach(esignatureDownloads, function(esignatureDownload, index) { %>
+                <div class="<%= (index % 2 === 0) ? 'even' : 'odd' %>"><%= esignatureDownload %></div>
+                <% }); %>
+            </div>
         </div>
     </div>
     <div class="pcc-row">
-        <div data-pcc-checkbox="burnMarks" data-pcc-download-esignatures data-pcc-esign-save="true" class="pcc-checkbox pcc-disabled">
-            <span class="pcc-icon pcc-icon-check"></span>
-            <label><%= fileDownloadESignature %></label>
-        </div>
+        <hr>
     </div>
     <div class="pcc-row">
         <div class="pcc-col-6">
@@ -608,17 +653,6 @@
         <div class="pcc-annotation-save-msg"><%= annotations.save.as %></div>
         <input type="text">
         <button class="pcc-disabled" data-pcc-save-layer><%= saveButton %></button>
-    </div>
-</div>
-
-<div class="pcc-dialog pcc-dialog-attachments" data-pcc-toggle-id="dialog-attachments">
-    <div class="pcc-dialog-wrapper">
-        <div class="pcc-attachments-section" data-pcc-annotation-layer-review-section="current">
-            <div class="pcc-attachments-section-title">
-                <%= attachments.title %>
-            </div>
-            <div class="pcc-attachments-section-content"></div>
-        </div>
     </div>
 </div>
 

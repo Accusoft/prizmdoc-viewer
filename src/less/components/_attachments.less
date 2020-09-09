@@ -12,73 +12,136 @@
     overflow: hidden;
 }
 
-.pccv .pcc-attachments-section-title {
-    position: relative;
-    line-height: 26px;
-    padding: 0 5px;
+.pccv .pcc-attachments-panel {
+    width: 220px;
+    height: auto;
+    top: 40px;
+    left: 185px;
+    font-size: 12px;
+    background: rgb(242, 243, 246);
+    position: absolute;
+    z-index: 9999;
+    border: 1px solid;
+    border-color: rgb(150, 150, 150);
+    box-shadow: rgba(0, 0, 0, 0.4) 2px 2px 3px 0px;
+    padding: 10px;
+    max-height: 450px;
+    overflow-y: auto;
 
-    background-color: @background_middark;
-    color: @font_color_offwhite;
+    button.pcc-disabled {
+        pointer-events:none;
+        cursor: default;
+        a {
+            cursor: inherit;
+            color: #c2c5ce;
+        }
+    }
+    .pcc-disabled {
+        .pcc-icon {
+            opacity: 0.1;
+        }
+    }
+
+    .pcc-attachments-section-title {
+        position: relative;
+        line-height: 26px;
+        padding: 0 5px;
+        font-size: 14px;
+    }
+
+    .pcc-attachments-to-prev-email {
+        width: 100%;
+        text-align: left;
+        border: 0;
+        box-shadow: 0;
+    }
+
+    a {
+        flex-grow: 1;
+        text-decoration: none;
+        color: @font_color_dark;
+    }
+
+    span {
+        flex-grow: 0;
+    }
 }
 
 .pccv .pcc-attachments-section .pcc-attachments-section-content {
-   	padding: 0;
+    padding: 0;
     overflow: auto;
     background-color: @background_offwhite;
-    border-left: 1px solid @background_mid;
-    border-right: 1px solid @background_mid;
-    border-bottom: 1px solid #c2c5ce;
-   	max-height: 90%;
+    max-height: 90%;
 
-    .pcc-row {
-    	padding: 10px;
+    .pcc-attachments-current-email {
+        padding: 10px;
         margin: 0 !important;
-        border: 1px solid @background_offwhite;
         line-height: 1.5;
         cursor: pointer;
         clear: both;
         word-break: break-word;
-        
-        &.pcc-odd {
-            background: @background_white;
-            border-color: @border_white;
+        background-color: white;
+
+        .pcc-icon.pcc-icon-email {
+            margin-left: -4px;
         }
-        
+
+        .pcc-icon.pcc-icon-check {
+            margin-top: -4px !important;
+            float: right;
+            display: none;
+        }
+
+        a {
+            font-weight: bold;
+        }
+
+        &.pcc-active .pcc-icon.pcc-icon-check {
+            display: block;
+        }
+    }
+
+    .pcc-row {
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        padding: 6px;
+        margin: 5px 0 5px 0 !important;
+        border: 1px solid @border_white;
+        background: @background_white;
+        line-height: 1.5;
+        cursor: pointer;
+        clear: both;
+        word-break: break-word;
+
         div {
             padding: 3px;
             font-size: 12px;
         }
-        span {
-            font-weight: bold;
+
+        .pcc-icon.pcc-icon-check {
+            float: right;
+            display: none;
         }
 
-        &.pcc-active {
-            background: @highlight_select;
-            border-color: @highlight_select_dark;
-            
-            .pcc-col-8 { 
+        &.pcc-active .pcc-icon.pcc-icon-check {
+            display: inline-block;
+
+            .pcc-col-8 {
                 border-color: @highlight_select_dark;
             }
         }
-        
+
         .pcc-col-2 {
             color: @font_color_d20;
         }
-        
-        .pcc-col-8 { 
+
+        .pcc-col-8 {
             border: 1px solid @background_offwhite;
             border-top: none;
             border-bottom: none;
             min-height: 30px;
             word-wrap: break-word;
-        }
-
-        a {
-			text-decoration: none;
-			display: block;
-			height: 100%;
-			width: 100%;
-			color: @font_color_dark;
         }
     }
 }

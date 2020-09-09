@@ -37,15 +37,33 @@
     padding: 0 7px;
     background: @background_offwhite;
     .box-shadow(0 1px 1px rgba(0, 0, 0, .1));
-    
+    position: relative;
+
     &.pcc-align-left {
         float: left;
         margin: 7px 0;
     }
-    
+
     &.pcc-align-right {
         float: right;
         margin: 7px 0;
+    }
+
+    .pcc-icon-badge {
+        position: absolute;
+        top: 12px;
+        left: 13px;
+        padding: 2px 3px 2px 3px;
+        border-radius: 50%;
+        background-color: @icon_badge_inactive;
+        color: white;
+        font-size: 9px;
+        font-weight: bold;
+        line-height: 1;
+    }
+    .pcc-icon-badge.pcc-icon-badge-wide {
+        left: 12px;
+        padding: 2px 2px 2px 2px;
     }
 }
 
@@ -78,9 +96,9 @@
 }
 
 // adjust icon position for button border
-.pccv .pcc-search-group-buttons button { 
+.pccv .pcc-search-group-buttons button {
     padding: 0;
-    
+
     .pcc-icon {
         position: relative;
         top: -2px;

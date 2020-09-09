@@ -52,6 +52,10 @@
     border-bottom: 1px solid @border_white;
     border-radius: 2px;
     .box-shadow(inset 0 1px 1px rgba(0, 0, 0, .4));
+
+    .pcc-icon-badge {
+        background-color: @icon_badge_active;
+    }
 }
 
 .pccv .pcc-icon.pcc-active.pcc-locked {
@@ -80,6 +84,13 @@
     top: -2px;
     left: -5px;
 }
+
+.pccv .pcc-icon-container {
+    padding: 2px 1px 0 0;
+    border:none !important;
+    .box-shadow(none);
+}
+
 
 .pccv .pcc-icon-height {
     // used to style text with the same height as icons

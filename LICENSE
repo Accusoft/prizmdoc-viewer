@@ -27,6 +27,10 @@ Exceptions:
       is licensed under the MIT license. See
       https://github.com/necolas/normalize.css.
 
+    - SVG - Material Design Icons 5.4.55 is copyright (c) 2017 Austin Andrews,
+      Copyright (c) 2014, Google and is licensed under the SIL OFL and Apache
+      licenses. See https://github.com/Templarian/MaterialDesign-SVG/blob/v5.4.55/LICENSE
+
     - Fonts are each copyright by their respective authors and are each licensed
       under the SIL Open Font License. See the associated LICENSE.txt file for
       each font (named similarly to the font file itself and put in the same

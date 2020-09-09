@@ -97,7 +97,9 @@ var PCCViewer = window.PCCViewer || {};
         });
 
         if (icons.length > 0) {
-            $elem.empty().append('<svg style="pointer-events:none;" viewBox="0 0 52 52">' + ICON_MAP[icons[0]] + '</svg>');
+            if ($elem.find('svg').length === 0) {
+                $elem.append('<svg style="pointer-events:none;" viewBox="0 0 52 52">' + ICON_MAP[icons[0]] + '</svg>');
+            }
         }
     }
 
@@ -180,14 +182,39 @@ var PCCViewer = window.PCCViewer || {};
             throw new Error("When enableMultipleRedactionReasons is true, annotationsMode must be set to \"LayeredAnnotations\"");
         }
 
+        this.attachmentViewingModeEnum = {
+            // The attachment will be opened in the new browser window or tab.
+            NewWindow: "NewWindow",
+
+            // The attachment will be opened in this viewer instance.
+            ThisViewer: "ThisViewer"
+        };
+
+        if (options.attachmentViewingMode === undefined) {
+            // set the default
+            options.attachmentViewingMode = this.attachmentViewingModeEnum.NewWindow;
+        }
+
         var downloadFormats = [
             PCCViewer.Language.data.fileDownloadOriginalDocument,
             PCCViewer.Language.data.fileDownloadPdfFormat
         ];
 
-        var annotationFormats = [
-            PCCViewer.Language.data.fileDownloadAllAnnotations,
-            PCCViewer.Language.data.fileDownloadChosenAnnotations
+        var annotationDownloads = [
+            PCCViewer.Language.data.fileDownloadAnnotationsNone,
+            PCCViewer.Language.data.fileDownloadAnnotationsAll,
+            PCCViewer.Language.data.fileDownloadAnnotationsSelected,
+        ];
+
+        var redactionDownloads = [
+            PCCViewer.Language.data.fileDownloadRedactionsNone,
+            PCCViewer.Language.data.fileDownloadRedactionsNormal,
+            PCCViewer.Language.data.fileDownloadRedactionsDraft
+        ];
+
+        var esignatureDownloads = [
+            PCCViewer.Language.data.fileDownloadESignaturesNone,
+            PCCViewer.Language.data.fileDownloadESignaturesAll
         ];
 
         var viewer = this;
@@ -201,7 +228,9 @@ var PCCViewer = window.PCCViewer || {};
             reasons: this.redactionReasonsExtended,
             annotationsMode: options.annotationsMode,
             downloadFormats: downloadFormats,
-            annotationFormats: annotationFormats,
+            annotationDownloads: annotationDownloads,
+            redactionDownloads: redactionDownloads,
+            esignatureDownloads: esignatureDownloads,
             enableMultipleRedactionReasons: options.enableMultipleRedactionReasons
         },PCCViewer.Language.data)))
             .addClass('pccv')
@@ -228,7 +257,7 @@ var PCCViewer = window.PCCViewer || {};
 
         // full page redaction dialog
         this.isPageRedactionCanceled = false;
-        this.fullPageRedactionReason = '';
+        this.fullPageRedactionReason = options.redactionReasons.enableMultipleRedactionReasons ? [] : '';
         this.autoApplyRedactionReason = null;
 
         // This enum is a whitelist for sticky mouse tools. Tools on this list, with a value
@@ -327,6 +356,7 @@ var PCCViewer = window.PCCViewer || {};
             $rotatePage: viewer.$dom.find("[data-pcc-rotate-page]"),
             $rotateDocument: viewer.$dom.find("[data-pcc-rotate-document]"),
             $imageTools: viewer.$dom.find("[data-pcc-image-tools]"),
+            $attachments: viewer.$dom.find('[data-pcc-attachments]'),
             $zoomIn: viewer.$dom.find("[data-pcc-zoom-in]"),
             $zoomOut: viewer.$dom.find("[data-pcc-zoom-out]"),
             $zoomLevel: viewer.$dom.find("[data-pcc-zoom-level]"),
@@ -342,10 +372,11 @@ var PCCViewer = window.PCCViewer || {};
 
             $downloadDialog: viewer.$dom.find("[data-pcc-toggle-id=dialog-download]"),
             $downloadAsDropdown: viewer.$dom.find('[data-pcc-toggle="dropdown-download"]'),
-            $downloadAnnotationsFormatDropdown: viewer.$dom.find('[data-pcc-toggle="dropdown-download-annotations-format"]'),
-            $downloadAnnotationsCheckbox: viewer.$dom.find('[data-pcc-download-annotations]'),
-            $downloadRedactionsCheckbox: viewer.$dom.find('[data-pcc-download-redactions]'),
-            $downloadSignaturesCheckbox: viewer.$dom.find('[data-pcc-download-esignatures]'),
+
+            $downloadAnnotationsAsDropdown: viewer.$dom.find('[data-pcc-toggle="dropdown-download-annotations"]'),
+            $downloadRedactionsAsDropdown: viewer.$dom.find('[data-pcc-toggle="dropdown-download-redactions"]'),
+            $downloadESignaturesAsDropdown: viewer.$dom.find('[data-pcc-toggle="dropdown-download-esignatures"]'),
+
             $downloadDocumentPreview: viewer.$dom.find('[data-pcc-download="preview"]'),
             $downloadDocument: viewer.$dom.find('[data-pcc-download="download"]'),
 
@@ -369,10 +400,6 @@ var PCCViewer = window.PCCViewer || {};
 
             $annotationLayerSaveDialog: viewer.$dom.find("[data-pcc-toggle-id=dialog-annotation-layer-save]"),
             $annotationLayerSave: viewer.$dom.find("[data-pcc-save-layer]"),
-
-
-            $attachmentList: viewer.$dom.find('.pcc-attachments-section-content'),
-            $attachmentsToggle: viewer.$dom.find('[data-pcc-toggle="dialog-attachments"]'),
 
             $overlay: viewer.$dom.find('[data-pcc-overlay]'),
             $overlayFade: viewer.$dom.find('.pcc-overlay-fade'),
@@ -2597,12 +2624,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
 
             } else if (toggleID === 'dialog-annotation-layer-review') {
-                var allMarkupLayers = viewer.viewerControl.getMarkupLayerCollection().getAll();
-                var currentMarkupLayer = viewer.viewerControl.getActiveMarkupLayer();
-                var otherMarkupLayers = _.filter(allMarkupLayers, function(markupLayer) {
-                    return (markupLayer.getId() !== currentMarkupLayer.getId()) && (markupLayer.getSessionData('Accusoft-state') !== 'merged');
-                });
-                viewer.annotationLayerReview.onOpenDialog(currentMarkupLayer, otherMarkupLayers);
+                viewer.annotationLayerReview.refresh();
             } else if (toggleID === 'dialog-annotation-layer-save') {
                 var markupLayer = viewer.viewerControl.getActiveMarkupLayer();
                 if (markupLayer.getName() === undefined) {
@@ -2955,6 +2977,12 @@ var PCCViewer = window.PCCViewer || {};
                     });
                 }
 
+                var tmplRedactionReasons = _.clone(viewer.redactionReasonsExtended);
+                if (viewer.redactionReasonsExtended.reasons) {
+                    tmplRedactionReasons.reasons = viewer.redactionReasonsExtended.reasons.map(function(reason) {
+                        return _.clone(reason);
+                    });
+                }
                 var customRedactionReason = '';
                 if (mark.getReason && !options.enableMultipleRedactionReasons) {
                     if (mark.getReason().length && !redactionReasonMenu.isPreloadedRedactionReason(mark.getReason())) {
@@ -2990,7 +3018,7 @@ var PCCViewer = window.PCCViewer || {};
                         }
                     }
 
-                    viewer.redactionReasonsExtended.reasons.forEach(function (reason) {
+                    tmplRedactionReasons.reasons.forEach(function (reason) {
                         if(reason.selectable){
                             reason.checked = _reasons.indexOf(reason.reason) >= 0;
                         }
@@ -3004,7 +3032,7 @@ var PCCViewer = window.PCCViewer || {};
                     showAllEditControls: args.showAllEditControls,
                     showSignaturePreview: isSignatureTool,
                     paragraphAlignTitle: mark.getHorizontalAlignment ? lang['paragraphAlign' + mark.getHorizontalAlignment().charAt(0).toUpperCase() + mark.getHorizontalAlignment().slice(1)] : '',
-                    reasons: viewer.redactionReasonsExtended,
+                    reasons: tmplRedactionReasons,
                     customRedactionReason: customRedactionReason,
                     menuOptions: menuOptions
                 }, lang);
@@ -3578,6 +3606,41 @@ var PCCViewer = window.PCCViewer || {};
             viewer.viewerNodes.$zoomLevel.html(Math.round(viewer.viewerControl.getScaleFactor() * 100) + '%');
         }
 
+        // Viewing Session Changing handler
+        function viewingSessionChangingHandler() {
+            // Cancel current search to stop requesting server
+            viewer.search.cancelAndClearSearchResults();
+        }
+
+        // Viewing Session Changed handler
+        function viewingSessionChangedHandler() {
+            viewer.viewerNodes.$pageSelect.val(viewer.viewerControl.pageNumber);
+
+            // reset current mouse tool to the Pan tool
+            viewer.viewerControl.setCurrentMouseTool('AccusoftPanAndEdit');
+            viewer.viewerNodes.$panTool.click();
+
+            if (viewer.viewerControl.redactionViewMode === PCCViewer.RedactionViewMode.Draft) { 
+              viewer.viewerNodes.$redactionViewMode.addClass('pcc-active');
+            } else {
+              viewer.viewerNodes.$redactionViewMode.removeClass('pcc-active');
+            }
+
+            viewer.imageStamp.refresh();
+            viewer.eSignature.refresh();
+            commentUIManager.refresh();
+            viewer.imageToolsDropdownUI.refresh();
+            viewer.search.refresh();
+            viewer.annotationIo.refresh();
+            viewer.annotationLayerReview.refresh();
+            fileDownloadManager.refresh();
+
+            scaleChangedHandler({
+                scaleFactor: viewer.viewerControl.scaleFactor,
+                fitType: viewer.isFitTypeActive ? viewer.currentFitType : null
+            });
+        }
+
         // MS Edge does not repaint certain elements properly whenever they change so
         // we are simply forcing the browser to repaint the element by hiding and showing it.
         // TODO: Follow up to see if in a future release of MS Edge we no longer need this code
@@ -3617,6 +3680,8 @@ var PCCViewer = window.PCCViewer || {};
             this.viewerControl.on(PCCViewer.EventType.ScaleChanged, scaleChangedHandler);
             this.viewerControl.on(PCCViewer.EventType.ViewerReady, viewerReadyHandler);
             this.viewerControl.on(PCCViewer.EventType.PageTextReady, pageTextReadyHandler);
+            this.viewerControl.on(PCCViewer.EventType.ViewingSessionChanging, viewingSessionChangingHandler);
+            this.viewerControl.on(PCCViewer.EventType.ViewingSessionChanged, viewingSessionChangedHandler);
             this.viewerControl.documentHasText().then(documentHasTextResolved);
 
             // Initialize the download options menu
@@ -3667,6 +3732,9 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.viewerNodes.$pageList.css('padding-left', '');
                 if (viewer.isFitTypeActive === true) { viewer.viewerControl.fitContent(viewer.currentFitType); }
             });
+
+            // Bind events to restore search highlights after text selection based mark created
+            viewer.search.bindRestoringSearchHighlight();
         };
 
         // Destroy the viewer control
@@ -5272,25 +5340,7 @@ var PCCViewer = window.PCCViewer || {};
                     searchTerms = presetFixedSearchTerms.concat(searchTerms.slice(0));
 
                     // replace the global query with this new generated one
-                    _.forEach(searchTerms, function(term){
-                        var searchTerm = term.searchTerm;
-                        var saveObject = {
-                            searchOption: term,
-                            prettyName: term.searchTermName || term.searchTerm,
-                            prevCount: undefined,
-                            isInUse: true,
-                            isUserSearch: !!term.isUserSearch
-                        };
-
-                        globalSearchTerms[searchTerm] = _.clone(saveObject);
-                        globalSearchTerms[searchTerm].searchOption = _.clone(term);
-
-                        if (term.fixed === true) {
-                            globalFixedSearchTerms[searchTerm] = saveObject;
-                        } else {
-                            globalUnfixedSearchTerms[searchTerm] = saveObject;
-                        }
-                    });
+                    fillGlobalSearchTerms(searchTerms);
 
                     addPreviousSearch({ searchTerm: originalQueryString, matchingOptions: matchingOptions });
                 }
@@ -5299,6 +5349,28 @@ var PCCViewer = window.PCCViewer || {};
                     searchTerms: searchTerms
                 };
             };
+
+            var fillGlobalSearchTerms = function(searchTerms) {
+                _.forEach(searchTerms, function(term){
+                    var searchTerm = term.searchTerm;
+                    var saveObject = {
+                        searchOption: term,
+                        prettyName: term.searchTermName || term.searchTerm,
+                        prevCount: undefined,
+                        isInUse: true,
+                        isUserSearch: !!term.isUserSearch
+                    };
+
+                    globalSearchTerms[searchTerm] = _.clone(saveObject);
+                    globalSearchTerms[searchTerm].searchOption = _.clone(term);
+
+                    if (term.fixed === true) {
+                        globalFixedSearchTerms[searchTerm] = saveObject;
+                    } else {
+                        globalUnfixedSearchTerms[searchTerm] = saveObject;
+                    }
+                });
+            }
 
             var getQueryString = function(){
                 // remove leading and trailing spaces, and replace multiple spaces with a single space
@@ -5861,8 +5933,6 @@ var PCCViewer = window.PCCViewer || {};
 
             // Triggered when the search has completed because the full set of search results is available.
             var searchResultsAvailableHandler = function () {
-                unHookSearchResultEvents();
-
                 updateStatusUi('', false, 100);
             };
 
@@ -5870,7 +5940,7 @@ var PCCViewer = window.PCCViewer || {};
             var unHookSearchResultEvents = function () {
                 if (searchRequest instanceof PCCViewer.SearchRequest) {
                     searchRequest.off('PartialSearchResultsAvailable', partialSearchResultHandler);
-                    searchRequest.off('SearchCompleted', partialSearchResultHandler);
+                    searchRequest.off('SearchCompleted', searchCompletedHandler);
                     searchRequest.off('SearchFailed', searchFailedHandler);
                     searchRequest.off('SearchCancelled', searchCancelledHandler);
                     searchRequest.off('SearchResultsAvailable', searchResultsAvailableHandler);
@@ -6559,6 +6629,57 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
+            // This function updates the search results list after session change
+            var refresh = function() {
+                if (viewer.viewerControl.searchRequest) {
+                    searchRequest = viewer.viewerControl.searchRequest;
+                    searchResults = searchRequest.results;
+
+                    if (viewer.viewerControl.selectedSearchResult) {
+                        activeSearchResultId = viewer.viewerControl.selectedSearchResult.id;
+                    }
+
+                    globalUnfixedSearchTerms = {};
+                    globalSearchTerms = {};
+                    fillGlobalSearchTerms(searchRequest.searchQuery.searchTerms);
+
+                    // Show the results panel, so user can see results start to come in
+                    viewer.viewerNodes.$searchResultsContainer.addClass('pcc-show-lg');
+
+                    buildPartialResultsView(searchResults);
+                    if (searchResults && searchResults.length) {
+                        buildSearchTermUI();
+                    }
+
+                    if (searchRequest.errorMessage) {
+                        searchFailedHandler();
+                    }
+                    if (searchRequest.isComplete) {
+                        searchCompletedHandler();
+                    }
+                }
+            };
+
+            var cancelAndClearSearchResults = function() {
+                unHookSearchResultEvents();
+                cancelSearch();
+
+                searchRequest = {};
+                searchResults = [];
+                resetSearchParams();
+
+                viewer.viewerNodes.$searchResults.empty();
+                viewer.viewerNodes.$searchResultCount.html(PCCViewer.Language.data.searchResultsNone);
+
+                viewer.viewerNodes.$searchResultsContainer.removeClass('pcc-loading');
+                viewer.viewerNodes.$searchStatus.hide();
+
+                // clear quick action panel
+                resetQuickActionMenu();
+                // clear the filter terms list
+                resetFilterTermsList();
+            };
+
             // When the user chooses to clear the current search, this function cleans up the UI and associated data
             // structures.
             var clearSearch = function (ev) {
@@ -6624,7 +6745,9 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.viewerNodes.$searchInput.removeAttr('disabled');
                 viewer.viewerNodes.$searchClear.removeAttr('disabled');
 
-                searchRequest.cancel();
+                if (searchRequest instanceof PCCViewer.SearchRequest) {
+                    searchRequest.cancel();
+                }
             };
 
             var setUIElementsSearch = function(){
@@ -6751,6 +6874,27 @@ var PCCViewer = window.PCCViewer || {};
                 resortOnPageTextReady(ev);
             };
 
+            // Restores search highlight after text selection based mark created.
+            function bindRestoringSearchHighlight() {
+                var textSelection;
+                viewer.viewerControl.on(PCCViewer.EventType.TextSelected, function(ev) {
+                    textSelection = ev.textSelection;
+                });
+                
+                viewer.viewerControl.on(PCCViewer.EventType.MarkCreated, function(ev) {
+                    // Ensure there is text selection, mark was created with mouse
+                    if (textSelection && ev.clientX && ev.clientY)
+                        // Ensure mark has text selection based type
+                        if (ev.mark.getType() === PCCViewer.Mark.Type.HighlightAnnotation ||
+                            ev.mark.getType() === PCCViewer.Mark.Type.TextSelectionRedaction ||
+                            ev.mark.getType() === PCCViewer.Mark.Type.StrikethroughAnnotation ||
+                            ev.mark.getType() === PCCViewer.Mark.Type.TextHyperlinkAnnotation) {
+                            viewer.viewerControl.clearMouseSelectedText(textSelection)
+                            textSelection = null;
+                    }
+                });
+            };
+
             // Initialize the module.
             init();
 
@@ -6803,7 +6947,10 @@ var PCCViewer = window.PCCViewer || {};
                 previousResultClickHandler: previousResultClickHandler,
                 clearSearch: clearSearch,
                 cancelSearch: cancelSearch,
+                refresh: refresh,
+                cancelAndClearSearchResults: cancelAndClearSearchResults,
                 pageTextReadyHandler: pageTextReadyHandler,
+                bindRestoringSearchHighlight: bindRestoringSearchHighlight,
                 on: function(name, func) {
                     $event.on(name, func);
                 },
@@ -7075,6 +7222,28 @@ var PCCViewer = window.PCCViewer || {};
                     openDialog({ toggleID: 'dialog-annotation-layer-review' });
                 });
 
+            };
+
+            var refresh = function() {
+                loadedEditMarkupLayer = viewer.viewerControl.getActiveMarkupLayer();
+                $('.pcc-select-load-annotation-layers .pcc-label').text(PCCViewer.Language.data.annotationLayersLoad);
+
+                loadedReviewMarkupLayers = {};
+                loadedReviewMarkupXml = {};
+
+                if (loadDialogIsOpen()) {
+                    if (options.annotationsMode === viewer.annotationsModeEnum.LayeredAnnotations) {
+                        loadAllRecords();
+                    } else {
+                        loadMarkupList();
+
+                        if (currentlyLoadedAnnotation) {
+                            updateLoadStatusMsg(PCCViewer.Language.data.annotations.load.status + currentlyLoadedAnnotation);
+                        } else {
+                            updateLoadStatusMsg('');
+                        }
+                    }
+                }
             };
 
             var loadReviewXmlRecord = function (xmlRecordName, done) {
@@ -8373,6 +8542,7 @@ var PCCViewer = window.PCCViewer || {};
             // The publicly accessible members of this module.
             return {
                 init: init,
+                refresh: refresh,
                 onOpenDialog: onOpenDialog,
                 modes: modes,
                 autoLoadAllLayers: autoLoadAllLayers,
@@ -8560,6 +8730,15 @@ var PCCViewer = window.PCCViewer || {};
                     });
                 });
 
+            };
+
+            var refresh = function() {
+                var allMarkupLayers = viewer.viewerControl.getMarkupLayerCollection().getAll();
+                var currentMarkupLayer = viewer.viewerControl.getActiveMarkupLayer();
+                var otherMarkupLayers = _.filter(allMarkupLayers, function(markupLayer) {
+                    return (markupLayer.getId() !== currentMarkupLayer.getId()) && (markupLayer.getSessionData('Accusoft-state') !== 'merged');
+                });
+                onOpenDialog(currentMarkupLayer, otherMarkupLayers);
             };
 
             // Determines what needs to happen when the annotation layer controller dialog is opened.
@@ -8791,7 +8970,8 @@ var PCCViewer = window.PCCViewer || {};
             // The publicly accessible members of this module.
             return {
                 init: init,
-                onOpenDialog: onOpenDialog
+                onOpenDialog: onOpenDialog,
+                refresh: refresh
             };
         })();
 
@@ -8963,7 +9143,7 @@ var PCCViewer = window.PCCViewer || {};
         // create the eSignature UI module
         this.eSignature = (function () {
 
-            var  placeSignatureTool = PCCViewer.MouseTools.getMouseTool('AccusoftPlaceSignature');
+            var placeSignatureTool = PCCViewer.MouseTools.getMouseTool('AccusoftPlaceSignature');
 
             var $esignOverlay;
             var $esignPlace;
@@ -8984,6 +9164,11 @@ var PCCViewer = window.PCCViewer || {};
                 attachListeners();
                 updateSignatureButtons();
             };
+
+            var refresh = function() {
+                placeSignatureTool = PCCViewer.MouseTools.getMouseTool('AccusoftPlaceSignature');
+                PCCViewer.MouseTools.createMouseTool("AccusoftPlaceDateSignature", PCCViewer.MouseTool.Type.PlaceSignature);
+            }
 
             var destroy = function () {
                 PCCViewer.Signatures.off('ItemAdded', signatureAdded);
@@ -9434,6 +9619,7 @@ var PCCViewer = window.PCCViewer || {};
 
             return {
                 init: init,
+                refresh: refresh,
                 destroy: destroy,
                 mouseTool: placeSignatureTool,
                 getFreehandContext: getFreehandContext,
@@ -10232,7 +10418,7 @@ var PCCViewer = window.PCCViewer || {};
                 _.each(redactionReasons.reasons, function(reason) {
                     actions.push({
                         name: reason.reason,
-                        dom: function() {
+                        dom: function(mark) {
                             var $span = $('<span>');
                             if (!reason.selectable) {
                                 $span.text(reason.reason);
@@ -10263,7 +10449,7 @@ var PCCViewer = window.PCCViewer || {};
                                         $('<span>').addClass('pcc-icon').addClass('pcc-icon-check')
                                     );
 
-                                if (reason.checked) {
+                                if (mark && mark.reasons.indexOf(reason.reason) >= 0) {
                                     $div.addClass('pcc-checked');
                                 }
                                 parseIcons($div);
@@ -10276,6 +10462,9 @@ var PCCViewer = window.PCCViewer || {};
                             if (reason.reason === language.redactionReasonClear) {
                                 if (options.enableMultipleRedactionReasons) {
                                     mark.setReasons([]);
+                                    // Unselect all the reasons
+                                    $(domElement).parents('.pcc-immediate-action-menu').find('[data-pcc-checkbox="redaction-reasons"].pcc-checked').removeClass('pcc-checked');
+                                    closeMenu = false;
                                 } else {
                                     mark.setReason('');
                                 }
@@ -10326,7 +10515,7 @@ var PCCViewer = window.PCCViewer || {};
                             var li = document.createElement('li');
                             // escape any possible unsafe characters in the name
                             var itemDom = item.dom
-                                ? item.dom()
+                                ? item.dom(mark)
                                 : document.createTextNode(language[item.languageKey] || item.name);
                             li.appendChild(itemDom);
                             li.className = itemClass;
@@ -10336,13 +10525,29 @@ var PCCViewer = window.PCCViewer || {};
                             // use a click event here, the menu will not usable on a Windows Touch device.
                             // Instead, we will use 'mouseup touchend' to detect a click.
                             $(li).on('mouseup touchend', function ($ev) {
-                                $ev.preventDefault();
+                                if ($ev.cancelable) {
+                                    $ev.preventDefault();
+                                }
+                                if (preventSelect) {
+                                    return;
+                                }
+
                                 var retValue = item.action(ev, mark, this);
 
                                 // destroy the menu after any item is clicked
                                 if (retValue !== false) {
                                     destroyFunction();
                                 }
+                            });
+
+                            // Prevent selecting item on touch devices when you just want to scroll 
+                            // the immediate menu
+                            var preventSelect;
+                            $(li).on('touchstart', function($ev) {
+                                preventSelect = false;
+                            });
+                            $(li).on('touchmove', function($ev) {
+                                preventSelect = true;
                             });
 
                             list.appendChild(li);
@@ -10533,8 +10738,20 @@ var PCCViewer = window.PCCViewer || {};
                     $(document.body).on('mousedown touchstart', destroyFunction);
 
                     // expand the menu if it is hovered
-                    $(dom).on('mouseenter', function(){
+                    $(dom).on('mouseenter touchstart', function(){
                         $(this).addClass('pcc-expanded');
+                        var rect = dom.getBoundingClientRect();
+                        if(rect.top < 0){
+                            $dom.css({
+                                top: dom.offsetTop - rect.top,
+                                bottom: 'auto'
+                            });
+                        } else if(rect.bottom > window.innerHeight) {
+                            $(dom).css({
+                                top: dom.offsetTop - (rect.bottom - window.innerHeight),
+                                bottom: 'auto',
+                            });
+                        }
                     });
 
                     // add a proximity desctory, to remove the menu if the user moves away from it
@@ -10637,7 +10854,14 @@ var PCCViewer = window.PCCViewer || {};
 
             function init(opts) {
                 actionsFilter = opts.actions;
-                redactionReasons = opts.redactionReasons;
+
+                redactionReasons = _.clone(opts.redactionReasons);
+                if (opts.redactionReasons.reasons) {
+                    redactionReasons.reasons = opts.redactionReasons.reasons.map(function(reason) {
+                        return _.clone(reason);
+                    });
+                }
+
                 redactionReasonMenuTrigger = opts.redactionReasonMenuTrigger;
                 control = opts.viewerControl;
                 language = PCCViewer.Language.data;
@@ -11318,6 +11542,15 @@ var PCCViewer = window.PCCViewer || {};
                 });
             }
 
+            function refresh() {
+                control.setConversationDOMFactory(conversationDOMFactory);
+                if (control.getIsCommentsPanelOpen()) {
+                    $toggleButton.addClass('pcc-active');
+                } else {
+                    $toggleButton.removeClass('pcc-active');
+                }
+            }
+
             function destroy() {
                 if ($commentsPanel) {
                     $commentsPanel.off().find('*').off();
@@ -11354,6 +11587,7 @@ var PCCViewer = window.PCCViewer || {};
 
             return {
                 init: init,
+                refresh: refresh,
                 addComment: addComment,
                 expandComment: externalCommentEvent('expand'),
                 updatePanel: updatePanel,
@@ -11364,11 +11598,17 @@ var PCCViewer = window.PCCViewer || {};
 
         // This module is for the imageTools dropdown menu
         this.imageToolsDropdownUI = (function() {
+            var defaultValue = {
+                sharpening: 0,
+                gamma: 0.5,
+                strokeWidth: 0
+            };
             var hasBeenInitialized = false;
             var lineSharpeningSlider;
             var svgStrokeWidthSlider;
             var gammaSlider;
             var $event = $({});
+            var isRefreshing = false;
 
             function init() {
                 viewer.viewerNodes.$imageTools.one('click', function () {
@@ -11379,6 +11619,24 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.viewerNodes.$imageTools.on('click', showPanel);
             }
 
+            function refresh() {
+                if (hasBeenInitialized) {
+                    isRefreshing = true;
+
+                    lineSharpeningSlider.setValue(viewer.viewerControl.getSharpening() / 100);
+                    svgStrokeWidthSlider.setValue(viewer.viewerControl.getSvgLineWidthMultiplier() / 100);
+
+                    var gammaValue = viewer.viewerControl.getGamma();
+                    if (gammaValue <= 1) {
+                        gammaValue = gammaValue / 2;
+                    } else {
+                        gammaValue = (gammaValue * 10 + 90) / 2 / 100;
+                    }
+                    gammaSlider.setValue(gammaValue);
+
+                    isRefreshing = false;
+                }
+            }
 
             function showPanel(e) {
                 viewer.viewerNodes.$imageTools.addClass('pcc-active');
@@ -11404,7 +11662,9 @@ var PCCViewer = window.PCCViewer || {};
                 lineSharpeningSlider.on('update', function(e, v) {
                     var roundedValue = Math.floor(v.value * 100);
                     viewer.$dom.find('[data-pcc-image-tools-slider-sharpening-value]').text(roundedValue);
-                    debouncedSharpening(roundedValue);
+                    if (!isRefreshing) {
+                        debouncedSharpening(roundedValue);
+                    }
                 });
 
                 var debouncedSvgStrokeWidthMultiplier = _.debounce(viewer.viewerControl.setSvgLineWidthMultiplier.bind(viewer.viewerControl), 30);
@@ -11414,7 +11674,9 @@ var PCCViewer = window.PCCViewer || {};
                         roundedValue = 1;
                     }
                     viewer.$dom.find('[data-pcc-image-tools-slider-svg-stroke-value]').text(roundedValue);
-                    debouncedSvgStrokeWidthMultiplier(roundedValue);
+                    if (!isRefreshing) {
+                        debouncedSvgStrokeWidthMultiplier(roundedValue);
+                    }
                 });
 
                 var debouncedGamma = _.debounce(viewer.viewerControl.setGamma.bind(viewer.viewerControl), 30);
@@ -11431,7 +11693,9 @@ var PCCViewer = window.PCCViewer || {};
                     value = value / 10;
                     var roundedValue = parseFloat(value.toFixed(1));
                     viewer.$dom.find('[data-pcc-image-tools-slider-gamma-value]').text(roundedValue);
-                    debouncedGamma(roundedValue);
+                    if (!isRefreshing) {
+                        debouncedGamma(roundedValue);
+                    }
                 });
             }
 
@@ -11439,7 +11703,7 @@ var PCCViewer = window.PCCViewer || {};
                 lineSharpeningSlider = new Slider($("[data-pcc-slider=sharpening]")[0]);
                 svgStrokeWidthSlider = new Slider($("[data-pcc-slider=svgStrokeWidth]")[0]);
                 gammaSlider = new Slider($("[data-pcc-slider=gamma]")[0]);
-                gammaSlider.move(0.5);
+                gammaSlider.move(defaultValue.gamma);
                 $("#pcc-imageTools-slider-darkening-value").text('1');
                 attachEvents();
             }
@@ -11462,6 +11726,7 @@ var PCCViewer = window.PCCViewer || {};
             return {
                 embedOnce: embedOnce,
                 init: init,
+                refresh: refresh,
                 destroy: destroy,
                 on: function(name, func){
                     $event.on(name, func);
@@ -11491,7 +11756,6 @@ var PCCViewer = window.PCCViewer || {};
             function enableMarkOption(downloadOptions, availableMarkTypes, enable, otherOptionsAreEnabled, $el) {
                 if (enable !== true) {
                     $el.addClass('pcc-disabled');
-                    $el.removeClass('pcc-checked');
                     if (!otherOptionsAreEnabled) {
                         viewer.viewerNodes.$downloadAsDropdown.removeClass('pcc-disabled');
                     }
@@ -11508,12 +11772,12 @@ var PCCViewer = window.PCCViewer || {};
                 }
 
                 enableOptionsTimeout = setTimeout(function () {
-                    // Disable the checkboxes if no marks of the type exist.
+                    // Disable the dropdowns if no marks of the type exist.
                     var downloadOptions = getOptions(viewer.viewerNodes.$downloadDialog);
                     var availableMarkTypes = getAvailableMarkTypes();
-                    enableMarkOption(downloadOptions, availableMarkTypes, availableMarkTypes.annotation, downloadOptions.burnRedactions || downloadOptions.burnSignatures, viewer.viewerNodes.$downloadAnnotationsCheckbox);
-                    enableMarkOption(downloadOptions, availableMarkTypes, availableMarkTypes.redaction, downloadOptions.burnAnnotations || downloadOptions.burnSignatures, viewer.viewerNodes.$downloadRedactionsCheckbox);
-                    enableMarkOption(downloadOptions, availableMarkTypes, availableMarkTypes.signature, downloadOptions.burnRedactions || downloadOptions.burnAnnotations, viewer.viewerNodes.$downloadSignaturesCheckbox);
+                    enableMarkOption(downloadOptions, availableMarkTypes, availableMarkTypes.annotation, downloadOptions.burnRedactions || downloadOptions.burnSignatures, viewer.viewerNodes.$downloadAnnotationsAsDropdown);
+                    enableMarkOption(downloadOptions, availableMarkTypes, availableMarkTypes.redaction, downloadOptions.burnAnnotations || downloadOptions.burnSignatures, viewer.viewerNodes.$downloadRedactionsAsDropdown);
+                    enableMarkOption(downloadOptions, availableMarkTypes, availableMarkTypes.signature, downloadOptions.burnRedactions || downloadOptions.burnAnnotations, viewer.viewerNodes.$downloadESignaturesAsDropdown);
                 }, 100);
             }
 
@@ -11527,6 +11791,18 @@ var PCCViewer = window.PCCViewer || {};
                 control.on(PCCViewer.EventType.MarkRemoved, enableAvailableMarkOptions);
 
                 bindFileDownloadManagerDOM();
+            }
+
+            function refresh() {
+                viewer.viewerNodes.$downloadAsDropdown.find('.pcc-label').text(PCCViewer.Language.data.fileDownloadOriginalDocument);
+
+                viewer.viewerNodes.$downloadAnnotationsAsDropdown.find('.pcc-label').text(PCCViewer.Language.data.fileDownloadAnnotationsNone);
+                viewer.viewerNodes.$downloadRedactionsAsDropdown.find('.pcc-label').text(PCCViewer.Language.data.fileDownloadRedactionsNone);
+                viewer.viewerNodes.$downloadESignaturesAsDropdown.find('.pcc-label').text(PCCViewer.Language.data.fileDownloadESignaturesNone);
+
+                var options = getOptions(viewer.viewerNodes.$downloadDialog);
+                updateUIState(options);
+                enableAvailableMarkOptions();
             }
 
             function onSuccessDownloadURL(url, $overlay, $overlayFade) {
@@ -11599,10 +11875,10 @@ var PCCViewer = window.PCCViewer || {};
 
                     if (mark.getType().match(/annotation/i)) {
 
-                        if (options.burnAnnotations) {
+                        if (options.burnAnnotations !== PCCViewer.Language.data.fileDownloadAnnotationsNone) {
 
                             // Filter annotations based on the data attribute
-                            if (options.annotationsFormat === language.fileDownloadChosenAnnotations) {
+                            if (options.burnAnnotations === PCCViewer.Language.data.fileDownloadAnnotationsSelected) {
                                 return mark.getData('Accusoft-burnAnnotation') === '1';
                             }
 
@@ -11613,11 +11889,11 @@ var PCCViewer = window.PCCViewer || {};
                     }
 
                     if (mark.getType().match(/redaction/i)) {
-                        return options.burnRedactions;
+                        return options.burnRedactions !== PCCViewer.Language.data.fileDownloadRedactionsNone;
                     }
 
                     if (mark.getType().match(/signature/i)) {
-                        return options.burnSignatures;
+                        return options.burnSignatures !== PCCViewer.Language.data.fileDownloadESignaturesNone;
                     }
                 });
 
@@ -11648,49 +11924,57 @@ var PCCViewer = window.PCCViewer || {};
                 return $overlay;
             }
 
+            function updateUIStateAndPreview() {
+                if (inPreviewMode === true) {
+                    var options = getOptions(viewer.viewerNodes.$downloadDialog);
+                    updateMarksPreview(options);
+                    updateImageToolsPreview(options);
+                } else {
+                    enableAvailableMarkOptions();
+                }
+            }
+
             function bindFileDownloadManagerDOM() {
                 viewer.viewerNodes.$downloadDialog
-                    .on('click', '[data-pcc-toggle-id*="dropdown"]', function(ev) {
+                    .on('click', '[data-pcc-toggle-id="dropdown-download"]', function(ev) {
                         $(ev.target).parents('.pcc-select').find('.pcc-label').html($(ev.target).html());
 
-                        if (inPreviewMode === true) {
-                            var options = getOptions(viewer.viewerNodes.$downloadDialog);
-                            updateMarksPreview(options);
-                            updateImageToolsPreview(options);
+                        if (viewer.viewerNodes.$downloadAsDropdown.find('.pcc-label').html() === PCCViewer.Language.data.fileDownloadOriginalDocument) {
+                            viewer.viewerNodes.$downloadAnnotationsAsDropdown.find('.pcc-label').text(PCCViewer.Language.data.fileDownloadAnnotationsNone);
+                            viewer.viewerNodes.$downloadRedactionsAsDropdown.find('.pcc-label').text(PCCViewer.Language.data.fileDownloadRedactionsNone);
+                            viewer.viewerNodes.$downloadESignaturesAsDropdown.find('.pcc-label').text(PCCViewer.Language.data.fileDownloadESignaturesNone);
                         }
+                        updateUIStateAndPreview();
                     })
-                    .on('click', '[data-pcc-checkbox]', function (ev) {
-                        var $el = $(ev.currentTarget);
-                        if (!$el.hasClass('pcc-disabled')) {
-                            $el.toggleClass('pcc-checked');
+                    .on('click', '[data-pcc-toggle-id="dropdown-download-annotations"]', function(ev) {
+                        $(ev.target).parents('.pcc-select').find('.pcc-label').html($(ev.target).html());
+
+                        if (viewer.viewerNodes.$downloadAnnotationsAsDropdown.find('.pcc-label').html() !== PCCViewer.Language.data.fileDownloadAnnotationsNone) {
+                            viewer.viewerNodes.$downloadAsDropdown.find('.pcc-label').text(PCCViewer.Language.data.fileDownloadPdfFormat);
                         }
+                        updateUIStateAndPreview();
+                    })
+                    .on('click', '[data-pcc-toggle-id="dropdown-download-redactions"]', function(ev) {
+                        $(ev.target).parents('.pcc-select').find('.pcc-label').html($(ev.target).html());
 
-                        var options = getOptions(viewer.viewerNodes.$downloadDialog);
-
-                        if (options.burnAnnotations || options.burnRedactions || options.burnSignatures) {
-                            viewer.viewerNodes.$downloadAsDropdown.find('.pcc-label').html(language.fileDownloadPdfFormat);
-                            viewer.viewerNodes.$downloadAsDropdown.addClass('pcc-disabled');
-
-                            options.downloadFormat = language.fileDownloadPdfFormat;
-                        } else if (!(options.burnRedactions || options.burnSignatures || options.burnAnnotations)) {
-                            viewer.viewerNodes.$downloadAsDropdown.removeClass('pcc-disabled');
+                        if (viewer.viewerNodes.$downloadRedactionsAsDropdown.find('.pcc-label').html() !== PCCViewer.Language.data.fileDownloadRedactionsNone) {
+                            viewer.viewerNodes.$downloadAsDropdown.find('.pcc-label').text(PCCViewer.Language.data.fileDownloadPdfFormat);
                         }
+                        updateUIStateAndPreview();
+                    })
+                    .on('click', '[data-pcc-toggle-id="dropdown-download-esignatures"]', function(ev) {
+                        $(ev.target).parents('.pcc-select').find('.pcc-label').html($(ev.target).html());
 
-                        if (options.burnAnnotations) {
-                            viewer.viewerNodes.$downloadAnnotationsFormatDropdown.removeClass('pcc-disabled');
-                        } else {
-                            viewer.viewerNodes.$downloadAnnotationsFormatDropdown.addClass('pcc-disabled');
+                        if (viewer.viewerNodes.$downloadESignaturesAsDropdown.find('.pcc-label').html() !== PCCViewer.Language.data.fileDownloadESignaturesNone) {
+                            viewer.viewerNodes.$downloadAsDropdown.find('.pcc-label').text(PCCViewer.Language.data.fileDownloadPdfFormat);
                         }
-
-                        if (inPreviewMode === true) {
-                            updateMarksPreview(options);
-                            updateImageToolsPreview(options);
-                        }
+                        updateUIStateAndPreview();
                     });
 
                 viewer.viewerNodes.$downloadDocumentPreview.on('click', function (ev) {
                     // Toggle preview mode.
                     var $this = $(this);
+
                     if (inPreviewMode === true) {
                         endPreview();
                     }
@@ -11701,9 +11985,16 @@ var PCCViewer = window.PCCViewer || {};
                         viewer.$dom.find('.pcc-tab-pane').hide();
                         viewer.$dom.find('.pcc-tab-preview').show();
                         viewer.viewerNodes.$selectText.addClass('pcc-disabled');
-
-                        // Store viewer state.
                         var options = getOptions(viewer.viewerNodes.$downloadDialog);
+                        if (options.redactionOptions) {
+                            var redactionViewMode = viewer.viewerControl.getRedactionViewMode();
+                            if (options.redactionOptions.mode && options.redactionOptions.mode === 'draft'
+                                && redactionViewMode === PCCViewer.RedactionViewMode.Normal) {
+                                viewer.viewerControl.setRedactionViewMode(PCCViewer.RedactionViewMode.Draft);
+                                viewer.viewerNodes.$redactionViewMode.addClass('pcc-active');
+                            }
+                        }
+                        // Store viewer state.
                         storeViewerState(options);
                         updateImageToolsPreview(options);
                         viewer.setMouseTool({ mouseToolName: 'AccusoftPanAndEdit' });
@@ -11721,7 +12012,8 @@ var PCCViewer = window.PCCViewer || {};
                         originalIsPdf = documentDisplayName.match(/.pdf$/i) !== null,
                         downloadOptions = {
                             marks: getMarksToBurn(options),
-                            filename: originalName
+                            filename: originalName,
+                            redactionOptions: options.redactionOptions
                         },
                         fileNameSuffixes = [];
 
@@ -11729,11 +12021,17 @@ var PCCViewer = window.PCCViewer || {};
                     _.each(options, function(val, opt) {
                         if (val) {
                             if (opt === 'burnAnnotations') {
-                                fileNameSuffixes.push('annotated');
+                                if (val !== PCCViewer.Language.data.fileDownloadAnnotationsNone) {
+                                    fileNameSuffixes.push('annotated');
+                                }
                             } else if (opt === 'burnRedactions') {
-                                fileNameSuffixes.push('redacted');
+                                if (val !== PCCViewer.Language.data.fileDownloadRedactionsNone) {
+                                    fileNameSuffixes.push('redacted');
+                                }
                             } else if (opt === 'burnSignatures') {
-                                fileNameSuffixes.push('signed');
+                                if (val !== PCCViewer.Language.data.fileDownloadESignaturesNone) {
+                                    fileNameSuffixes.push('signed');
+                                }
                             }
                         }
                     });
@@ -11759,15 +12057,40 @@ var PCCViewer = window.PCCViewer || {};
                 });
             }
 
+            var updateUIState = function (options) {
+                if (options.burnAnnotations !== PCCViewer.Language.data.fileDownloadAnnotationsNone ||
+                    options.burnRedactions !== PCCViewer.Language.data.fileDownloadRedactionsNone ||
+                    options.burnSignatures !== PCCViewer.Language.data.fileDownloadESignaturesNone) {
+                    viewer.viewerNodes.$downloadAsDropdown.find('.pcc-label').html(language.fileDownloadPdfFormat);
+                    viewer.viewerNodes.$downloadAsDropdown.addClass('pcc-disabled');
+
+                    options.downloadFormat = PCCViewer.Language.fileDownloadPdfFormat;
+                } else if (
+                    !(options.burnAnnotations !== PCCViewer.Language.data.fileDownloadAnnotationsNone ||
+                    options.burnRedactions !== PCCViewer.Language.data.fileDownloadRedactionsNone ||
+                    options.burnSignatures !== PCCViewer.Language.data.fileDownloadESignaturesNone)) {
+
+                    viewer.viewerNodes.$downloadAsDropdown.removeClass('pcc-disabled');
+                }
+            };
+
             var getOptions = function($overlay) {
+
+                var currentAnnotationDownloadMode = viewer.viewerNodes.$downloadAnnotationsAsDropdown.find('.pcc-label').html();
+                var currentRedactionDownloadMode = viewer.viewerNodes.$downloadRedactionsAsDropdown.find('.pcc-label').html();
+                var currentESignatureDownloadMode = viewer.viewerNodes.$downloadESignaturesAsDropdown.find('.pcc-label').html();
+
                 var options = {
                     downloadFormat: viewer.viewerNodes.$downloadAsDropdown.find('.pcc-label').html(),
-                    annotationsFormat: viewer.viewerNodes.$downloadAnnotationsFormatDropdown.find('.pcc-label').html(),
-                    burnAnnotations: viewer.viewerNodes.$downloadAnnotationsCheckbox.hasClass('pcc-checked'),
-                    burnRedactions: viewer.viewerNodes.$downloadRedactionsCheckbox.hasClass('pcc-checked'),
-                    burnSignatures: viewer.viewerNodes.$downloadSignaturesCheckbox.hasClass('pcc-checked')
+                    burnAnnotations: currentAnnotationDownloadMode,
+                    burnRedactions: currentRedactionDownloadMode,
+                    burnSignatures: currentESignatureDownloadMode,
+                    redactionOptions: undefined
                 };
 
+                if (currentRedactionDownloadMode && currentRedactionDownloadMode === PCCViewer.Language.data.fileDownloadRedactionsDraft ) {
+                    options.redactionOptions = { mode: 'draft' };
+                }
                 return options;
             };
 
@@ -11803,6 +12126,12 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             function endPreview() {
+                var redactionViewMode = viewer.viewerControl.getRedactionViewMode();
+                if (redactionViewMode === PCCViewer.RedactionViewMode.Draft) {
+                  viewer.viewerControl.setRedactionViewMode(PCCViewer.RedactionViewMode.Normal);
+                  viewer.viewerNodes.$redactionViewMode.removeClass('pcc-active');
+                }
+
                 viewer.viewerNodes.$downloadDialog.removeClass('pcc-download-preview');
                 viewer.viewerNodes.$pageList.removeClass('pcc-download-preview');
 
@@ -11833,9 +12162,9 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             function previewMarks(options) {
-                var burnRedactions = false,
-                    burnSignatures = false,
-                    burnAnnotations = false,
+                var burnRedactions = PCCViewer.Language.data.fileDownloadRedactionsNone,
+                    burnSignatures = PCCViewer.Language.data.fileDownloadESignaturesNone,
+                    burnAnnotations = PCCViewer.Language.data.fileDownloadAnnotationsNone,
                     burnOnlyChosenAnnotations = false;
 
                 viewer.viewerNodes.$downloadDialog.addClass('pcc-download-preview');
@@ -11845,7 +12174,7 @@ var PCCViewer = window.PCCViewer || {};
                     burnRedactions = options.burnRedactions;
                     burnSignatures = options.burnSignatures;
                     burnAnnotations = options.burnAnnotations;
-                    burnOnlyChosenAnnotations = options.burnAnnotations && options.annotationsFormat === language.fileDownloadChosenAnnotations;
+                    burnOnlyChosenAnnotations = options.burnAnnotations && (options.burnAnnotations === PCCViewer.Language.data.fileDownloadAnnotationsSelected);
                 }
 
                 // Loop through all marks and set their interaction mode to disable selection and hide them based on the
@@ -11860,25 +12189,28 @@ var PCCViewer = window.PCCViewer || {};
                                    (mark.getType().match(/signature/i)) ? 'signatures' : 'annotations';
                     switch (category) {
                         case 'redactions':
-                            if (burnRedactions !== true) {
+                            if (burnRedactions === PCCViewer.Language.data.fileDownloadRedactionsNone) {
                                 mark.setVisible(false);
+                            } else {
+                                mark.setVisible(true);
                             }
                             break;
                         case 'signatures':
-                            if (burnSignatures !== true) {
+                            if (burnSignatures === PCCViewer.Language.data.fileDownloadESignaturesNone) {
                                 mark.setVisible(false);
+                            } else {
+                                mark.setVisible(true);
                             }
                             break;
                         case 'annotations':
-                            if (burnAnnotations === true) {
+                            if (burnAnnotations === PCCViewer.Language.data.fileDownloadAnnotationsNone) {
+                                mark.setVisible(false);
+                            } else {
                                 if (burnOnlyChosenAnnotations === true) {
                                     if (mark.getData('Accusoft-burnAnnotation') !== '1') {
                                         mark.setVisible(false);
                                     }
                                 }
-                            }
-                            else {
-                                mark.setVisible(false);
                             }
                             break;
                     }
@@ -11915,16 +12247,16 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             function updateMarksPreview(options) {
-                var burnRedactions = false,
-                    burnSignatures = false,
-                    burnAnnotations = false,
+                var burnRedactions = PCCViewer.Language.data.fileDownloadRedactionsNone,
+                    burnSignatures = PCCViewer.Language.data.fileDownloadESignaturesNone,
+                    burnAnnotations = PCCViewer.Language.data.fileDownloadAnnotationsNone,
                     burnOnlyChosenAnnotations = false;
 
                 if (options.downloadFormat === 'PDF') {
                     burnRedactions = options.burnRedactions;
                     burnSignatures = options.burnSignatures;
                     burnAnnotations = options.burnAnnotations;
-                    burnOnlyChosenAnnotations = options.burnAnnotations && options.annotationsFormat === language.fileDownloadChosenAnnotations;
+                    burnOnlyChosenAnnotations = options.burnAnnotations && (options.burnAnnotations === PCCViewer.Language.data.fileDownloadAnnotationsSelected);
                 }
 
                 // Loop through all marks and hide or show them based on the burn options specified by the user and the current state
@@ -11936,15 +12268,20 @@ var PCCViewer = window.PCCViewer || {};
                                    (mark.getType().match(/signature/i)) ? 'signatures' : 'annotations';
                     switch (category) {
                         case 'redactions':
-                            if (burnRedactions !== true) {
+                            if (burnRedactions === PCCViewer.Language.data.fileDownloadRedactionsNone) {
                                 mark.setVisible(false);
                             }
                             else if (marksStateBeforePreview[mark.getId()].visible === true) {
+                                if (burnRedactions === PCCViewer.Language.data.fileDownloadRedactionsNormal) {
+                                    viewer.viewerControl.setRedactionViewMode(PCCViewer.RedactionViewMode.Normal);
+                                } else if (burnRedactions === PCCViewer.Language.data.fileDownloadRedactionsDraft) {
+                                    viewer.viewerControl.setRedactionViewMode(PCCViewer.RedactionViewMode.Draft);
+                                }
                                 mark.setVisible(true);
                             }
                             break;
                         case 'signatures':
-                            if (burnSignatures !== true) {
+                            if (burnSignatures === PCCViewer.Language.data.fileDownloadESignaturesNone) {
                                 mark.setVisible(false);
                             }
                             else if (marksStateBeforePreview[mark.getId()].visible === true) {
@@ -11952,7 +12289,7 @@ var PCCViewer = window.PCCViewer || {};
                             }
                             break;
                         case 'annotations':
-                            if (burnAnnotations === true) {
+                            if (burnAnnotations !== PCCViewer.Language.data.fileDownloadAnnotationsNone) {
                                 if (burnOnlyChosenAnnotations === true) {
                                     if (mark.getData('Accusoft-burnAnnotation') !== '1') {
                                         mark.setVisible(false);
@@ -11999,6 +12336,7 @@ var PCCViewer = window.PCCViewer || {};
 
             return {
                 init: init,
+                refresh: refresh,
                 enableAvailableMarkOptions: enableAvailableMarkOptions,
                 endPreview: endPreview,
                 isInPreviewMode: isInPreviewMode
@@ -12007,62 +12345,195 @@ var PCCViewer = window.PCCViewer || {};
 
         // This module manages displaying and navigating attachments.
         var attachmentManager = (function(){
-            var control, language;
-
+            var control, language, initialized;
+            var $attachmentsPanel, $currentEmail, $returnToPrevEmail, $attachmentList, $attachmentsBadge;
+            var emailsStack = [];
+            var currentDocument = { viewingSessionId: options.documentID };
 
             function init(viewerControl, languageOptions) {
                 control = viewerControl;
                 language = languageOptions;
+                $attachmentsPanel = viewer.$dom.find('[data-pcc-attachments-panel]');
+                $currentEmail = $attachmentsPanel.find('.pcc-attachments-current-email');
+                $returnToPrevEmail = $attachmentsPanel.find('.pcc-attachments-to-prev-email');
+                $attachmentList = $attachmentsPanel.find('[data-pcc-attachments-panel-list]');
+                $attachmentsBadge = viewer.viewerNodes.$attachments.find('.pcc-icon-badge');
+                updateIcon($returnToPrevEmail.find('.pcc-icon'));
+
+                $currentEmail.on('click', function() {
+                    changeCurrentDocument(getCurrentEmail());
+                });
+                $returnToPrevEmail.on('click', function() {
+                    if (emailsStack.length > 1) {
+                        emailsStack.pop();
+                        changeCurrentDocument(getCurrentEmail());
+                    }
+                });
 
                 control.on(PCCViewer.EventType.PageCountReady, loadAttachmentList);
-            }
+                viewer.viewerNodes.$attachments.on('click', showPanel);
+
+                if (options.attachmentViewingMode !== viewer.attachmentViewingModeEnum.ThisViewer) {
+                    $attachmentsPanel.find('.pcc-attachments-section-current-email').addClass('pcc-hide');
+                }
+            };
 
             // This function executes an API request to fetch the list of attachments of the current document.
             var loadAttachmentList = function () {
-                viewer.viewerNodes.$attachmentList.empty();
-
                 viewer.viewerControl.loadAttachments().then(
                     // success:
                     function (attachments) {
-                        if(!attachments.length){
-                            return;
+                        if (!initialized) {
+                            initialized = true;
+                            changeCurrentDocument(currentDocument);
+                            if (attachments.length) {
+                                viewer.viewerNodes.$attachments.removeClass('pcc-hide');
+                            }
                         }
-
-                        var markupRecordTpl, markupRecord, domStrings = [];
-
-                        markupRecordTpl = '<div class="pcc-row" data-pcc-attachment-id="{{ID}}"><a href="?viewingSessionId={{VIEWINGSESSIONID}}" target="_blank">{{DISPLAYNAME}}</a></div>';
-
-                        _.each(attachments, function(attachment, index){
-                            markupRecord = markupRecordTpl.replace('{{ID}}', index)
-                                .replace('{{VIEWINGSESSIONID}}', attachment.viewingSessionId)
-                                .replace('{{DISPLAYNAME}}', attachment.displayName);
-
-                            domStrings.push(markupRecord);
-                        });
-
-                        if (domStrings.length) {
-                            viewer.viewerNodes.$attachmentsToggle.removeClass('pcc-hide');
-                            viewer.viewerNodes.$attachmentList.append(domStrings.join('\n'))
-                                .find('.pcc-row:odd').addClass('pcc-odd');
-                        } else {
-                            viewer.notify({
-                                message: PCCViewer.Language.data.attachments.failedToLoad
-                            });
+                        if (attachments.length || documentIsEmail(currentDocument)) {
+                            updateAttachmentsList(attachments);
                         }
                     },
                     // failure:
                     function (reason) {
-                        closeLoadDialog();
                         viewer.notify({
-                            message: PCCViewer.Language.data.attachments.failedToLoad
+                            message: language.attachments.failedToLoad
                         });
                     });
             };
 
-            // A function that causes the annotation load dialog to close.
-            var closeLoadDialog = function () {
-                viewer.viewerNodes.$attachmentsToggle.filter('.pcc-active').trigger('click');
+            var updateAttachmentsList = function(attachments) {
+                // update list title with attachments count
+                var attachmentsListTitle = viewer.$dom.find('[data-pcc-attachments-panel-list-title]');
+                attachmentsListTitle.text(language.attachments.title + ' (' + attachments.length + ')');
+                $attachmentList.empty();
+                if(attachments.length) {
+
+                    $attachmentsBadge.text(attachments.length);
+                    if (attachments.length > 9) {
+                        $attachmentsBadge.addClass('pcc-icon-badge-wide');
+                    } else {
+                        if ($attachmentsBadge.hasClass('pcc-icon-badge-wide'))
+                            $attachmentsBadge.removeClass('pcc-icon-badge-wide');
+                    }
+                    $attachmentsBadge.removeClass('pcc-hide');
+
+                    var markupRecordTpl, markupRecord, domStrings = [];
+
+                    if (options.attachmentViewingMode === viewer.attachmentViewingModeEnum.ThisViewer) {
+                        markupRecordTpl = '<div class="pcc-row" data-pcc-attachment-id="{{ID}}" data-pcc-session-id="{{VIEWINGSESSIONID}}"><a class="pcc-attachments-attachment-name">{{DISPLAYNAME}}</a><span class="pcc-icon pcc-icon-check"></span></div>';
+                    } else {
+                        markupRecordTpl = '<div class="pcc-row" data-pcc-attachment-id="{{ID}}"><a class="pcc-attachments-attachment-name" href="?viewingSessionId={{VIEWINGSESSIONID}}" target="_blank" rel="noreferrer noopener">{{DISPLAYNAME}}</a></div>';
+                    }
+
+                    _.each(attachments, function(attachment, index){
+                        markupRecord = markupRecordTpl.replace('{{ID}}', index)
+                            .replace('{{VIEWINGSESSIONID}}', attachment.viewingSessionId)
+                            .replace('{{DISPLAYNAME}}', attachment.displayName);
+
+                        domStrings.push(markupRecord);
+                    });
+
+                    if (domStrings.length) {
+                        $attachmentList.append(domStrings.join('\n'));
+                        $attachmentList.find('.pcc-row').click(function(ev) {
+                            hidePanel();
+                            if (options.attachmentViewingMode === viewer.attachmentViewingModeEnum.ThisViewer) {
+                                var attachmentSessionId = ev.delegateTarget.getAttribute('data-pcc-session-id');
+                                var attachmentName = ev.delegateTarget.textContent;
+                                changeCurrentDocument({
+                                    viewingSessionId: attachmentSessionId,
+                                    name: attachmentName
+                                });
+                            }
+                        });
+                    } else {
+                        viewer.notify({
+                            message: language.attachments.failedToLoad
+                        });
+                    }
+                } else {
+                    if (!$attachmentsBadge.hasClass('pcc-hide')) {
+                        $attachmentsBadge.addClass('pcc-hide');
+                    }
+                }
+                parseIcons($attachmentList);
             };
+
+            var getCurrentEmail = function() {
+                return emailsStack[emailsStack.length - 1];
+            };
+
+            var documentIsEmail = function(document) {
+                return document.name
+                    ? document.name.slice(-4).toLowerCase() === '.eml'
+                    : /*primary email*/ true;
+            };
+
+            var changeCurrentDocument = function(document) {
+                if (documentIsEmail(document)) {
+                    if (getCurrentEmail() !== document) {
+                        emailsStack.push(document);
+                    }
+
+                    var currentEmailName = document.name || language.attachments.primaryEmail;
+                    $currentEmail
+                        .find('.pcc-attachments-current-email-name')
+                        .text(currentEmailName);
+                    $currentEmail.addClass('pcc-active');
+                    updateReturnToPrecEmailState();
+                }
+
+                currentDocument = document;
+                var viewingSessionId = document.viewingSessionId;
+                viewer.viewerControl.changeViewingSession(viewingSessionId, true);
+
+                // Highlight current document
+                $attachmentList.find('.pcc-row').removeClass('pcc-active');
+                if (getCurrentEmail().viewingSessionId === viewingSessionId) {
+                    $currentEmail.addClass('pcc-active');
+                } else {
+                    $currentEmail.removeClass('pcc-active');
+                    $attachmentList
+                        .children('.pcc-row[data-pcc-session-id="' + viewingSessionId + '"]')
+                        .addClass('pcc-active');
+                }
+                $attachmentsBadge.addClass('pcc-hide');
+                hidePanel();
+            };
+
+            var updateReturnToPrecEmailState = function() {
+                // Update return to previous email status
+                if (emailsStack.length > 1) {
+                    $returnToPrevEmail.removeClass('pcc-disabled');
+                } else {
+                    $returnToPrevEmail.addClass('pcc-disabled');
+                }
+            };
+
+            function showPanel() {
+                viewer.viewerNodes.$attachments.addClass('pcc-active');
+                if ($attachmentsPanel.length > 0) {
+                    $attachmentsPanel.css("display","block");
+                    const desirableLeftOffset = 185;
+                    const overflow = $(window).width() - (desirableLeftOffset + $attachmentsPanel[0].offsetWidth);
+                    if (overflow < 0) {
+                        $attachmentsPanel.css('left', desirableLeftOffset + overflow + 'px');
+                    } else {
+                        $attachmentsPanel.css('left', desirableLeftOffset + 'px');
+                    }
+                    $(document).mouseup(hidePanel);
+                }
+            }
+
+            function hidePanel(e) {
+                // if the target of the click isn't the attachments panel nor a descendant of the attachments panel
+                if (!e || (!$attachmentsPanel.is(e.target) && $attachmentsPanel.has(e.target).length === 0)) {
+                    viewer.viewerNodes.$attachments.removeClass('pcc-active');
+                    $attachmentsPanel.css("display","none");
+                    $(document).unbind('mouseup', hidePanel);
+                }
+            }
 
             return {
                 init: init
@@ -12100,6 +12571,12 @@ var PCCViewer = window.PCCViewer || {};
                 attachListeners();
 
                 // this will initialize the image list and the mouse tools
+                initImageStampMouseTools();
+            };
+
+            var refresh = function () {
+                annotationTool = PCCViewer.MouseTools.getMouseTool('AccusoftImageStampAnnotation');
+                redactionTool = PCCViewer.MouseTools.getMouseTool('AccusoftImageStampRedaction');
                 initImageStampMouseTools();
             };
 
@@ -12416,6 +12893,7 @@ var PCCViewer = window.PCCViewer || {};
 
             return {
                 init: init,
+                refresh: refresh,
                 getImageUrl: getImageUrl,
                 selectToolImage: selectToolImage,
                 selectMarkImage: selectMarkImage
@@ -12525,6 +13003,10 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
+            function onViewingSessionChanged() {
+                thumbControl.setSelectedPages(control.pageNumber);
+            }
+
             function calculateMinContainerSize(){
                 // Figure out the minimum size based on the first thumbnail size,
                 // and allow for extra room to handle the scroll bar nad drag handle.
@@ -12626,6 +13108,7 @@ var PCCViewer = window.PCCViewer || {};
             function attachEvents(){
                 thumbControl.on(PCCViewer.ThumbnailControl.EventType.PageSelectionChanged, onThumbnailSelectionChanged);
                 control.on(PCCViewer.EventType.PageChanged, onSetSelectedPages);
+                control.on(PCCViewer.EventType.ViewingSessionChanged, onViewingSessionChanged);
 
                 debouncedResize = onWindowResize(function(){
                     if (!isEmbedded) { return; }
@@ -12641,6 +13124,7 @@ var PCCViewer = window.PCCViewer || {};
             function detachEvents(){
                 thumbControl.off(PCCViewer.ThumbnailControl.EventType.PageSelectionChanged, onThumbnailSelectionChanged);
                 control.off(PCCViewer.EventType.PageChanged, onSetSelectedPages);
+                control.off(PCCViewer.EventType.ViewingSessionChanged, onViewingSessionChanged);
 
                 $(window).off('resize', debouncedResize);
 
@@ -13274,6 +13758,7 @@ var PCCViewer = window.PCCViewer || {};
                 $(window).off('mousemove', trackMouse);
                 $scrollDom.off('scroll', trackScroll);
                 $(window).off('resize', trackResize);
+                $(window).off('scroll', trackScroll);
                 globalOpts = {};
                 proximityEnabled = firstMoveRecorded = false;
                 scrollTimeout = resizeTimeout = undefined;

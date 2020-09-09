@@ -2,33 +2,30 @@
 .pccv .pcc-select-download {
     width: 100%;
     margin-bottom: 10px;
+
+    .pcc-label {
+        width: 100%;
+    }
+
+    .pcc-dropdown {
+        width: 98%;
+        height: 55px;
+    }
 }
 
-.pccv .pcc-select-download .pcc-label {
-    width: 100%;
-}
-
-.pccv .pcc-select-download .pcc-dropdown {
-    width: 98%;
-    height: 55px;
-}
-
-.pccv [data-pcc-toggle=dropdown-download-annotations-format].pcc-select {
-    height: 20px;
-}
-
-.pccv [data-pcc-toggle=dropdown-download-annotations-format].pcc-disabled {
+.pccv .pcc-select-download.pcc-disabled {
     color: @font_color_d40;
     cursor: default !important;
 }
 
-.pccv [data-pcc-toggle=dropdown-download-annotations-format] .pcc-label {
+.pccv [data-pcc-toggle=dropdown-download-annotations] .pcc-dropdown {
     width: 100%;
+    height: 78px;
 }
 
-.pccv [data-pcc-toggle=dropdown-download-annotations-format] .pcc-dropdown {
-    width: 98px;
-    height: 52px;
+.pccv [data-pcc-toggle=dropdown-download-redactions] .pcc-dropdown {
+    width: 100%;
+    height: 78px;
 }
 
 .pccv .pcc-dialog-download .pcc-row {

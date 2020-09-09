@@ -194,7 +194,7 @@
                                 <span><em class="pcc-select-multiple-redaction-reason"><%= reason.reason %></em><% if (reason.description) { %>: <span class="pcc-select-multiple-redaction-description"><%= reason.description %></span><% } %></span>
                             </div>
                             <% } else { %>
-                            <div class="pcc-close-dropdown <%= reason.class %>  <%= (index % 2 === 0) ? 'even' : 'odd' %>" title="<%= reason.reason %>"><span><%= reason.reason %></span></div>
+                            <div class="<%= reason.class %>  <%= (index % 2 === 0) ? 'even' : 'odd' %>" title="<%= reason.reason %>"><span><%= reason.reason %></span></div>
                             <% } %>
                         <% }); %>
                     </div>
