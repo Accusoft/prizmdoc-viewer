@@ -257,7 +257,7 @@ var PCCViewer = window.PCCViewer || {};
 
         // full page redaction dialog
         this.isPageRedactionCanceled = false;
-        this.fullPageRedactionReason = options.redactionReasons.enableMultipleRedactionReasons ? [] : '';
+        this.fullPageRedactionReason = (options.redactionReasons && options.redactionReasons.enableMultipleRedactionReasons) ? [] : '';
         this.autoApplyRedactionReason = null;
 
         // This enum is a whitelist for sticky mouse tools. Tools on this list, with a value
@@ -2982,6 +2982,8 @@ var PCCViewer = window.PCCViewer || {};
                     tmplRedactionReasons.reasons = viewer.redactionReasonsExtended.reasons.map(function(reason) {
                         return _.clone(reason);
                     });
+                } else {
+                    tmplRedactionReasons.reasons = [];
                 }
                 var customRedactionReason = '';
                 if (mark.getReason && !options.enableMultipleRedactionReasons) {
