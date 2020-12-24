@@ -1,3 +1,6 @@
+// Copyright (C) 1996-2020 Accusoft Corporation
+// See https://github.com/Accusoft/prizmdoc-viewer/blob/master/LICENSE
+
 "use strict";
 var el = document.querySelector('#print');
 

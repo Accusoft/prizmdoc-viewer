@@ -1,5 +1,5 @@
-/* jshint devel: false, unused: false */
-/* global jQuery, _ */
+// Copyright (C) 1996-2020 Accusoft Corporation
+// See https://github.com/Accusoft/prizmdoc-viewer/blob/master/LICENSE
 
 //---------------------------------------------------------------------------------------------------------------------
 //
@@ -8,6 +8,9 @@
 //  files whenever you can.
 //
 //---------------------------------------------------------------------------------------------------------------------
+
+/* jshint devel: false, unused: false */
+/* global jQuery, _ */
 
 var PCCViewer = window.PCCViewer || {};
 
@@ -4880,8 +4883,13 @@ var PCCViewer = window.PCCViewer || {};
             resultView.selectId = function(result){
                 if (result instanceof PCCViewer.SearchResult) {
                     return result.getId();
-                } else if (result instanceof PCCViewer.SearchTaskResult && result.source instanceof PCCViewer.Comment) {
-                    return 'C' + result.getId();
+                } else if (result instanceof PCCViewer.SearchTaskResult && result.source) {
+                    if (result.source instanceof PCCViewer.Comment) {
+                        return 'C' + result.commentIndex + '_' + result.getId();
+                    } else if (result.source instanceof PCCViewer.Mark) {
+                        var mark = result.source;
+                        return 'M' + mark.getId() + '_' + result.getId();
+                    }
                 } else {
                     var mark = result.source;
                     return 'M' + mark.getId();
@@ -6431,7 +6439,8 @@ var PCCViewer = window.PCCViewer || {};
 
             var executeCommentsSearch = function(searchQuery){
                 var searchTask = new PCCViewer.SearchTask(searchQuery),
-                    results = [];
+                    results = [],
+                    commentIndex = 0;
 
                 function searchComments(comments) {
                     _.each(comments, function(c) {
@@ -6444,12 +6453,14 @@ var PCCViewer = window.PCCViewer || {};
                                 // augment the properties of the result object
                                 result.source = c;
                                 result.index = markIndex;
+                                result.commentIndex = commentIndex;
                                 result.getPageNumber = function(){ return c.getConversation().getMark().getPageNumber(); };
                                 result.getBoundingRectangle = function(){ return c.getConversation().getMark().getBoundingRectangle(); };
 
                             });
 
                             results = results.concat( resultsInComment );
+                            commentIndex++;
                         }
                     });
                 }
@@ -6489,8 +6500,38 @@ var PCCViewer = window.PCCViewer || {};
                 return true;
             };
 
-            //When a search button is selected, this function will manage the toggle state of itself
-            //if additional buttons should be affected than the button needs its own click handler
+            // When beginsWith is selected endsWith should not be
+            var beginsWithClickHandler = function (beginsWith) {
+                if (checkDisabled($(beginsWith))) {
+                    return false;
+                }
+
+                $(beginsWith).toggleClass('pcc-active');
+
+                if ($(beginsWith).hasClass('pcc-active')) {
+                    viewer.viewerNodes.$searchEndsWith.removeClass('pcc-active')
+                } 
+
+                return true;
+            };
+
+            // When endsWith is selected beginsWith should not be
+            var endsWithClickHandler = function (endsWith) {
+                if (checkDisabled($(endsWith))) {
+                    return false;
+                }
+
+                $(endsWith).toggleClass('pcc-active');
+
+                if ($(endsWith).hasClass('pcc-active')) {
+                    viewer.viewerNodes.$searchBeginsWith.removeClass('pcc-active')
+                } 
+
+                return true;
+            };
+
+            // When a search button is selected, this function will manage the toggle state of itself
+            // if additional buttons should be affected than the button needs its own click handler
             var genericSearchButtonClickHandler = function(btnElement) {
                 var $btnElement = $(btnElement);
                 if(checkDisabled($btnElement)) {
@@ -6940,8 +6981,8 @@ var PCCViewer = window.PCCViewer || {};
                 executeSearch: executeSearch,
                 wildcardClickHandler: wildcardClickHandler,
                 matchWholeWordClickHandler: genericSearchButtonClickHandler,
-                beginsWithClickHandler: genericSearchButtonClickHandler,
-                endsWithClickHandler: genericSearchButtonClickHandler,
+                beginsWithClickHandler: beginsWithClickHandler,
+                endsWithClickHandler: endsWithClickHandler,
                 exactPhraseClickHandler: genericSearchButtonClickHandler,
                 matchCaseClickHandler: genericSearchButtonClickHandler,
                 proximityClickHandler: proximityClickHandler,
