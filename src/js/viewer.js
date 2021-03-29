@@ -1,4 +1,4 @@
-// Copyright (C) 1996-2020 Accusoft Corporation
+// Copyright (C) 1996-2021 Accusoft Corporation
 // See https://github.com/Accusoft/prizmdoc-viewer/blob/master/LICENSE
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3625,7 +3625,7 @@ var PCCViewer = window.PCCViewer || {};
             viewer.viewerControl.setCurrentMouseTool('AccusoftPanAndEdit');
             viewer.viewerNodes.$panTool.click();
 
-            if (viewer.viewerControl.redactionViewMode === PCCViewer.RedactionViewMode.Draft) { 
+            if (viewer.viewerControl.redactionViewMode === PCCViewer.RedactionViewMode.Draft) {
               viewer.viewerNodes.$redactionViewMode.addClass('pcc-active');
             } else {
               viewer.viewerNodes.$redactionViewMode.removeClass('pcc-active');
@@ -6113,6 +6113,7 @@ var PCCViewer = window.PCCViewer || {};
                     // previously selected
                     activeSearchResultId = undefined;
                     activeSearchResultRestoreId = null;
+                    $event.off('deselectPreviousResult');
                 } else if (activeSearchResultId !== undefined) {
                     // if this is a rerun, like maybe from a filter, make
                     // sure to save the state of the selected result so that
@@ -6510,7 +6511,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 if ($(beginsWith).hasClass('pcc-active')) {
                     viewer.viewerNodes.$searchEndsWith.removeClass('pcc-active')
-                } 
+                }
 
                 return true;
             };
@@ -6525,7 +6526,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 if ($(endsWith).hasClass('pcc-active')) {
                     viewer.viewerNodes.$searchBeginsWith.removeClass('pcc-active')
-                } 
+                }
 
                 return true;
             };
@@ -6923,7 +6924,7 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.viewerControl.on(PCCViewer.EventType.TextSelected, function(ev) {
                     textSelection = ev.textSelection;
                 });
-                
+
                 viewer.viewerControl.on(PCCViewer.EventType.MarkCreated, function(ev) {
                     // Ensure there is text selection, mark was created with mouse
                     if (textSelection && ev.clientX && ev.clientY)
@@ -10583,7 +10584,7 @@ var PCCViewer = window.PCCViewer || {};
                                 }
                             });
 
-                            // Prevent selecting item on touch devices when you just want to scroll 
+                            // Prevent selecting item on touch devices when you just want to scroll
                             // the immediate menu
                             var preventSelect;
                             $(li).on('touchstart', function($ev) {
