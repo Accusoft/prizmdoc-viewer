@@ -4832,7 +4832,7 @@ var PCCViewer = window.PCCViewer || {};
                     });
 
                     // select this comment
-                    comment.setData('Accusoft-highlight', buildCommentSelectionString(thisCommentResults, result));
+                    comment.setSessionData('Accusoft-highlight', buildCommentSelectionString(thisCommentResults, result));
 
                     // re-render the conversation view with the highlight in effect
                     if (viewer.viewerControl.getMarkById(comment.getConversation().getMark().getId())) {
@@ -4852,7 +4852,7 @@ var PCCViewer = window.PCCViewer || {};
                         // register an event to deselect this comment when another result is selected
                         // this will execute only once, on the first result select
                         $event.one('deselectPreviousResult', function(){
-                            comment.setData('Accusoft-highlight', buildCommentSelectionString(thisCommentResults));
+                            comment.setSessionData('Accusoft-highlight', buildCommentSelectionString(thisCommentResults));
 
                             // check that this mark still exists
                             if (viewer.viewerControl.getMarkById( comment.getConversation().getMark().getId()) ){
@@ -4945,7 +4945,7 @@ var PCCViewer = window.PCCViewer || {};
                     // build selection strings for each unique comment
                     el.selectionString = buildCommentSelectionString(el.selections);
                     // assign the selection string to be rendered
-                    el.source.setData('Accusoft-highlight', el.selectionString);
+                    el.source.setSessionData('Accusoft-highlight', el.selectionString);
                     // return the conversation
                     return el.source.getConversation();
                 }).value();
@@ -5012,7 +5012,8 @@ var PCCViewer = window.PCCViewer || {};
 
                 var conversations = _.chain(collection).filter(function(el){
                     // find all results in the collection that belong to comments
-                    return (el.source && el.source instanceof PCCViewer.Comment && el.source.getData('Accusoft-highlight'));
+                    return (el.source && el.source instanceof PCCViewer.Comment &&
+                        el.source.getSessionData('Accusoft-highlight'));
                 }).map(function(el){
                     // push conversations to the unique array if they are not already in there
                     if (!_.contains(uniqueConversations, el.source.getConversation())) {
@@ -5020,7 +5021,7 @@ var PCCViewer = window.PCCViewer || {};
                     }
 
                     // check if there is a highlight to remove
-                    el.source.setData('Accusoft-highlight', undefined);
+                    el.source.setSessionData('Accusoft-highlight', undefined);
                 });
 
                 // check in case some marks were deleted before clearing the results
@@ -5803,6 +5804,7 @@ var PCCViewer = window.PCCViewer || {};
                 if (activeSearchResultId !== undefined) {
                     var $activeSearchResult = viewer.viewerNodes.$searchResults.find("[data-pcc-search-result-id='" + activeSearchResultId + "']");
                     $activeSearchResult.addClass('pcc-active');
+                    $activeSearchResult.attr('data-pcc-active-toggle', 'active');
                     if (allResultsFragment.childNodes.length > activeResultPageStartIndex + resultsPageLength && activeResultPageStartIndex > 0) {
                         updatePrevNextButtons();
                     }
@@ -6113,13 +6115,13 @@ var PCCViewer = window.PCCViewer || {};
                     // previously selected
                     activeSearchResultId = undefined;
                     activeSearchResultRestoreId = null;
-                    $event.off('deselectPreviousResult');
                 } else if (activeSearchResultId !== undefined) {
                     // if this is a rerun, like maybe from a filter, make
                     // sure to save the state of the selected result so that
                     // we can restore it later
                     activeSearchResultRestoreId = activeSearchResultId;
                 }
+                $event.off('deselectPreviousResult');
 
                 searchResultsCount = 0;
 
@@ -6135,6 +6137,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 // clear results DOM
                 viewer.viewerNodes.$searchResults.empty();
+                resetSearchParams();
                 // clear the search from the viewer
                 viewer.viewerControl.clearSearch();
                 // reset the results throttle variables
@@ -6279,8 +6282,6 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.viewerNodes.$searchCancel.removeClass('pcc-hide');
                 viewer.viewerNodes.$searchInput.attr('disabled', 'disabled');
                 viewer.viewerNodes.$searchClear.attr('disabled', 'disabled');
-
-                resetSearchParams();
 
                 viewer.$dom.find('.pcc-dropdown').removeClass('pcc-open');
 
@@ -11081,7 +11082,7 @@ var PCCViewer = window.PCCViewer || {};
                 _.forEach(comments, function(el, i, arr){
                     var fragment = document.createElement('div'),
                         editMode = el.getData(editModeKey),
-                        highlight = el.getData(highlightKey),
+                        highlight = el.getSessionData(highlightKey),
                         date = formatDate(el.getCreationTime(), dateFormat.toString()),
                         commentId = markId.toString() + 'c' + i;
 
