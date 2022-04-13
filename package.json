@@ -6,7 +6,7 @@
     "@prizmdoc/viewer-core": "^13.19.0"
   },
   "devDependencies": {
-    "async": "^2.6.3",
+    "async": "^3.2.2",
     "del": "^4.1.1",
     "express": "^4.17.1",
     "gulp": "^4.0.2",
