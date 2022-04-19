@@ -200,7 +200,8 @@
                     </div>
                 </div>
                 <% if (menuOptions.enableCustomRedactionReason) { %>
-                <input type="text" data-pcc-redaction-reason-input value="<%= customRedactionReason%>">
+                <!-- Set value using the template specifier that escapes HTML to prevent breaking out of attribute value unexpectedly (see https://underscorejs.org/#template) -->
+                <input type="text" data-pcc-redaction-reason-input value="<%- customRedactionReason%>">
                 <% } %>
             <% } %>
         </div>

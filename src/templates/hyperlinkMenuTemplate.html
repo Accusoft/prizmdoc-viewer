@@ -11,14 +11,14 @@
         </div>
     <%} else if (mode === "view" && link) { %>
         <% if (hrefType === "page") { %>
-            <!-- Set href using the template specifier that escapes HTML to prevent breaking out of attribute value unexpectedly (see https://underscorejs.org/#template) -->
-            <a href="<%- link %>" data-pcc-link-navigate data-href-type="<%= hrefType %>"><%= language.documentHyperlinkGotoPage + link %>.</a>
+            <!-- Set href and content using the template specifier that escapes HTML to prevent breaking out of attribute value unexpectedly (see https://underscorejs.org/#template) -->
+            <a href="<%- link %>" data-pcc-link-navigate data-href-type="<%= hrefType %>"><%- language.documentHyperlinkGotoPage + link %>.</a>
         <%} else  { %>
             <% if (hyperlinkType === "textHyperlink") { %>
                 <button data-pcc-hyperlink="edit" class="pcc-icon pcc-icon-edit" title="<%= language.editButton %>"></button>
             <% } %>
-            <!-- Set href using the template specifier that escapes HTML to prevent breaking out of attribute value unexpectedly (see https://underscorejs.org/#template) -->
-            <a href="<%- link %>" data-pcc-link-navigate target="_blank"><%= link %></a>
+            <!-- Set href and content using the template specifier that escapes HTML to prevent breaking out of attribute value unexpectedly (see https://underscorejs.org/#template) -->
+            <a href="<%- link %>" data-pcc-link-navigate target="_blank"><%- link %></a>
         <% } %>
     <% } %>
 </div>

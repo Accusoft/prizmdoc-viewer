@@ -1,4 +1,4 @@
-// Copyright (C) 1996-2021 Accusoft Corporation
+// Copyright (C) 1996-2022 Accusoft Corporation
 // See https://github.com/Accusoft/prizmdoc-viewer/blob/master/LICENSE
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2586,7 +2586,7 @@ var PCCViewer = window.PCCViewer || {};
                 el.attr('data-pcc-notify-type', 'error');
             }
 
-            el.addClass('pcc-open').find('p').html(args.message);
+            el.addClass('pcc-open').find('p').text(args.message);
 
             if (!args.sticky) {
                 clearTimeout(viewer.notifyTimer);
@@ -6237,18 +6237,18 @@ var PCCViewer = window.PCCViewer || {};
                 if(proximityTerm){
                     if(!proximityTerm.distance){
                         viewer.notify({
-                            message: 'Incorrect syntax. Use ~n format to specify the distance of the proximity search. <br/><br/> Example: <code>term1 term2 ~3</code>',
+                            message: PCCViewer.Language.data.proximitySearchMissingDistanceError || 'Incorrect syntax. Use ~n format to specify the distance of the proximity search. \n\n Example: term1 term2 ~3',
                             sticky: true
                         });
                         updateStatusUi(PCCViewer.Language.data.nothingFound, false, 100);
                         return;
                     }
 
-                    if(proximityTerm.terms.length !== 2){
+                    if(proximityTerm.terms.length !== 2) {
                         viewer.notify({
                             message: proximityTerm.terms.length > 2 ?
-                                    'You can only specify two search terms in a proximity search':
-                                    'You must specify at least two search terms in a proximity search',
+                                PCCViewer.Language.data.proximitySearchTooManyTermsError || 'You can only specify two search terms in a proximity search':
+                                PCCViewer.Language.data.proximitySearchNotEnoughTermsError || 'You must specify at least two search terms in a proximity search',
                             sticky: true
                         });
                         updateStatusUi(PCCViewer.Language.data.nothingFound, false, 100);
