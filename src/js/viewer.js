@@ -5874,7 +5874,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 var resultsVerbiage = (searchResultsCount === 0) ? PCCViewer.Language.data.nothingFound : '',
                     pagesWithoutTextMsg = '',
-                    countPagesWithoutText, pageWording, pagesWithoutTextWarning = '';
+                    countPagesWithoutText, pagesWithoutTextWarning = '';
 
                 updateStatusUi(resultsVerbiage, false, 100);
 
@@ -5888,20 +5888,16 @@ var PCCViewer = window.PCCViewer || {};
                     viewer.viewerNodes.$searchQuickActionRedact.removeAttr('disabled');
                 }
 
-
-                if (!searchResultsCount) {
-                    viewer.viewerNodes.$searchResultsContainer.removeClass('pcc-show-lg');
-                } else {
-                    viewer.viewerNodes.$searchResultsContainer.addClass('pcc-show-lg');
-                }
+                viewer.viewerNodes.$searchResultsContainer.addClass('pcc-show-lg');
 
                 countPagesWithoutText = searchRequest.getPagesWithoutText ? searchRequest.getPagesWithoutText().length : 0;
 
                 if (viewer.pageCount === countPagesWithoutText) {
-                    pagesWithoutTextWarning = PCCViewer.Language.data.noSearchableText;
+                    var currentSearchStatusWording = viewer.viewerNodes.$searchResultCount.html();
 
+                    pagesWithoutTextWarning = currentSearchStatusWording + '<span class="pcc-icon pcc-icon-alert" data-pcc-search="msg" data-msg="{{MSG}}"></span>'
+                        .replace('{{MSG}}', PCCViewer.Language.data.noSearchableText);
                 } else if (countPagesWithoutText > 0) {
-
                     var currentSearchStatusWording = viewer.viewerNodes.$searchResultCount.html();
 
                     pagesWithoutTextMsg = countPagesWithoutText + ' ' + PCCViewer.Language.data.cannotSearch;

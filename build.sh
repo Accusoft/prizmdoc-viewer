@@ -4,7 +4,7 @@ set -e
 
 echo "Linux Prizmdoc-Viewer Build"
 
-NVM_VERSION=16.13.2
+NVM_VERSION=16.15.1
 
 nvm install $NVM_VERSION
 nvm use $NVM_VERSION
