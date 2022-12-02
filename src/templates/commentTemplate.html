@@ -1,24 +1,24 @@
-<div class='pcc-comment<%= (!!first) ? " pcc-comment-first" : "" %><%= (!!last) ? " pcc-comment-last" : "" %><%= (editMode !== undefined) ? " pcc-comment-edit-container" : "" %>'>
-    <% if (editMode !== undefined) { %>
-        <textarea class='pcc-comment-edit'><%- prevText %></textarea>
+<div class='pcc-comment<%= (!!data.first) ? " pcc-comment-first" : "" %><%= (!!data.last) ? " pcc-comment-last" : "" %><%= (data.editMode !== undefined) ? " pcc-comment-edit-container" : "" %>'>
+    <% if (data.editMode !== undefined) { %>
+        <textarea class='pcc-comment-edit'><%- data.prevText %></textarea>
         <div class='pcc-pull-right'>
-            <button data-pcc-comment='cancel' title='<%= language.cancelButton %>'><%= language.cancelButton %></button>
-            <button data-pcc-comment='done' title='<%= language.doneButton %>'><%= language.doneButton %></button>
+            <button data-pcc-comment='cancel' title='<%= data.language.cancelButton %>'><%= data.language.cancelButton %></button>
+            <button data-pcc-comment='done' title='<%= data.language.doneButton %>'><%= data.language.doneButton %></button>
         </div>
         <div class='pcc-clear'></div>
     <%} else { %>
-        <% if (isMine === true) { %>
+        <% if (data.isMine === true) { %>
             <div data-pcc-comment-menu>
                 <div class='pcc-icon pcc-icon-list pcc-comment-menu-trigger'></div>
-                <button class='pcc-icon pcc-icon-edit' data-pcc-comment-edit title='<%= language.editButton %>'></button>
-                <button class='pcc-icon pcc-icon-delete' data-pcc-comment-delete title='<%= language.deleteButton %>'></button>
+                <button class='pcc-icon pcc-icon-edit' data-pcc-comment-edit title='<%= data.language.editButton %>'></button>
+                <button class='pcc-icon pcc-icon-delete' data-pcc-comment-delete title='<%= data.language.deleteButton %>'></button>
                 <div class="pcc-clear"></div>
             </div>
         <% } %>
-        <div class='pcc-comment-text'><%- comment.getText() %></div>
+        <div class='pcc-comment-text'><%- data.comment.getText() %></div>
         <div class='pcc-comment-footer pcc-clearfix'>
-            <div class='pcc-comment-date pcc-pull-left'><%- date %></div>
-            <div class='pcc-comment-owner pcc-pull-right'><%- owner %></div>
+            <div class='pcc-comment-date pcc-pull-left'><%- data.date %></div>
+            <div class='pcc-comment-owner pcc-pull-right'><%- data.owner %></div>
         </div>
     <% } %>
 </div>

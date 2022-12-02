@@ -176,4 +176,10 @@ the source code of this repository somewhere in your web application and then
 configure your own build scripts to run this build and copy the new `dist`
 output into the place where your web application needs it.
 
+Note the following if you are updating from version 13.21 (or previous) to version
+13.22 (or later): If you have customized HTML templates, build the Viewer, and use
+the `viewerCustomizations.js` output in your application, then before building the
+Viewer you will need to update your HTML templates to access all properties via a
+`data` object (for example, `data.myProperty` instead of `myProperty`).
+
 [PrizmDoc Viewer]: https://www.accusoft.com/products/prizmdoc/overview/

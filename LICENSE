@@ -21,9 +21,6 @@ Exceptions:
       under the MIT license.
       See https://underscorejs.org.
 
-    - The HTML5 Shiv (html5shiv.js) 3.7.0 is dual licensed under the MIT license
-      or the GPL Version 2 license. See https://github.com/aFarkas/html5shiv.
-
     - normalize.css 3.0.0 is copyright Nicolas Gallagher and Jonathan Neal and
       is licensed under the MIT license. See
       https://github.com/necolas/normalize.css.

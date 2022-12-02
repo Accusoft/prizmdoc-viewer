@@ -1,14 +1,14 @@
 <div class="pcc-overlay-inner pcc-overlay-center">
 <!-- <button class="pcc-overlay-closer" data-pcc-esign="cancel">&#215;</button> -->
 
-    <div class="pcc-viewset <% if(activeTab === 'manage') { %>pcc-tall<% } %>">
-        <div class="pcc-view-content <% if(activeTab !== 'freehand') { %>pcc-hide<% } %>">
+    <div class="pcc-viewset <% if(data.activeTab === 'manage') { %>pcc-tall<% } %>">
+        <div class="pcc-view-content <% if(data.activeTab !== 'freehand') { %>pcc-hide<% } %>">
             <div data-pcc-esign="draw" class="pcc-esign-draw-pad"></div>
             <div class="pcc-esign-draw-line"></div>
         </div>
 
 
-        <div class="pcc-view-content <% if(activeTab !== 'text') { %>pcc-hide<% } %>">
+        <div class="pcc-view-content <% if(data.activeTab !== 'text') { %>pcc-hide<% } %>">
             <div class="pcc-row pcc-center">
                 <div>Type your signature:</div>
                 <input type="text" data-pcc-esign="textInput" />
@@ -16,37 +16,37 @@
             <div data-pcc-signature-previews></div>
         </div>
 
-        <div class="pcc-view-content <% if(activeTab !== 'manage') { %>pcc-hide<% } %> pcc-tall">
+        <div class="pcc-view-content <% if(data.activeTab !== 'manage') { %>pcc-hide<% } %> pcc-tall">
             <div data-pcc-esign="manageView" class="pcc-esign-manage">
-                <div class='pcc-text-center pcc-margin-top'><%= esignNoSignaturesAvailable %></div>
+                <div class='pcc-text-center pcc-margin-top'><%= data.esignNoSignaturesAvailable %></div>
             </div>
         </div>
     </div>
 
     <div class="pcc-layer-up-relative">
 
-        <% if(activeTab === 'manage') { %>
+        <% if(data.activeTab === 'manage') { %>
             <div class="pcc-row">
                 <div class="pcc-col-4">
-                    <button data-pcc-esign="drawNew" title="<%= esignNewDraw %>"><%= esignNewDraw %></button>
+                    <button data-pcc-esign="drawNew" title="<%= data.esignNewDraw %>"><%= data.esignNewDraw %></button>
                 </div>
                 <div class="pcc-col-4">
-                    <button data-pcc-esign="typeNew" title="<%= esignNewType %>"><%= esignNewType %></button>
+                    <button data-pcc-esign="typeNew" title="<%= data.esignNewType %>"><%= data.esignNewType %></button>
                 </div>
                 <div class="pcc-col-4">
-                    <button data-pcc-esign="cancel" title="<%= doneButton %>"><%= doneButton %></button>
+                    <button data-pcc-esign="cancel" title="<%= data.doneButton %>"><%= data.doneButton %></button>
                 </div>
             </div>
         <% } else { %>
             <div class="pcc-row">
-                <% if (categories && categories.length) { %>
+                <% if (data.categories && data.categories.length) { %>
                     <div class="pcc-pull-right pcc-width-50">
-                        <div class="pcc-select pcc-select-esign-category pcc-align-right pcc-width-100" data-pcc-esign-category data-pcc-toggle="dropdown-esign-category" title="<%= fillOpacityMenuItem %>">
-                            <span class="pcc-hide pcc-show-lg-inline"><%= category %></%></span>
-                            <div class="pcc-label"><%= categories[0] %></div>
+                        <div class="pcc-select pcc-select-esign-category pcc-align-right pcc-width-100" data-pcc-esign-category data-pcc-toggle="dropdown-esign-category" title="<%= data.fillOpacityMenuItem %>">
+                            <span class="pcc-hide pcc-show-lg-inline"><%= data.category %></%></span>
+                            <div class="pcc-label"><%= data.categories[0] %></div>
                             <div class="pcc-arrow-down"></div>
                             <div data-pcc-toggle-id="dropdown-esign-category" class="pcc-dropdown pcc-dropup pcc-align-right">
-                                <% _.forEach(categories, function(category) { %>
+                                <% _.forEach(data.categories, function(category) { %>
                                     <div><%= category %></div>
                                 <% }); %>
                             </div>
@@ -55,18 +55,18 @@
                 <% } %>
                 <div data-pcc-checkbox="esignSave" data-pcc-esign-save="true" class="pcc-checked pcc-checkbox pcc-width-50">
                     <span class="pcc-icon pcc-icon-check"></span>
-                    <label><%= esignSaveForLater %></label>
+                    <label><%= data.esignSaveForLater %></label>
                 </div>
             </div>
             <div class="pcc-row">
                 <div class="pcc-col-4">
-                    <button data-pcc-esign="cancel" title="<%= cancelButton %>"><%= cancelButton %></button>
+                    <button data-pcc-esign="cancel" title="<%= data.cancelButton %>"><%= data.cancelButton %></button>
                 </div>
                 <div class="pcc-col-4">
-                    <button data-pcc-esign="clear" title="<%= clearButton %>"><%= clearButton %></button>
+                    <button data-pcc-esign="clear" title="<%= data.clearButton %>"><%= data.clearButton %></button>
                 </div>
                 <div class="pcc-col-4">
-                    <button data-pcc-esign="save" title="<%= saveButton %>"><%= saveButton %></button>
+                    <button data-pcc-esign="save" title="<%= data.saveButton %>"><%= data.saveButton %></button>
                 </div>
             </div>
         <% } %>

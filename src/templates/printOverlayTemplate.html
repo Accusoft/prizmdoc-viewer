@@ -3,7 +3,7 @@
     <div class="pcc-row">
         <div class="pcc-col-6">
             <div class="pcc-row">
-                <h3 class="page-title"><%= printTitle %></h3>
+                <h3 class="page-title"><%= data.printTitle %></h3>
             </div>
         </div>
         <div class="pcc-col-6">
@@ -12,31 +12,31 @@
             </div>
         </div>
     </div>
-    <% if (typeof(show) !== 'undefined' && show === 'form') { %>
+    <% if (typeof(data.show) !== 'undefined' && data.show === 'form') { %>
     <div class="pcc-row">
         <!-- Pages -->
         <div class="pcc-col-6">
             <div class="pcc-print-pages">
                 <div class="pcc-row">
-                    <h4><%= printPages %></h4>
+                    <h4><%= data.printPages %></h4>
                 </div>
                 <div class="pcc-row">
                     <div data-pcc-radio="printPage" data-pcc-print-page="printAllPages" class="pcc-checked">
                         <span class="pcc-icon pcc-icon-circle"></span>
-                        <label><%= printAll %></label>
+                        <label><%= data.printAll %></label>
                     </div>
                 </div>
                 <div class="pcc-row">
                     <div data-pcc-radio="printPage" data-pcc-print-page="printCurrentPage">
                         <span class="pcc-icon pcc-icon-circle"></span>
-                        <label><%= printCurrent %></label>
+                        <label><%= data.printCurrent %></label>
                     </div>
                 </div>
                 <div class="pcc-row">
                     <div data-pcc-radio="printPage" data-pcc-print-page="printRange">
                         <span class="pcc-icon pcc-icon-circle"></span>
-                        <input type="text" data-pcc-print="range" placeholder="<%= rangePlaceholder %>"
-                                            title="<%= printRange %>">
+                        <input type="text" data-pcc-print="range" placeholder="<%= data.rangePlaceholder %>"
+                                            title="<%= data.printRange %>">
                     </div>
                 </div>
             </div>
@@ -45,48 +45,48 @@
         <div class="pcc-col-6">
             <div class="pcc-print-orientation pcc-row">
                 <div class="pcc-row">
-                    <h4><%= printOrientation %></h4>
+                    <h4><%= data.printOrientation %></h4>
                 </div>
                 <div class="pcc-row">
                     <select data-pcc-select="orientation" class="pcc-print-select">
-                        <option value="portrait"><%= printPortrait %></option>
-                        <option value="landscape"><%= printLandscape %></option>
+                        <option value="portrait"><%= data.printPortrait %></option>
+                        <option value="landscape"><%= data.printLandscape %></option>
                     </select>
                 </div>
             </div>
             <!--Paper Sizes -->
             <div class="pcc-print-paper-sizes pcc-row">
                 <div class="pcc-row">
-                    <h4><%= paperSize %></h4>
+                    <h4><%= data.paperSize %></h4>
                 </div>
                 <div class="pcc-row">
                     <select data-pcc-select="paperSize" class="pcc-print-select">
                         <!-- US and International -->
-                        <option value="letter"><%= paperSizes.letter %></option>
-                        <option value="legal"><%= paperSizes.legal %></option>
-                        <option value="tabloid"><%= paperSizes.tabloid %></option>
-                        <option value="foolscap"><%= paperSizes.foolscap %></option>
+                        <option value="letter"><%= data.paperSizes.letter %></option>
+                        <option value="legal"><%= data.paperSizes.legal %></option>
+                        <option value="tabloid"><%= data.paperSizes.tabloid %></option>
+                        <option value="foolscap"><%= data.paperSizes.foolscap %></option>
                         <!-- A Size Formats -->
-                        <option value="a3"><%= paperSizes.a3 %></option>
-                        <option value="a4"><%= paperSizes.a4 %></option>
-                        <option value="a5"><%= paperSizes.a5 %></option>
+                        <option value="a3"><%= data.paperSizes.a3 %></option>
+                        <option value="a4"><%= data.paperSizes.a4 %></option>
+                        <option value="a5"><%= data.paperSizes.a5 %></option>
                         <!-- Architectural -->
-                        <option value="a6"><%= paperSizes.a6 %></option>
-                        <option value="a"><%= paperSizes.a %></option>
-                        <option value="b"><%= paperSizes.b %></option>
-                        <option value="c"><%= paperSizes.c %></option>
-                        <option value="d"><%= paperSizes.d %></option>
-                        <option value="e"><%= paperSizes.e %></option>
-                        <option value="e1"><%= paperSizes.e1 %></option>
+                        <option value="a6"><%= data.paperSizes.a6 %></option>
+                        <option value="a"><%= data.paperSizes.a %></option>
+                        <option value="b"><%= data.paperSizes.b %></option>
+                        <option value="c"><%= data.paperSizes.c %></option>
+                        <option value="d"><%= data.paperSizes.d %></option>
+                        <option value="e"><%= data.paperSizes.e %></option>
+                        <option value="e1"><%= data.paperSizes.e1 %></option>
 
                     </select>
                 </div>
             </div>
-            <% if (!canPrintMarks) { %>
+            <% if (!data.canPrintMarks) { %>
                 <div class="pcc-row">
                     <div data-pcc-checkbox="printMargins" class="pcc-checkbox pcc-checked">
                         <span class="pcc-icon pcc-icon-check"></span>
-                        <label><%= printAutoFitMargins %></label>
+                        <label><%= data.printAutoFitMargins %></label>
                     </div>
                 </div>
             <% } %>
@@ -94,17 +94,17 @@
         </div>
     </div>
 
-    <% if (canPrintMarks) { %>
+    <% if (data.canPrintMarks) { %>
     <div class="pcc-print-more-options pcc-row pcc-hide">
         <div class="pcc-col-6">
             <div class="pcc-row">
-                <span><%= printShow %></span>
+                <span><%= data.printShow %></span>
             </div>
             <!-- Annotations -->
             <div class="pcc-row">
                 <div data-pcc-checkbox="printAnnotations" class="pcc-checkbox pcc-checked">
                     <span class="pcc-icon pcc-icon-check"></span>
-                    <label><%= printAnnotations %></label>
+                    <label><%= data.printAnnotations %></label>
                 </div>
             </div>
 
@@ -112,7 +112,7 @@
             <div class="pcc-row">
                 <div data-pcc-checkbox="printRedactions" class="pcc-checkbox pcc-checked">
                     <span class="pcc-icon pcc-icon-check"></span>
-                    <label><%= printRedactions %></label>
+                    <label><%= data.printRedactions %></label>
                 </div>
             </div>
 
@@ -120,7 +120,7 @@
             <div class="pcc-row">
                 <div data-pcc-checkbox="printRedactionViewMode" class="pcc-checkbox">
                     <span class="pcc-icon pcc-icon-check"></span>
-                    <label><%= printRedactionViewMode %></label>
+                    <label><%= data.printRedactionViewMode %></label>
                 </div>
             </div>
 
@@ -130,31 +130,31 @@
             <div class="pcc-row">
                 <div data-pcc-checkbox="printMargins" class="pcc-checkbox pcc-checked">
                     <span class="pcc-icon pcc-icon-check"></span>
-                    <label><%= printAutoFitMargins %></label>
+                    <label><%= data.printAutoFitMargins %></label>
                 </div>
             </div>
             <div class="pcc-print-comments pcc-row">
                 <div class="pcc-row">
-                    <h4><%= printComments %></h4>
+                    <h4><%= data.printComments %></h4>
                 </div>
                 <div class="pcc-row">
                     <select data-pcc-select="printComments" class="pcc-print-select">
-                        <option value="none"><%= printCommentsNone %></option>
-                        <option value="followingPage"><%= printCommentsAfterEachPage %></option>
-                        <option value="documentEnd"><%= printCommentsAtEnd %></option>
+                        <option value="none"><%= data.printCommentsNone %></option>
+                        <option value="followingPage"><%= data.printCommentsAfterEachPage %></option>
+                        <option value="documentEnd"><%= data.printCommentsAtEnd %></option>
                     </select>
                 </div>
             </div>
             <div class="pcc-print-marks pcc-row">
                 <div class="pcc-row">
-                    <h4><%= printReasons %></h4>
+                    <h4><%= data.printReasons %></h4>
                 </div>
                 <div class="pcc-row">
                     <select data-pcc-select="printReasons" class="pcc-print-select">
 
-                        <option value="none"><%= printReasonsNone %></option>
-                        <option value="followingPage"><%= printReasonsAfterEachPage %></option>
-                        <option value="documentEnd"><%= printReasonsAtEnd %></option>
+                        <option value="none"><%= data.printReasonsNone %></option>
+                        <option value="followingPage"><%= data.printReasonsAfterEachPage %></option>
+                        <option value="documentEnd"><%= data.printReasonsAtEnd %></option>
                     </select>
                 </div>
             </div>
@@ -164,10 +164,10 @@
 
 
     <div class="pcc-row">
-        <% if (canPrintMarks) { %>
+        <% if (data.canPrintMarks) { %>
         <div class="pcc-col-6">
             <div class="pcc-toggle-options" data-pcc-print="optionsToggle">
-                <label><%= printMoreOptions %></label>
+                <label><%= data.printMoreOptions %></label>
                 <span class="pcc-arrow-down"></span>
             </div>
         </div>
@@ -176,7 +176,7 @@
             <div class="pcc-col-12">
             <% } %> <!--if (canPrintMarks)-->
             <div class="pcc-row">
-                <button data-pcc-print="submit" class="pcc-pull-right"><%= printButton %></button>
+                <button data-pcc-print="submit" class="pcc-pull-right"><%= data.printButton %></button>
             </div>
         </div>
     </div>
@@ -184,7 +184,7 @@
     <% } else { %>
 
     <div class="pcc-row">
-        <div data-pcc-print="resultCount"><%= printPreparingPage %></div>
+        <div data-pcc-print="resultCount"><%= data.printPreparingPage %></div>
     </div>
     <div class="pcc-row pcc-percent">
         <div class="pcc-label">
@@ -193,7 +193,7 @@
         </div>
         <div data-pcc-print="loader" class="pcc-bar"></div>
     </div>
-    <button data-pcc-print="cancel" class="pcc-center"><%= cancelButton %></button>
+    <button data-pcc-print="cancel" class="pcc-center"><%= data.cancelButton %></button>
 
     <% } %>
 </div>

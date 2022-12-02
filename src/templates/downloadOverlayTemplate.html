@@ -1,25 +1,25 @@
-    <div class="pcc-overlay-inner" data-download-overlay>
+<div class="pcc-overlay-inner" data-download-overlay>
     <button class="pcc-overlay-closer">&#215;</button>
     <div class="pcc-download-menu">
-        <% if (options && options.mode === 'pending') { %>
+        <% if (data.options && data.options.mode === 'pending') { %>
             <div class="pcc-center">
-                <span><%= options.language.burnInPending %></span>
+                <span><%= data.options.language.burnInPending %></span>
                 <span class="pcc-load"></span>
             </div>
             <div class="pcc-center pcc-margin-top">
-                <button class="pcc-overlay-cancel pcc-secondary"><%= options.language.cancelButton %></button>
+                <button class="pcc-overlay-cancel pcc-secondary"><%= data.options.language.cancelButton %></button>
             </div>
-        <% } else if (options && options.mode === 'complete') { %>
-            <div class="pcc-center"><%= options.language.burnInComplete %></div>
+        <% } else if (data.options && data.options.mode === 'complete') { %>
+            <div class="pcc-center"><%= data.options.language.burnInComplete %></div>
             <div class="pcc-center pcc-margin-top">
-                <button class="pcc-overlay-cancel pcc-secondary"><%= options.language.cancelButton %></button>
-                <button class="pcc-overlay-download"><%= options.language.saveButton %></button>
+                <button class="pcc-overlay-cancel pcc-secondary"><%= data.options.language.cancelButton %></button>
+                <button class="pcc-overlay-download"><%= data.options.language.saveButton %></button>
             </div>
-        <% } else if (options && options.mode === 'error') { %>
-            <div class="pcc-center"><%= options.language.burnInError %></div>
+        <% } else if (data.options && data.options.mode === 'error') { %>
+            <div class="pcc-center"><%= data.options.language.burnInError %></div>
             <div class="pcc-center pcc-margin-top">
-                <button class="pcc-overlay-cancel pcc-secondary"><%= options.language.cancelButton %></button>
-                <button class="pcc-overlay-retry"><%= options.language.retryButton %></button>
+                <button class="pcc-overlay-cancel pcc-secondary"><%= data.options.language.cancelButton %></button>
+                <button class="pcc-overlay-retry"><%= data.options.language.retryButton %></button>
             </div>
         <% } %>
     </div>

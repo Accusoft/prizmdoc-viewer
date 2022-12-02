@@ -118,6 +118,15 @@ var PCCViewer = window.PCCViewer || {};
         });
     }
 
+    function renderTemplate(template, data) {
+        if (typeof template === 'string') {
+            data['data'] = data;
+            return _.template(template)(data);
+        } else {
+            return template(data);
+        }
+    }
+
     // The main constructor for the Viewer. The preferred method is to use this through the jQuery plugin.
     // $("#mydiv").pccViewer(options);
     function Viewer(element, options) {
@@ -227,7 +236,7 @@ var PCCViewer = window.PCCViewer || {};
 
         // Load template with localization vars, then show the viewer once vars are in place, prevents fouc
         this.$dom
-        .html(_.template(options.template.viewer)(_.extend({
+        .html(renderTemplate(options.template.viewer, _.extend({
             reasons: this.redactionReasonsExtended,
             annotationsMode: options.annotationsMode,
             downloadFormats: downloadFormats,
@@ -941,7 +950,7 @@ var PCCViewer = window.PCCViewer || {};
                     }, PCCViewer.Language.data);
 
                     // Show the page redaction overlay and backdrop (fade)
-                    viewer.viewerNodes.$pageRedactionOverlay.html(_.template(options.template.pageRedactionOverlay)(tmplData)).addClass('pcc-open');
+                    viewer.viewerNodes.$pageRedactionOverlay.html(renderTemplate(options.template.pageRedactionOverlay, tmplData)).addClass('pcc-open');
                     viewer.viewerNodes.$overlayFade.show();
 
                     parseIcons(viewer.viewerNodes.$pageRedactionOverlay);
@@ -1249,7 +1258,7 @@ var PCCViewer = window.PCCViewer || {};
                     }
 
                     if (pages) {
-                        viewer.viewerNodes.$pageRedactionOverlay.html(_.template(options.template.pageRedactionOverlay)(tmplData)).addClass('pcc-open');
+                        viewer.viewerNodes.$pageRedactionOverlay.html(renderTemplate(options.template.pageRedactionOverlay, tmplData)).addClass('pcc-open');
                         viewer.viewerNodes.$overlayFade.show();
 
                         // Get page attributes, and update the progress bar as we go along
@@ -1323,7 +1332,7 @@ var PCCViewer = window.PCCViewer || {};
                     show: 'form'
                 }, PCCViewer.Language.data);
 
-                viewer.viewerNodes.$printOverlay.html(_.template(options.template.printOverlay)(tmplData)).addClass('pcc-open');
+                viewer.viewerNodes.$printOverlay.html(renderTemplate(options.template.printOverlay, tmplData)).addClass('pcc-open');
                 viewer.viewerNodes.$overlayFade.show();
 
                 parseIcons(viewer.viewerNodes.$printOverlay);
@@ -1478,7 +1487,7 @@ var PCCViewer = window.PCCViewer || {};
 
                     if (!isRange || isRange && rangeIsValid) {
                         viewer.printRequest = viewer.viewerControl.print(printOptions);
-                        viewer.viewerNodes.$printOverlay.html(_.template(options.template.printOverlay)(PCCViewer.Language.data)).addClass('pcc-open');
+                        viewer.viewerNodes.$printOverlay.html(renderTemplate(options.template.printOverlay, PCCViewer.Language.data)).addClass('pcc-open');
                         viewer.viewerNodes.$overlayFade.show();
 
                         viewer.printRequest
@@ -2420,7 +2429,7 @@ var PCCViewer = window.PCCViewer || {};
         // Launch E-Signature modal
         this.launchESignModal = function launchESignModal (activeTab) {
             // Load the template, extending the language object with the signatures array
-            viewer.viewerNodes.$esignOverlay.html(_.template(options.template.esignOverlay)(_.extend({
+            viewer.viewerNodes.$esignOverlay.html(renderTemplate(options.template.esignOverlay, _.extend({
                 signatures: PCCViewer.Signatures.toArray(),
                 activeTab: activeTab,
                 categories: (options.signatureCategories) ? options.signatureCategories.split(',') : undefined
@@ -3042,7 +3051,7 @@ var PCCViewer = window.PCCViewer || {};
                     menuOptions: menuOptions
                 }, lang);
 
-                $contextMenu.addClass(className).html(_.template(options.template.contextMenu)(tmplData));
+                $contextMenu.addClass(className).html(renderTemplate(options.template.contextMenu, tmplData));
 
                 updateContextMenuDropdownsMaxHeight();
                 parseIcons($contextMenu);
@@ -3207,6 +3216,26 @@ var PCCViewer = window.PCCViewer || {};
             viewer.$dom.find('[data-pcc-nav-trigger]').html($firstTabItem.html());
 
             if (viewer.isFitTypeActive === true) { viewer.viewerNodes.$fitContent.addClass('pcc-active'); }
+
+            // Check if some functionality is enabled by the viewer control
+            viewer.viewerControl.getClientRestrictions().then(restrictions => {
+                var isImageToolsDisabled = (
+                    restrictions.sharpening === 'disabled' &&
+                    restrictions.gamma === 'disabled' &&
+                    restrictions.svgLineWidthMultiplier === 'disabled'
+                );
+                var isPrintDisabled = restrictions.print === 'disabled';
+
+                viewer.viewerNodes.$imageTools.prop('disabled', isImageToolsDisabled);
+                if (isImageToolsDisabled) {
+                    viewer.viewerNodes.$imageTools.addClass('pcc-disabled');
+                }
+
+                viewer.viewerNodes.$printLaunch.prop('disabled', isPrintDisabled);
+                if (isPrintDisabled) {
+                    viewer.viewerNodes.$printLaunch.addClass('pcc-disabled');
+                }
+            });
         }
 
         function handleComparisonTools() {
@@ -7612,7 +7641,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 if (typeof $overwriteOverlay === 'undefined') {
 
-                    viewer.$dom.append(_.template(options.template.overwriteOverlay)(PCCViewer.Language.data.annotations.save.overwriteOverlay));
+                    viewer.$dom.append(renderTemplate(options.template.overwriteOverlay, PCCViewer.Language.data.annotations.save.overwriteOverlay));
 
                     $overwriteOverlay = viewer.$dom.find('.pcc-annotation-overwrite-dlg');
                     $overlayFade = viewer.$dom.find('.pcc-overlay-fade');
@@ -7694,7 +7723,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 if (typeof $unSavedChangesOverlay === 'undefined') {
 
-                    viewer.$dom.append(_.template(options.template.unsavedChangesOverlay)(PCCViewer.Language.data.annotations.save.unsavedOverlay));
+                    viewer.$dom.append(renderTemplate(options.template.unsavedChangesOverlay, PCCViewer.Language.data.annotations.save.unsavedOverlay));
 
                     $unSavedChangesOverlay = viewer.$dom.find('.pcc-annotation-unsaved-dlg');
 
@@ -9699,7 +9728,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 }
 
-                $(div).html(_.template(template)({
+                $(div).html(renderTemplate(template, {
                     mode: opts.mode,
                     link: opts.href,
                     language: language,
@@ -9953,7 +9982,7 @@ var PCCViewer = window.PCCViewer || {};
             function init(viewerControl, languageOptions, hyperlinkMenuTemplate, getCurrentMouseToolType){
                 control = viewerControl;
                 language = languageOptions;
-                template = hyperlinkMenuTemplate.replace(/>[\s]{1,}</g, '><');
+                template = hyperlinkMenuTemplate;
 
                 control.on(PCCViewer.EventType.Click, function(ev){
                     var mouseToolType = getCurrentMouseToolType();
@@ -10039,7 +10068,7 @@ var PCCViewer = window.PCCViewer || {};
                     customRedactionReason = opts.mark.getReason();
                 }
 
-                $(div).html(_.template(template)({
+                $(div).html(renderTemplate(template, {
                     language: language,
                     mark: opts.mark,
                     customRedactionReason: customRedactionReason
@@ -10231,7 +10260,7 @@ var PCCViewer = window.PCCViewer || {};
             function init(viewerControl, languageOptions, redactionReasonMenuTemplate, redactionReasons, maxLength){
                 control = viewerControl;
                 language = languageOptions;
-                template = redactionReasonMenuTemplate.replace(/>[\s]{1,}</g, '><');
+                template = redactionReasonMenuTemplate;
                 maxFreeformReasonLength = maxLength;
 
                 _.forEach(redactionReasons, function(reason) {
@@ -10826,9 +10855,7 @@ var PCCViewer = window.PCCViewer || {};
                 var $textArea;
 
                 function showModal() {
-                    $overlay.html(copyTemplate({
-                            options: templateOptions
-                        }))
+                    $overlay.html(copyTemplate)
                         .addClass('pcc-open')
                         .on('click', '.pcc-overlay-closer', function(ev) {
                             closeCopyOverlay($overlay, $overlayFade);
@@ -10909,7 +10936,7 @@ var PCCViewer = window.PCCViewer || {};
                 useHoverEnter = (opts.mode === 'hover');
                 $overlay = opts.$overlay;
                 $overlayFade = opts.$overlayFade;
-                copyTemplate = _.template(opts.copyOverlay.replace(/>[\s]{1,}</g, '><'));
+                copyTemplate = renderTemplate(opts.copyOverlay, { options: { language: language } });
 
                 // add viewer event listeners
                 control.on(PCCViewer.EventType.MarkCreated, menuHandler);
@@ -11083,7 +11110,7 @@ var PCCViewer = window.PCCViewer || {};
                         commentId = markId.toString() + 'c' + i;
 
                     // Create the DOM for each comment
-                    var $comment = $(template({
+                    var $comment = $(renderTemplate(template, {
                         comment: el,
                         editMode: editMode,
                         prevText: el.getText(),
@@ -11562,7 +11589,7 @@ var PCCViewer = window.PCCViewer || {};
             function init(opts, commentsPanelViewerNode){
                 control = opts.viewerControl;
                 language = opts.language;
-                template = _.template(opts.template.replace(/>[\s]{1,}</g, '><'));
+                template = opts.template;
                 dateFormat = opts.commentDateFormat || 'MM/DD/YYYY h:mma';
                 $toggleButton = $(opts.button);
                 $commentsPanel = $(opts.panel);
@@ -11652,12 +11679,20 @@ var PCCViewer = window.PCCViewer || {};
             var isRefreshing = false;
 
             function init() {
-                viewer.viewerNodes.$imageTools.one('click', function () {
-                    showPanel();
-                    embedOnce();
-                    hasBeenInitialized = true;
+                viewer.viewerControl.getClientRestrictions().then(restrictions => {
+                    viewer.viewerNodes.$imageTools.one('click', function () {
+                        var disabledTools = {
+                            sharpening: restrictions.sharpening === "disabled",
+                            gamma: restrictions.gamma === "disabled",
+                            svgLineWidthMultiplier: restrictions.svgLineWidthMultiplier === "disabled",
+                        };
+
+                        showPanel();
+                        embedOnce(disabledTools);
+                        hasBeenInitialized = true;
+                    });
+                    viewer.viewerNodes.$imageTools.on('click', showPanel);
                 });
-                viewer.viewerNodes.$imageTools.on('click', showPanel);
             }
 
             function refresh() {
@@ -11740,10 +11775,10 @@ var PCCViewer = window.PCCViewer || {};
                 });
             }
 
-            function embedOnce() {
-                lineSharpeningSlider = new Slider($("[data-pcc-slider=sharpening]")[0]);
-                svgStrokeWidthSlider = new Slider($("[data-pcc-slider=svgStrokeWidth]")[0]);
-                gammaSlider = new Slider($("[data-pcc-slider=gamma]")[0]);
+            function embedOnce(disabledTools) {
+                lineSharpeningSlider = new Slider($("[data-pcc-slider=sharpening]")[0], { disabled: disabledTools.sharpening });
+                svgStrokeWidthSlider = new Slider($("[data-pcc-slider=svgStrokeWidth]")[0], { disabled: disabledTools.svgLineWidthMultiplier });
+                gammaSlider = new Slider($("[data-pcc-slider=gamma]")[0], { disabled: disabledTools.gamma });
                 gammaSlider.move(defaultValue.gamma);
                 $("#pcc-imageTools-slider-darkening-value").text('1');
                 attachEvents();
@@ -11955,7 +11990,7 @@ var PCCViewer = window.PCCViewer || {};
                 templateOptions.language = language;
 
                 $overlayFade.show();
-                $overlay.html(_.template(template)({
+                $overlay.html(renderTemplate(template, {
                     options: templateOptions
                 })).addClass('pcc-open')
                 .on('click', '.pcc-overlay-closer', function(ev) {
@@ -12740,7 +12775,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             var drawOverlay = function (params) {
-                $overlay.html(_.template(options.template.imageStampOverlay)(_.extend({
+                $overlay.html(renderTemplate(options.template.imageStampOverlay, _.extend({
                     waiting: params.waiting,
                     imageStampList: imageStampList,
                     sortBy: sortByOptions,
@@ -13532,17 +13567,22 @@ var PCCViewer = window.PCCViewer || {};
             onEnd(ev, ev);
         }
 
-        function init(){
-            destroyDrag = Drag(thumb)
-                .init()
-                .on('start', onStart)
-                .on('move', onMove)
-                .on('end', onEnd)
-                .destroy;
+        function init() {
+            if (opts.disabled !== true) {
+                destroyDrag = Drag(thumb)
+                    .init()
+                    .on('start', onStart)
+                    .on('move', onMove)
+                    .on('end', onEnd)
+                    .destroy;
 
-            $(elem).on('click', click);
+                $(elem).on('click', click);
 
-            moveTo(0);
+                moveTo(0);
+            } else {
+                thumb.style.opacity = "0.6";
+                track.style.opacity = "0.6";
+            }
         }
 
         function destroy(){

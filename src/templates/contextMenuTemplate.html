@@ -1,29 +1,29 @@
 <div class="pcc-pull-right">
-    <button class="pcc-icon pcc-icon-list" title="<%= annotationOptions %>" data-pcc-toggle="context-menu-options"></button>
-    <button class="pcc-icon pcc-icon-updown" title="<%= moveContext %>" data-pcc-move-context-menu></button>
+    <button class="pcc-icon pcc-icon-list" title="<%= data.annotationOptions %>" data-pcc-toggle="context-menu-options"></button>
+    <button class="pcc-icon pcc-icon-updown" title="<%= data.moveContext %>" data-pcc-move-context-menu></button>
 </div>
-<div class="pcc-pull-left" data-pcc-toggle-id="context-menu-options"<% if (menuOptions.collapseLeftSide === true) { %> style="width:auto"<% } %>>
+<div class="pcc-pull-left" data-pcc-toggle-id="context-menu-options"<% if (data.menuOptions.collapseLeftSide === true) { %> style="width:auto"<% } %>>
 
     <div class="pcc-tabset">
 
-        <% if (menuOptions.showTabArea === true) { %>
+        <% if (data.menuOptions.showTabArea === true) { %>
         <div class="pcc-tabs">
 
-            <% if (menuOptions.showMainTab) { %>
-            <div class="pcc-active" data-pcc-toggle="context-menu-tab1" title="<%= fillColorMenuItem %>">
-                <% if (mark.getType() === 'EllipseAnnotation') { %>
+            <% if (data.menuOptions.showMainTab) { %>
+            <div class="pcc-active" data-pcc-toggle="context-menu-tab1" title="<%= data.fillColorMenuItem %>">
+                <% if (data.mark.getType() === 'EllipseAnnotation') { %>
                 <span class="pcc-icon pcc-icon-annotate-ellipse-filled"></span>
 
-                <% } else if (mark.getType().search('Stamp') !== -1) { %>
+                <% } else if (data.mark.getType().search('Stamp') !== -1) { %>
                 <span class="pcc-icon pcc-icon-annotate-stamp"></span>
 
-                <% } else if (mark.getType() === 'LineAnnotation' && mark.getEndHeadType() === 'None') { %>
+                <% } else if (data.mark.getType() === 'LineAnnotation' && data.mark.getEndHeadType() === 'None') { %>
                 <span class="pcc-icon pcc-icon-annotate-line"></span>
 
-                <% } else if (mark.getType() === 'LineAnnotation' && mark.getEndHeadType() === 'FilledTriangle') { %>
+                <% } else if (data.mark.getType() === 'LineAnnotation' && data.mark.getEndHeadType() === 'FilledTriangle') { %>
                 <span class="pcc-icon pcc-icon-annotate-arrow"></span>
 
-                <% } else if (mark.getType() === 'TextSelectionRedaction') { %>
+                <% } else if (data.mark.getType() === 'TextSelectionRedaction') { %>
                 <span class="pcc-icon pcc-icon-redact-textselection"></span>
 
                 <% } else { %>
@@ -32,9 +32,9 @@
             </div>
             <% } %>
 
-            <% if (menuOptions.showBorderColorTab === true) { %>
-            <div data-pcc-toggle="context-menu-tab2" title="<%= borderColorMenuItem %>">
-                <% if (mark.getType() === 'EllipseAnnotation') { %>
+            <% if (data.menuOptions.showBorderColorTab === true) { %>
+            <div data-pcc-toggle="context-menu-tab2" title="<%= data.borderColorMenuItem %>">
+                <% if (data.mark.getType() === 'EllipseAnnotation') { %>
                 <span class="pcc-icon pcc-icon-annotate-ellipse"></span>
                 <% } else { %>
                 <span class="pcc-icon pcc-icon-annotate-rectangle"></span>
@@ -42,39 +42,39 @@
             </div>
             <% } %>
 
-            <% if (menuOptions.showFontTab === true) { %>
-            <div data-pcc-toggle="context-menu-tab3" title="<%= fontMenuItem %>"
-                 <% if (menuOptions.activateFontTab === true) { %> class="pcc-active"<% } %>>
+            <% if (data.menuOptions.showFontTab === true) { %>
+            <div data-pcc-toggle="context-menu-tab3" title="<%= data.fontMenuItem %>"
+                 <% if (data.menuOptions.activateFontTab === true) { %> class="pcc-active"<% } %>>
                  <span class="pcc-icon pcc-icon-annotate-text"></span>
             </div>
             <% } %>
 
-            <% if (menuOptions.showLayerTab === true) { %>
-            <div data-pcc-toggle="context-menu-tab4" title="<%= layerOrder %>"
-                 <% if (menuOptions.activateLayerTab === true) { %> class="pcc-active"<% } %>>
+            <% if (data.menuOptions.showLayerTab === true) { %>
+            <div data-pcc-toggle="context-menu-tab4" title="<%= data.layerOrder %>"
+                 <% if (data.menuOptions.activateLayerTab === true) { %> class="pcc-active"<% } %>>
                  <span class="pcc-icon pcc-icon-layer-front"></span>
             </div>
             <% } %>
 
-            <% if (menuOptions.showESignTab === true) { %>
-            <div data-pcc-toggle="context-menu-tab5" class="pcc-active" title="<%= currentSignature %>">
+            <% if (data.menuOptions.showESignTab === true) { %>
+            <div data-pcc-toggle="context-menu-tab5" class="pcc-active" title="<%= data.currentSignature %>">
                 <span class="pcc-icon pcc-icon-esign"></span>
             </div>
             <% } %>
 
-            <% if (menuOptions.showLinkTab === true) { %>
+            <% if (data.menuOptions.showLinkTab === true) { %>
             <div data-pcc-toggle="context-menu-tab6" class="pcc-active">
                 <span class="pcc-icon pcc-icon-link"></span>
             </div>
             <% } %>
 
-            <% if (menuOptions.showImageTab === true) { %>
+            <% if (data.menuOptions.showImageTab === true) { %>
             <div data-pcc-toggle="context-menu-tab7" class="pcc-active">
                 <span class="pcc-icon pcc-icon-image-stamp"></span>
             </div>
             <% } %>
 
-            <% if (menuOptions.showLinkStylesTab === true) { %>
+            <% if (data.menuOptions.showLinkStylesTab === true) { %>
             <div data-pcc-toggle="context-menu-tab1">
                 <span class="pcc-icon pcc-icon-annotate-rectangle-filled"></span>
             </div>
@@ -82,24 +82,24 @@
         </div>
         <% } %>
 
-        <% if (showAllEditControls) { %>
+        <% if (data.showAllEditControls) { %>
             <div class="pcc-pull-right">
-                <button data-pcc-delete-mark class="pcc-icon pcc-icon-delete" title="<%= deleteMarks %>"></button></br>
-                <button data-pcc-add-comment-context-menu class="pcc-icon pcc-icon-comment" title="<%= addComment %>"></button>
+                <button data-pcc-delete-mark class="pcc-icon pcc-icon-delete" title="<%= data.deleteMarks %>"></button></br>
+                <button data-pcc-add-comment-context-menu class="pcc-icon pcc-icon-comment" title="<%= data.addComment %>"></button>
             </div>
         <% } %>
 
-        <% if(menuOptions.showTabArea) { %>
+        <% if(data.menuOptions.showTabArea) { %>
         <div data-pcc-toggle-id="context-menu-tab1"
-             class="pcc-tab-content<% if (menuOptions.activateMainTab === true) {%> pcc-open<% } %>">
+             class="pcc-tab-content<% if (data.menuOptions.activateMainTab === true) {%> pcc-open<% } %>">
 
-            <% if (mark.getColor || mark.getFillColor) { %>
-            <div class="pcc-select pcc-select-color" data-pcc-fill-color data-pcc-toggle="dropdown-fill-color" title="<%= fillColorMenuItem %>">
+            <% if (data.mark.getColor || data.mark.getFillColor) { %>
+            <div class="pcc-select pcc-select-color" data-pcc-fill-color data-pcc-toggle="dropdown-fill-color" title="<%= data.fillColorMenuItem %>">
                 <div class="pcc-label">
-                    <% if (mark.getColor) { %>
-                    <div class="pcc-swatch" style="background:<%- mark.getColor() %>"></div>
-                    <% } else if (mark.getFillColor) { %>
-                    <div class="pcc-swatch<%= (mark.getFillColor() === 'transparent') ? ' pcc-transparent-effect' : '' %>" <%= (mark.getFillColor() === 'transparent') ? '' : 'style="background:' + mark.getFillColor() +'"'%>></div>
+                    <% if (data.mark.getColor) { %>
+                    <div class="pcc-swatch" style="background:<%- data.mark.getColor() %>"></div>
+                    <% } else if (data.mark.getFillColor) { %>
+                    <div class="pcc-swatch<%= (data.mark.getFillColor() === 'transparent') ? ' pcc-transparent-effect' : '' %>" <%= (data.mark.getFillColor() === 'transparent') ? '' : 'style="background:' + data.mark.getFillColor() +'"'%>></div>
                     <% } %>
                 </div>
                 <div class="pcc-arrow-down"></div>
@@ -122,73 +122,73 @@
                     <div style="background:#3333cc"></div>
                     <div style="background:#888888"></div>
                     <div style="background:#000000"></div>
-                    <% if (menuOptions.showTransparentFillColor) { %>
+                    <% if (data.menuOptions.showTransparentFillColor) { %>
                         <div data-pcc-color-key="transparent" class="pcc-transparent-effect"></div>
                     <% } %>
                 </div>
             </div>
             <% } %>
 
-            <% if (mark.getOpacity) { %>
-            <div class="pcc-select pcc-select-opacity" data-pcc-fill-opacity data-pcc-toggle="dropdown-fill-opacity" title="<%= fillOpacityMenuItem %>">
+            <% if (data.mark.getOpacity) { %>
+            <div class="pcc-select pcc-select-opacity" data-pcc-fill-opacity data-pcc-toggle="dropdown-fill-opacity" title="<%= data.fillOpacityMenuItem %>">
                 <div class="pcc-icon pcc-icon-opacity"></div>
-                <div class="pcc-label"><%= Math.round(parseInt(mark.getOpacity() / 2.55, 10) / 10) * 10 %>%</div>
+                <div class="pcc-label"><%= Math.round(parseInt(data.mark.getOpacity() / 2.55, 10) / 10) * 10 %>%</div>
                 <div class="pcc-arrow-down"></div>
                 <div data-pcc-toggle-id="dropdown-fill-opacity" class="pcc-dropdown">
-                    <div><span class="pcc-option pcc-option0"></span> <%= opacityOptions.item0 %></div>
-                    <div><span class="pcc-option pcc-option10"></span> <%= opacityOptions.item1 %></div>
-                    <div><span class="pcc-option pcc-option20"></span> <%= opacityOptions.item2 %></div>
-                    <div><span class="pcc-option pcc-option30"></span> <%= opacityOptions.item3 %></div>
-                    <div><span class="pcc-option pcc-option40"></span> <%= opacityOptions.item4 %></div>
-                    <div><span class="pcc-option pcc-option50"></span> <%= opacityOptions.item5 %></div>
-                    <div><span class="pcc-option pcc-option60"></span> <%= opacityOptions.item6 %></div>
-                    <div><span class="pcc-option pcc-option70"></span> <%= opacityOptions.item7 %></div>
-                    <div><span class="pcc-option pcc-option80"></span> <%= opacityOptions.item8 %></div>
-                    <div><span class="pcc-option pcc-option90"></span> <%= opacityOptions.item9 %></div>
-                    <div><span class="pcc-option pcc-option100"></span> <%= opacityOptions.item10 %></div>
+                    <div><span class="pcc-option pcc-option0"></span> <%= data.opacityOptions.item0 %></div>
+                    <div><span class="pcc-option pcc-option10"></span> <%= data.opacityOptions.item1 %></div>
+                    <div><span class="pcc-option pcc-option20"></span> <%= data.opacityOptions.item2 %></div>
+                    <div><span class="pcc-option pcc-option30"></span> <%= data.opacityOptions.item3 %></div>
+                    <div><span class="pcc-option pcc-option40"></span> <%= data.opacityOptions.item4 %></div>
+                    <div><span class="pcc-option pcc-option50"></span> <%= data.opacityOptions.item5 %></div>
+                    <div><span class="pcc-option pcc-option60"></span> <%= data.opacityOptions.item6 %></div>
+                    <div><span class="pcc-option pcc-option70"></span> <%= data.opacityOptions.item7 %></div>
+                    <div><span class="pcc-option pcc-option80"></span> <%= data.opacityOptions.item8 %></div>
+                    <div><span class="pcc-option pcc-option90"></span> <%= data.opacityOptions.item9 %></div>
+                    <div><span class="pcc-option pcc-option100"></span> <%= data.opacityOptions.item10 %></div>
                 </div>
             </div>
             <% } %>
 
-            <% if (mark.getThickness) { %>
-            <div class="pcc-select pcc-select-border" data-pcc-border-width data-pcc-toggle="dropdown-border" title="<%= borderWidth %>">
+            <% if (data.mark.getThickness) { %>
+            <div class="pcc-select pcc-select-border" data-pcc-border-width data-pcc-toggle="dropdown-border" title="<%= data.borderWidth %>">
                 <div class="pcc-icon pcc-icon-border-width"></div>
-                <div class="pcc-label"><%= mark.getThickness() %></div>
+                <div class="pcc-label"><%= data.mark.getThickness() %></div>
                 <div class="pcc-arrow-down"></div>
                 <div data-pcc-toggle-id="dropdown-border" class="pcc-dropdown">
-                    <div><span class="pcc-option pcc-option1"></span> <%= borderWidthOptions.item1 %></div>
-                    <div><span class="pcc-option pcc-option2"></span> <%= borderWidthOptions.item2 %></div>
-                    <div><span class="pcc-option pcc-option3"></span> <%= borderWidthOptions.item3 %></div>
-                    <div><span class="pcc-option pcc-option4"></span> <%= borderWidthOptions.item4 %></div>
-                    <div><span class="pcc-option pcc-option5"></span> <%= borderWidthOptions.item5 %></div>
-                    <div><span class="pcc-option pcc-option6"></span> <%= borderWidthOptions.item6 %></div>
-                    <div><span class="pcc-option pcc-option7"></span> <%= borderWidthOptions.item7 %></div>
-                    <div><span class="pcc-option pcc-option8"></span> <%= borderWidthOptions.item8 %></div>
+                    <div><span class="pcc-option pcc-option1"></span> <%= data.borderWidthOptions.item1 %></div>
+                    <div><span class="pcc-option pcc-option2"></span> <%= data.borderWidthOptions.item2 %></div>
+                    <div><span class="pcc-option pcc-option3"></span> <%= data.borderWidthOptions.item3 %></div>
+                    <div><span class="pcc-option pcc-option4"></span> <%= data.borderWidthOptions.item4 %></div>
+                    <div><span class="pcc-option pcc-option5"></span> <%= data.borderWidthOptions.item5 %></div>
+                    <div><span class="pcc-option pcc-option6"></span> <%= data.borderWidthOptions.item6 %></div>
+                    <div><span class="pcc-option pcc-option7"></span> <%= data.borderWidthOptions.item7 %></div>
+                    <div><span class="pcc-option pcc-option8"></span> <%= data.borderWidthOptions.item8 %></div>
                 </div>
             </div>
             <% } %>
 
-            <% if (mark.getLabel) { %>
-            <div class="pcc-select pcc-select-stamp-label" data-pcc-stamp-label data-pcc-toggle="dropdown-stamp-label" title="<%= selectLabel %>">
-                <div class="pcc-label"><%- mark.getLabel() %></div>
+            <% if (data.mark.getLabel) { %>
+            <div class="pcc-select pcc-select-stamp-label" data-pcc-stamp-label data-pcc-toggle="dropdown-stamp-label" title="<%= data.selectLabel %>">
+                <div class="pcc-label"><%- data.mark.getLabel() %></div>
                 <div class="pcc-arrow-down"></div>
                 <div data-pcc-toggle-id="dropdown-stamp-label" class="pcc-dropdown">
-                    <div><%= stampLabelApproved %></div>
-                    <div><%= stampLabelReviewed %></div>
-                    <div><%= stampLabelRejected %></div>
+                    <div><%= data.stampLabelApproved %></div>
+                    <div><%= data.stampLabelReviewed %></div>
+                    <div><%= data.stampLabelRejected %></div>
                 </div>
             </div>
             <% } %>
 
-            <% if ((mark.getReason || mark.getReasons) && reasons.enableRedactionReasonSelection) { %>
-                <div class="pcc-select <%= (menuOptions.enableMultipleRedactionReasons) ? 'pcc-multiselect' : ''%> pcc-select-redaction-reason" data-pcc-redaction-reason data-pcc-toggle="dropdown-stamp-label" title="<%= selectLabel %>">
-                    <div class="pcc-label"><%= menuOptions.redactionReasonLabel %></div>
+            <% if ((data.mark.getReason || data.mark.getReasons) && data.reasons.enableRedactionReasonSelection) { %>
+                <div class="pcc-select <%= (data.menuOptions.enableMultipleRedactionReasons) ? 'pcc-multiselect' : ''%> pcc-select-redaction-reason" data-pcc-redaction-reason data-pcc-toggle="dropdown-stamp-label" title="<%= data.selectLabel %>">
+                    <div class="pcc-label"><%= data.menuOptions.redactionReasonLabel %></div>
                     <div class="pcc-arrow-down"></div>
                     <div data-pcc-toggle-id="dropdown-stamp-label" class="pcc-dropdown">
-                        <% _.each(reasons.reasons, function(reason, index) { %>
+                        <% _.each(data.reasons.reasons, function(reason, index) { %>
                             <% if (reason.selectable) { %>
                             <div data-pcc-checkbox="redaction-reasons" class="pcc-checkbox <%= reason.checked ? 'pcc-checked' : '' %> <%= (index % 2 === 0) ? 'even' : 'odd' %>" title="<%= reason.reason %><%= (reason.description) ? ': ' + reason.description : '' %>">
-                                <% if (menuOptions.enableMultipleRedactionReasons) { %>
+                                <% if (data.menuOptions.enableMultipleRedactionReasons) { %>
                                 <span class="pcc-icon pcc-icon-check"></span>
                                 <% } %>
                                 <span><em class="pcc-select-multiple-redaction-reason"><%= reason.reason %></em><% if (reason.description) { %>: <span class="pcc-select-multiple-redaction-description"><%= reason.description %></span><% } %></span>
@@ -199,17 +199,17 @@
                         <% }); %>
                     </div>
                 </div>
-                <% if (menuOptions.enableCustomRedactionReason) { %>
+                <% if (data.menuOptions.enableCustomRedactionReason) { %>
                 <!-- Set value using the template specifier that escapes HTML to prevent breaking out of attribute value unexpectedly (see https://underscorejs.org/#template) -->
-                <input type="text" data-pcc-redaction-reason-input value="<%- customRedactionReason%>">
+                <input type="text" data-pcc-redaction-reason-input value="<%- data.customRedactionReason%>">
                 <% } %>
             <% } %>
         </div>
 
         <div data-pcc-toggle-id="context-menu-tab2" class="pcc-tab-content">
-            <div class="pcc-select pcc-select-color" data-pcc-border-color data-pcc-toggle="dropdown-border-color" title="<%= borderColorMenuItem %>">
+            <div class="pcc-select pcc-select-color" data-pcc-border-color data-pcc-toggle="dropdown-border-color" title="<%= data.borderColorMenuItem %>">
                 <div class="pcc-label">
-                    <div class="pcc-swatch<%= (mark.getBorderColor && mark.getBorderColor() === 'transparent') ? ' pcc-transparent-effect' : '' %>" <%= (mark.getBorderColor && mark.getBorderColor() !== 'transparent') ? 'style="background:' + mark.getBorderColor() +'"' : '' %>></div>
+                    <div class="pcc-swatch<%= (data.mark.getBorderColor && data.mark.getBorderColor() === 'transparent') ? ' pcc-transparent-effect' : '' %>" <%= (data.mark.getBorderColor && data.mark.getBorderColor() !== 'transparent') ? 'style="background:' + data.mark.getBorderColor() +'"' : '' %>></div>
                 </div>
                 <div class="pcc-arrow-down"></div>
                 <div data-pcc-toggle-id="dropdown-border-color" class="pcc-dropdown">
@@ -231,58 +231,58 @@
                     <div style="background:#3333cc"></div>
                     <div style="background:#888888"></div>
                     <div style="background:#000000"></div>
-                    <% if (menuOptions.showTransparentBorderColor) { %>
+                    <% if (data.menuOptions.showTransparentBorderColor) { %>
                     <div data-pcc-color-key="transparent" class="pcc-transparent-effect"></div>
                     <% } %>
                 </div>
             </div>
 
-            <div class="pcc-select pcc-select-border" data-pcc-border-width data-pcc-toggle="dropdown-border" title="<%= borderWidth %>">
+            <div class="pcc-select pcc-select-border" data-pcc-border-width data-pcc-toggle="dropdown-border" title="<%= data.borderWidth %>">
                 <div class="pcc-icon pcc-icon-border-width"></div>
-                <div class="pcc-label"><%- mark.getBorderThickness ? mark.getBorderThickness() : '' %></div>
+                <div class="pcc-label"><%- data.mark.getBorderThickness ? data.mark.getBorderThickness() : '' %></div>
                 <div class="pcc-arrow-down"></div>
                 <div data-pcc-toggle-id="dropdown-border" class="pcc-dropdown">
-                    <div><span class="pcc-option pcc-option1"></span> <%= borderWidthOptions.item1 %></div>
-                    <div><span class="pcc-option pcc-option2"></span> <%= borderWidthOptions.item2 %></div>
-                    <div><span class="pcc-option pcc-option3"></span> <%= borderWidthOptions.item3 %></div>
-                    <div><span class="pcc-option pcc-option4"></span> <%= borderWidthOptions.item4 %></div>
-                    <div><span class="pcc-option pcc-option5"></span> <%= borderWidthOptions.item5 %></div>
-                    <div><span class="pcc-option pcc-option6"></span> <%= borderWidthOptions.item6 %></div>
-                    <div><span class="pcc-option pcc-option7"></span> <%= borderWidthOptions.item7 %></div>
-                    <div><span class="pcc-option pcc-option8"></span> <%= borderWidthOptions.item8 %></div>
+                    <div><span class="pcc-option pcc-option1"></span> <%= data.borderWidthOptions.item1 %></div>
+                    <div><span class="pcc-option pcc-option2"></span> <%= data.borderWidthOptions.item2 %></div>
+                    <div><span class="pcc-option pcc-option3"></span> <%= data.borderWidthOptions.item3 %></div>
+                    <div><span class="pcc-option pcc-option4"></span> <%= data.borderWidthOptions.item4 %></div>
+                    <div><span class="pcc-option pcc-option5"></span> <%= data.borderWidthOptions.item5 %></div>
+                    <div><span class="pcc-option pcc-option6"></span> <%= data.borderWidthOptions.item6 %></div>
+                    <div><span class="pcc-option pcc-option7"></span> <%= data.borderWidthOptions.item7 %></div>
+                    <div><span class="pcc-option pcc-option8"></span> <%= data.borderWidthOptions.item8 %></div>
                 </div>
             </div>
         </div>
 
         <div data-pcc-toggle-id="context-menu-tab3"
-             class="pcc-tab-content<% if (menuOptions.activateFontTab) { %> pcc-open<% } %>">
+             class="pcc-tab-content<% if (data.menuOptions.activateFontTab) { %> pcc-open<% } %>">
 
-            <% if (mark.getFontStyle && mark.getType() !== 'TextRedaction') { %>
+            <% if (data.mark.getFontStyle && data.mark.getType() !== 'TextRedaction') { %>
             <div class="pcc-row">
-                <button class="pcc-icon pcc-icon-text-bold<%= _.indexOf(mark.getFontStyle(), 'Bold') !== -1 ? ' pcc-active' : '' %>"
-                        data-pcc-font-style="Bold" title="<%= fontBoldText %>"></button>
+                <button class="pcc-icon pcc-icon-text-bold<%= _.indexOf(data.mark.getFontStyle(), 'Bold') !== -1 ? ' pcc-active' : '' %>"
+                        data-pcc-font-style="Bold" title="<%= data.fontBoldText %>"></button>
 
-                <button class="pcc-icon pcc-icon-text-italic<%= _.indexOf(mark.getFontStyle(), 'Italic') !== -1 ? ' pcc-active' : '' %>"
-                        data-pcc-font-style="Italic" title="<%= fontItalic %>"></button>
+                <button class="pcc-icon pcc-icon-text-italic<%= _.indexOf(data.mark.getFontStyle(), 'Italic') !== -1 ? ' pcc-active' : '' %>"
+                        data-pcc-font-style="Italic" title="<%= data.fontItalic %>"></button>
 
-                <button class="pcc-icon pcc-icon-text-underline<%= _.indexOf(mark.getFontStyle(), 'Underline') !== -1 ? ' pcc-active' : '' %>"
-                        data-pcc-font-style="Underline" title="<%= fontUnderline %>"></button>
+                <button class="pcc-icon pcc-icon-text-underline<%= _.indexOf(data.mark.getFontStyle(), 'Underline') !== -1 ? ' pcc-active' : '' %>"
+                        data-pcc-font-style="Underline" title="<%= data.fontUnderline %>"></button>
 
-                <button class="pcc-icon pcc-icon-text-strikeout<%= _.indexOf(mark.getFontStyle(), 'Strikeout') !== -1 ? ' pcc-active' : '' %>"
-                        data-pcc-font-style="Strikeout" title="<%= fontStrikeout %>"></button>
+                <button class="pcc-icon pcc-icon-text-strikeout<%= _.indexOf(data.mark.getFontStyle(), 'Strikeout') !== -1 ? ' pcc-active' : '' %>"
+                        data-pcc-font-style="Strikeout" title="<%= data.fontStrikeout %>"></button>
 
-                <% if (mark.getHorizontalAlignment) { %>
-                <button class="pcc-icon pcc-icon-text-<%= mark.getHorizontalAlignment().toLowerCase() %>"
-                        data-pcc-font-align title="<%= paragraphAlignTitle %>"></button>
+                <% if (data.mark.getHorizontalAlignment) { %>
+                <button class="pcc-icon pcc-icon-text-<%= data.mark.getHorizontalAlignment().toLowerCase() %>"
+                        data-pcc-font-align title="<%= data.paragraphAlignTitle %>"></button>
                 <% } %>
             </div>
             <% } %>
             <div class="pcc-row">
 
-                <% if (mark.getFontColor) { %>
-                <div class="pcc-select pcc-select-color" data-pcc-font-color data-pcc-toggle="dropdown-font-color" title="<%= fontColorMenuItem %>">
+                <% if (data.mark.getFontColor) { %>
+                <div class="pcc-select pcc-select-color" data-pcc-font-color data-pcc-toggle="dropdown-font-color" title="<%= data.fontColorMenuItem %>">
                     <div class="pcc-label">
-                        <div class="pcc-swatch" style="background:<%= mark.getFontColor ? mark.getFontColor() : '' %>"></div>
+                        <div class="pcc-swatch" style="background:<%= data.mark.getFontColor ? data.mark.getFontColor() : '' %>"></div>
                     </div>
                     <div class="pcc-arrow-down"></div>
                     <div data-pcc-toggle-id="dropdown-font-color" class="pcc-dropdown">
@@ -308,26 +308,26 @@
                 </div>
                 <% } %>
 
-                <% if (mark.getType() !== 'RectangleRedaction') { %>
-                    <div class="pcc-select pcc-select-font" data-pcc-font-name data-pcc-toggle="dropdown-font" title="<%= selectFont %>">
-                        <div class="pcc-label"><%- mark.getFontName ? mark.getFontName() : '' %></div>
+                <% if (data.mark.getType() !== 'RectangleRedaction') { %>
+                    <div class="pcc-select pcc-select-font" data-pcc-font-name data-pcc-toggle="dropdown-font" title="<%= data.selectFont %>">
+                        <div class="pcc-label"><%- data.mark.getFontName ? data.mark.getFontName() : '' %></div>
                         <div class="pcc-arrow-down"></div>
                         <div data-pcc-toggle-id="dropdown-font" class="pcc-dropdown">
-                            <div><%= fontArial %></div>
-                            <div><%= fontComicSans %></div>
-                            <div><%= fontCourier %></div>
-                            <div><%= fontCourierNew %></div>
-                            <div><%= fontGeneva %></div>
-                            <div><%= fontGeorgia %></div>
-                            <div><%= fontHelvetica %></div>
-                            <div><%= fontTimes %></div>
-                            <div><%= fontTimesNewRoman %></div>
-                            <div><%= fontVerdana %></div>
+                            <div><%= data.fontArial %></div>
+                            <div><%= data.fontComicSans %></div>
+                            <div><%= data.fontCourier %></div>
+                            <div><%= data.fontCourierNew %></div>
+                            <div><%= data.fontGeneva %></div>
+                            <div><%= data.fontGeorgia %></div>
+                            <div><%= data.fontHelvetica %></div>
+                            <div><%= data.fontTimes %></div>
+                            <div><%= data.fontTimesNewRoman %></div>
+                            <div><%= data.fontVerdana %></div>
                         </div>
                     </div>
 
-                    <div class="pcc-select pcc-select-font-size" data-pcc-font-size data-pcc-toggle="dropdown-font-size" title="<%= fontSize %>">
-                        <div class="pcc-label"><%- mark.getFontSize ? mark.getFontSize() : '' %></div>
+                    <div class="pcc-select pcc-select-font-size" data-pcc-font-size data-pcc-toggle="dropdown-font-size" title="<%= data.fontSize %>">
+                        <div class="pcc-label"><%- data.mark.getFontSize ? data.mark.getFontSize() : '' %></div>
                         <div class="pcc-arrow-down"></div>
                         <div data-pcc-toggle-id="dropdown-font-size" class="pcc-dropdown">
                             <div>8</div>
@@ -352,40 +352,40 @@
         </div>
 
         <div data-pcc-toggle-id="context-menu-tab4"
-             class="pcc-tab-content<% if (menuOptions.activateLayerTab === true) { %> pcc-open<% } %>">
+             class="pcc-tab-content<% if (data.menuOptions.activateLayerTab === true) { %> pcc-open<% } %>">
 
-            <button data-pcc-move-mark="ToFront" class="pcc-icon pcc-icon-layer-front" title="<%= moveToFrontMenuItem %>"></button>
-            <button data-pcc-move-mark="Forward" class="pcc-icon pcc-icon-layer-forward" title="<%= moveForwardMenuItem %>"></button>
-            <button data-pcc-move-mark="Backward" class="pcc-icon pcc-icon-layer-backward" title="<%= moveBackwardMenuItem %>"></button>
-            <button data-pcc-move-mark="ToBack" class="pcc-icon pcc-icon-layer-back" title="<%= moveToBackMenuItem %>"></button>
+            <button data-pcc-move-mark="ToFront" class="pcc-icon pcc-icon-layer-front" title="<%= data.moveToFrontMenuItem %>"></button>
+            <button data-pcc-move-mark="Forward" class="pcc-icon pcc-icon-layer-forward" title="<%= data.moveForwardMenuItem %>"></button>
+            <button data-pcc-move-mark="Backward" class="pcc-icon pcc-icon-layer-backward" title="<%= data.moveBackwardMenuItem %>"></button>
+            <button data-pcc-move-mark="ToBack" class="pcc-icon pcc-icon-layer-back" title="<%= data.moveToBackMenuItem %>"></button>
         </div>
 
-        <div data-pcc-toggle-id="context-menu-tab5" class="pcc-tab-content<% if (menuOptions.activateESignTab) { %> pcc-open<% } %>">
+        <div data-pcc-toggle-id="context-menu-tab5" class="pcc-tab-content<% if (data.menuOptions.activateESignTab) { %> pcc-open<% } %>">
             <div data-pcc-esign-preview></div>
         </div>
 
-        <div data-pcc-toggle-id="context-menu-tab6" class="pcc-tab-content<% if (menuOptions.activateLinkTab) { %> pcc-open<% } %>">
+        <div data-pcc-toggle-id="context-menu-tab6" class="pcc-tab-content<% if (data.menuOptions.activateLinkTab) { %> pcc-open<% } %>">
                 <div class='pcc-hyperlink-header'>
                         <!-- Set href using the template specifier that escapes HTML to prevent breaking out of attribute value unexpectedly (see https://underscorejs.org/#template) -->                    
-                        <a href="<%- menuOptions.linkText %>" target="_blank" data-pcc-link-navigate>
-                            <span class="pcc-icon pcc-icon-external-link" title="<%= hyperlinkNavigate %>"></span>
+                        <a href="<%- data.menuOptions.linkText %>" target="_blank" data-pcc-link-navigate>
+                            <span class="pcc-icon pcc-icon-external-link" title="<%= data.hyperlinkNavigate %>"></span>
                         </a>
-                        <label class="pcc-hyperlink-label"><%= hyperlink %></label>
+                        <label class="pcc-hyperlink-label"><%= data.hyperlink %></label>
                 </div>
                 <input type="text" data-pcc-link-input>
         </div>
 
-        <div data-pcc-toggle-id="context-menu-tab7" class="pcc-tab-content<% if (menuOptions.activateImageTab) { %> pcc-open<% } %>">
-            <img src="<%= menuOptions.currentImage %>" alt="Image Stamp Preview" class="pcc-image-stamp-preview" data-pcc-image-stamp-preview>
+        <div data-pcc-toggle-id="context-menu-tab7" class="pcc-tab-content<% if (data.menuOptions.activateImageTab) { %> pcc-open<% } %>">
+            <img src="<%= data.menuOptions.currentImage %>" alt="Image Stamp Preview" class="pcc-image-stamp-preview" data-pcc-image-stamp-preview>
         </div>
         <% } %>
     </div>
 
-    <% if (mark.getType().match(/annotation/i)) { %>
+    <% if (data.mark.getType().match(/annotation/i)) { %>
     <div class="pcc-row">
-        <div data-pcc-checkbox="includeInBurnedDocument" class="pcc-checkbox<% if (mark.getData('Accusoft-burnAnnotation')) { %> pcc-checked<% } %>">
+        <div data-pcc-checkbox="includeInBurnedDocument" class="pcc-checkbox<% if (data.mark.getData('Accusoft-burnAnnotation')) { %> pcc-checked<% } %>">
             <span class="pcc-icon pcc-icon-check"></span>
-            <label><%= includeInBurnedDocument %></label>
+            <label><%= data.includeInBurnedDocument %></label>
         </div>
     </div>
     <% } %>

@@ -14,6 +14,7 @@ var async = require('async');
 var mkdirp = require('mkdirp');
 var fs = require('fs');
 var getDirName = require('path').dirname;
+var _ = require('lodash');
 
 const clean = function() {
   return del([
@@ -45,7 +46,11 @@ const viewerCoreLicense = function() {
   return src('node_modules/@prizmdoc/viewer-core/LICENSE').pipe(rename('viewercontrol-LICENSE.txt')).pipe(dest('dist/viewer-assets/js'));
 }
 
-const viewerCore = parallel(viewerCoreJs, viewerCoreLicense);
+const pdfJsLicense = function() {
+  return src('node_modules/@prizmdoc/viewer-core/LICENSE-pdfjs').pipe(rename('pdfjs-LICENSE.txt')).pipe(dest('dist/viewer-assets/js'));
+}
+
+const viewerCore = parallel(viewerCoreJs, viewerCoreLicense, pdfJsLicense);
 
 const license = function() {
   return src('LICENSE').pipe(dest('dist/viewer-assets'));
@@ -115,9 +120,14 @@ const viewerCustomizationsJs = series(icons, function viewerCustomizationsJs(don
           var contents = fs.readFileSync('src/templates/' + filePath).toString()
             .replace(/\n|\r|\t/g, ' ') // convert all whitespace to space characters
             .replace(/\s\s+/g, ' ') // eliminate multiple spaces in a row
-            .trim()
+            .trim();
 
-          htmlTemplates[filePath.replace('Template.html', '')] = contents;
+          if (filePath.endsWith('printTemplate.html')) {
+            htmlTemplates[filePath.replace('Template.html', '')] = contents;
+          } else {
+            var compiledTemplate = _.template(contents, { variable: 'data' });
+            htmlTemplates[filePath.replace('Template.html', '')] = compiledTemplate;
+          }
         }
       });
       return callback(null, htmlTemplates);
@@ -134,12 +144,28 @@ const viewerCustomizationsJs = series(icons, function viewerCustomizationsJs(don
     if (err) {
       return done(err);
     }
+
     var customizations = {
       languages: results['languages'],
       template: results['template'],
       icons: results['icons']
     }
-    var jsObject = JSON.stringify(customizations, null, 2).replace(/<\/script>/g, '\\74/script>'); // escape closing </script> tags so they can be safely embedded
+
+    var placeholder = '____PLACEHOLDER____';
+    var functions = [];
+    var jsonReplacer = function (key, val) {
+      if (typeof val === 'function') {
+          functions.push(val);
+          return placeholder;
+      }
+      return val;
+    };
+
+    var jsObject = JSON.stringify(customizations, jsonReplacer, 2)
+      .replace(new RegExp('"' + placeholder + '"', 'g'), function() {
+        return functions.shift();
+      });
+
     var jsFileContents = 'window.viewerCustomizations = ' + jsObject + ';';
     writeFile('dist/viewer-assets/js/viewerCustomizations.js', jsFileContents, function (err) {
       if (err) {

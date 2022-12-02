@@ -1,24 +1,24 @@
-<div class='pcc-hyperlink pcc-clearfix pcc-hyperlink-<%= mode %>'>
-    <% if (mode === "edit") { %>
-        <span class="pcc-hyperlink-label"><%= language.hyperlink %></span>
+<div class='pcc-hyperlink pcc-clearfix pcc-hyperlink-<%= data.mode %>'>
+    <% if (data.mode === "edit") { %>
+        <span class="pcc-hyperlink-label"><%= data.language.hyperlink %></span>
         <div class="pcc-hyperlink-right">
-            <button data-pcc-hyperlink="done" class="pcc-icon pcc-icon-check" title="<%= language.doneButton %>"></button>
-            <button data-pcc-hyperlink="delete" class="pcc-icon pcc-icon-delete" title="<%= language.deleteButton %>"></button>
+            <button data-pcc-hyperlink="done" class="pcc-icon pcc-icon-check" title="<%= data.language.doneButton %>"></button>
+            <button data-pcc-hyperlink="delete" class="pcc-icon pcc-icon-delete" title="<%= data.language.deleteButton %>"></button>
         </div>
         <div class="pcc-hyperlink-input">
             <button data-pcc-hyperlink="clear">&#215;</button>
             <input type="text">
         </div>
-    <%} else if (mode === "view" && link) { %>
-        <% if (hrefType === "page") { %>
+    <%} else if (data.mode === "view" && data.link) { %>
+        <% if (data.hrefType === "page") { %>
             <!-- Set href and content using the template specifier that escapes HTML to prevent breaking out of attribute value unexpectedly (see https://underscorejs.org/#template) -->
-            <a href="<%- link %>" data-pcc-link-navigate data-href-type="<%= hrefType %>"><%- language.documentHyperlinkGotoPage + link %>.</a>
+            <a href="<%- data.link %>" data-pcc-link-navigate data-href-type="<%= data.hrefType %>"><%- data.language.documentHyperlinkGotoPage + data.link %>.</a>
         <%} else  { %>
-            <% if (hyperlinkType === "textHyperlink") { %>
-                <button data-pcc-hyperlink="edit" class="pcc-icon pcc-icon-edit" title="<%= language.editButton %>"></button>
+            <% if (data.hyperlinkType === "textHyperlink") { %>
+                <button data-pcc-hyperlink="edit" class="pcc-icon pcc-icon-edit" title="<%= data.language.editButton %>"></button>
             <% } %>
             <!-- Set href and content using the template specifier that escapes HTML to prevent breaking out of attribute value unexpectedly (see https://underscorejs.org/#template) -->
-            <a href="<%- link %>" data-pcc-link-navigate target="_blank"><%- link %></a>
+            <a href="<%- data.link %>" data-pcc-link-navigate target="_blank"><%- data.link %></a>
         <% } %>
     <% } %>
 </div>
