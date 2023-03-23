@@ -12422,7 +12422,7 @@ var PCCViewer = window.PCCViewer || {};
         // This module manages displaying and navigating attachments.
         var attachmentManager = (function(){
             var control, language, initialized;
-            var $attachmentsPanel, $currentEmail, $returnToPrevEmail, $attachmentList, $attachmentsBadge;
+            var $attachmentsPanel, $currentDocument, $returnToPrevDocument, $attachmentList, $attachmentsBadge;
             var emailsStack = [];
             var currentDocument = { viewingSessionId: options.documentID };
 
@@ -12430,16 +12430,16 @@ var PCCViewer = window.PCCViewer || {};
                 control = viewerControl;
                 language = languageOptions;
                 $attachmentsPanel = viewer.$dom.find('[data-pcc-attachments-panel]');
-                $currentEmail = $attachmentsPanel.find('.pcc-attachments-current-email');
-                $returnToPrevEmail = $attachmentsPanel.find('.pcc-attachments-to-prev-email');
+                $currentDocument = $attachmentsPanel.find('.pcc-attachments-current-document');
+                $returnToPrevDocument = $attachmentsPanel.find('.pcc-attachments-to-prev-document');
                 $attachmentList = $attachmentsPanel.find('[data-pcc-attachments-panel-list]');
                 $attachmentsBadge = viewer.viewerNodes.$attachments.find('.pcc-icon-badge');
-                updateIcon($returnToPrevEmail.find('.pcc-icon'));
+                updateIcon($returnToPrevDocument.find('.pcc-icon'));
 
-                $currentEmail.on('click', function() {
+                $currentDocument.on('click', function() {
                     changeCurrentDocument(getCurrentEmail());
                 });
-                $returnToPrevEmail.on('click', function() {
+                $returnToPrevDocument.on('click', function() {
                     if (emailsStack.length > 1) {
                         emailsStack.pop();
                         changeCurrentDocument(getCurrentEmail());
@@ -12450,7 +12450,7 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.viewerNodes.$attachments.on('click', showPanel);
 
                 if (options.attachmentViewingMode !== viewer.attachmentViewingModeEnum.ThisViewer) {
-                    $attachmentsPanel.find('.pcc-attachments-section-current-email').addClass('pcc-hide');
+                    $attachmentsPanel.find('.pcc-attachments-section-current-document').addClass('pcc-hide');
                 }
             };
 
@@ -12552,11 +12552,11 @@ var PCCViewer = window.PCCViewer || {};
                         emailsStack.push(document);
                     }
 
-                    var currentEmailName = document.name || language.attachments.primaryEmail;
-                    $currentEmail
-                        .find('.pcc-attachments-current-email-name')
+                    var currentEmailName = document.name || language.attachments.primaryDocument;
+                    $currentDocument
+                        .find('.pcc-attachments-current-document-name')
                         .text(currentEmailName);
-                    $currentEmail.addClass('pcc-active');
+                    $currentDocument.addClass('pcc-active');
                     updateReturnToPrecEmailState();
                 }
 
@@ -12567,9 +12567,9 @@ var PCCViewer = window.PCCViewer || {};
                 // Highlight current document
                 $attachmentList.find('.pcc-row').removeClass('pcc-active');
                 if (getCurrentEmail().viewingSessionId === viewingSessionId) {
-                    $currentEmail.addClass('pcc-active');
+                    $currentDocument.addClass('pcc-active');
                 } else {
-                    $currentEmail.removeClass('pcc-active');
+                    $currentDocument.removeClass('pcc-active');
                     $attachmentList
                         .children('.pcc-row[data-pcc-session-id="' + viewingSessionId + '"]')
                         .addClass('pcc-active');
@@ -12579,11 +12579,11 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             var updateReturnToPrecEmailState = function() {
-                // Update return to previous email status
+                // Update return to previous document status
                 if (emailsStack.length > 1) {
-                    $returnToPrevEmail.removeClass('pcc-disabled');
+                    $returnToPrevDocument.removeClass('pcc-disabled');
                 } else {
-                    $returnToPrevEmail.addClass('pcc-disabled');
+                    $returnToPrevDocument.addClass('pcc-disabled');
                 }
             };
 

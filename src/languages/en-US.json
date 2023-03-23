@@ -73,9 +73,9 @@
         "noResults": "No attachments available",
         "title": "Attachments",
         "tooltip": "Attachments",
-        "email": "Email",
-        "returnToPrevEmail": "Back to previous email",
-        "primaryEmail": "Primary email"
+        "document": "Document",
+        "returnToPrevDocument": "Back to previous document",
+        "primaryDocument": "Primary document"
     },
     "beginsWith": "Begins With",
     "borderColorMenuItem": "Border Color",

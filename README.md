@@ -157,7 +157,7 @@ Let's explain the various parts of this function call:
 - `viewerAssetsPath` is the base route to get the static CSS and JavaScript (e.g. `viewer/css/...` and `viewer/js/...`) assets. This is used by the viewer at print time.
 - `language`, `template`, and `icons` are how pre-built viewer customizations are passed in. You can effectively treat this as boilerplate.
 - `annotationsMode` is set to `'LayeredAnnotations'` so that the viewer saves and loads annotation data in our newer JSON markup format.
-- `attachmentViewingMode` is set to `'ThisViewer'` so that the viewer opens email attachments in the same window where you are viewing the original email.
+- `attachmentViewingMode` is set to `'ThisViewer'` so that the viewer opens email (or PDF-portfolio) attachments in the same window where you are viewing the original email (or PDF-portfolio).
 
 ## Customizing your viewer
 

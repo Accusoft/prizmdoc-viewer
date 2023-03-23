@@ -53,26 +53,20 @@
                 </button>
                 <div data-pcc-attachments-panel class="pccv pcc-hide pcc-attachments-panel" tabindex=-1>
                     <div class="pcc-dialog-wrapper">
-                        <div class="pcc-attachments-section pcc-attachments-section-current-email">
-                            <div class="pcc-attachments-section-title">
-                                <%= data.attachments.email %>
-                            </div>
+                        <div class="pcc-attachments-section pcc-attachments-section-current-document">
                             <div class="pcc-attachments-section-content">
-                                <div class="pcc-attachments-current-email pcc-row">
-                                    <span class="pcc-icon pcc-icon-email"></span>
-                                    <a class="pcc-attachments-current-email-name" href="#"></a>
+                                <div class="pcc-attachments-current-document pcc-row">
+                                    <span class="pcc-icon pcc-icon-document"></span>
+                                    <a class="pcc-attachments-current-document-name" href="#"></a>
                                     <span class="pcc-icon pcc-icon-check"></span>
                                 </div>
                             </div>
-                            <button class="pcc-attachments-to-prev-email pcc-disabled">
+                            <button class="pcc-attachments-to-prev-document pcc-disabled">
                                 <span class="pcc-icon pcc-icon-arrow-left"></span>
-                                <a href="#"><%= data.attachments.returnToPrevEmail%></a>
+                                <a href="#"><%= data.attachments.returnToPrevDocument%></a>
                             </button>
                         </div>
                         <div class="pcc-attachments-section">
-                            <div data-pcc-attachments-panel-list-title class="pcc-attachments-section-title">
-                                <%= data.attachments.title %>
-                            </div>
                             <div data-pcc-attachments-panel-list class="pcc-attachments-section-content"></div>
                         </div>
                     </div>
