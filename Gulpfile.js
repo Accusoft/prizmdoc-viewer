@@ -11,7 +11,7 @@ var rename = require('gulp-rename');
 var svgstore = require('gulp-svgstore');
 var svgmin = require('gulp-svgmin');
 var async = require('async');
-var mkdirp = require('mkdirp');
+var { mkdirp } = require('mkdirp');
 var fs = require('fs');
 var getDirName = require('path').dirname;
 var _ = require('lodash');
@@ -50,15 +50,11 @@ const pdfJsLicense = function() {
   return src('node_modules/@prizmdoc/viewer-core/LICENSE-pdfjs').pipe(rename('pdfjs-LICENSE.txt')).pipe(dest('dist/viewer-assets/js'));
 }
 
-const aesJsLicense = function() {
-  return src('node_modules/@prizmdoc/viewer-core/LICENSE-aesjs').pipe(rename('aesjs-LICENSE.txt')).pipe(dest('dist/viewer-assets/js'));
-}
-
 const coreJsLicense = function() {
   return src('node_modules/@prizmdoc/viewer-core/LICENSE-corejs').pipe(rename('corejs-LICENSE.txt')).pipe(dest('dist/viewer-assets/js'));
 }
 
-const viewerCore = parallel(viewerCoreJs, viewerCoreLicense, pdfJsLicense, aesJsLicense, coreJsLicense);
+const viewerCore = parallel(viewerCoreJs, viewerCoreLicense, pdfJsLicense, coreJsLicense);
 
 const license = function() {
   return src('LICENSE').pipe(dest('dist/viewer-assets'));

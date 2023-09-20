@@ -3,7 +3,7 @@
   "description": "Source code and build which produces the client assets for the PrizmDoc Viewer client",
   "main": "Gulpfile.js",
   "dependencies": {
-    "@prizmdoc/viewer-core": "^13.24.7"
+    "@prizmdoc/viewer-core": "^13.25.4"
   },
   "devDependencies": {
     "async": "^3.2.4",
@@ -15,7 +15,7 @@
     "gulp-svgstore": "^9.0.0",
     "jshint": "^2.13.6",
     "lodash": "^4.17.21",
-    "mkdirp": "^2.1.5",
+    "mkdirp": "^3.0.1",
     "run-script-os": "^1.1.6"
   },
   "scripts": {
@@ -38,5 +38,5 @@
   "author": "Accusoft",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
-  "version": "13.24.0"
+  "version": "13.25.0"
 }
