@@ -83,6 +83,9 @@
     <div class="pcc-tab" data-pcc-nav-tab="search" data-pcc-removable-id="searchTab">
         <div class="pcc-tab-item"><span class="pcc-icon pcc-icon-search"></span> <%= data.search %></div>
         <div class="pcc-tab-pane pcc-tab-advanced">
+            <div class="pcc-pull-right">
+                <button data-pcc-toggle="dialog-pii-detection" class="pcc-icon pcc-icon-person-search pcc-hide" title="<%= data.piiDetect %>"></button>
+            </div>
             <div class="pcc-left">
                 <button class="pcc-icon pcc-icon-list pcc-search-menu-button" title="<%= data.searchOptions %>" data-pcc-toggle="dialog-search"></button>
                 <div class="pcc-search-group pcc-search-group-input">
@@ -197,6 +200,7 @@
         <div class="pcc-tab-item"><span class="pcc-icon pcc-icon-redact"></span> <%= data.redactLabel %></div>
         <div class="pcc-tab-pane">
             <div class="pcc-pull-right">
+                <button data-pcc-toggle="dialog-pii-detection" class="pcc-icon pcc-icon-person-search pcc-hide" title="<%= data.piiDetect %>"></button>
                 <button data-pcc-toggle="dialog-save-annotations" class="pcc-icon pcc-icon-save" title="<%= data.saveAnnotations %>"></button>
                 <button data-pcc-lock-editable-layer data-pcc-toggle="dialog-load-annotations" class="pcc-icon pcc-icon-load" title="<%= data.loadAnnotations %>"></button>
                 <button data-pcc-comments-panel class="pcc-icon pcc-icon-comment" title="<%= data.commentsPanel %>"></button>
@@ -531,6 +535,51 @@
                 <div class="pcc-col-2 pcc-center"><%= data.type %></div>
             </div>
             <div class="pcc-row pcc-row-results" data-pcc-revision="results" tabindex="1"></div>
+        </div>
+    </div>
+</div>
+
+<div class="pcc-dialog pcc-dialog-pii-detection" data-pcc-toggle-id="dialog-pii-detection">
+    <div class="pcc-dialog-wrapper">
+        <div class="pcc-pii-detection-header pcc-clear">
+            <div class="pcc-pull-right">
+                <button class="pcc-icon pcc-icon-list" title="<%= data.piiEntities %>" data-pcc-pii-entities-container-toggle="entities"></button>
+                <button class="pcc-icon pcc-icon-redact-textselection pcc-disabled" title="<%= data.piiRedact %>" data-pcc-pii-detection="redact"></button>
+            </div>
+            <div class="pcc-left">
+                <span data-pcc-pii-detection="entityCount"><%= data.piiEntitiesNone %></span>
+            </div>
+        </div>
+
+        <div class="pcc-row pcc-row-pii-entities-status pcc-hide" data-pcc-pii-detection="status">
+            <div class="pcc-percent">
+                <div class="pcc-bar"></div>
+            </div>
+        </div>
+
+        <div class="pcc-row pcc-clear pcc-pii-detection-nav pcc-center">
+            <button class="pcc-align-left" data-pcc-pii-detection="prevEntitiesPage" title="<%= data.piiEntitiesNavigation.previousPageEntities %>">
+                <span>&#9664;&#9664;</span>
+            </button>
+            <button data-pcc-pii-detection="prevEntity" title="<%= data.piiEntitiesNavigation.previousEntity %>">
+                <span>&#9650;</span>
+            </button>
+            <button data-pcc-pii-detection="nextEntity" title="<%= data.piiEntitiesNavigation.nextEntity %>">
+                <span>&#9660;</span>
+            </button>
+            <button class="pcc-align-right" data-pcc-pii-detection="nextEntitiesPage" title="<%= data.piiEntitiesNavigation.nextPageEntities %>">
+                <span>&#9654;&#9654;</span>
+            </button>
+        </div>
+
+        <div class="pcc-pii-entities-container pcc-hide" data-pcc-pii-entities-container="entities">
+            <div class="pcc-row pcc-row-results-header">
+                <div class="pcc-col-2 pcc-center"><%= data.page %></div>
+                <div class="pcc-col-4 pcc-center"><%= data.piiEntityText %></div>
+                <div class="pcc-col-4 pcc-center"><%= data.piiEntityType %></div>
+                <div class="pcc-col-2 pcc-center"><%= data.piiEntityScore %></div>
+            </div>
+            <div class="pcc-row pcc-row-results" data-pcc-pii-detection="entities" tabindex="1"></div>
         </div>
     </div>
 </div>

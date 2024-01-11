@@ -274,7 +274,8 @@
 
 // search dialog header
 .pccv .pcc-search-header,
-.pccv .pcc-revision-header { 
+.pccv .pcc-revision-header,
+.pccv .pcc-pii-detection-header { 
     margin: -4px 0 6px;
     line-height: 32px;
     position: relative;
@@ -299,7 +300,8 @@
         top: -3px;
     }
 
-    [data-pcc-search=msg] {
+    [data-pcc-search=msg],
+    [data-pcc-pii-detection=msg] {
         cursor: pointer;
     }
 }
@@ -308,10 +310,12 @@
 @searchContainerOffset: 76px;
 
 .pccv [data-pcc-search-container-toggle=results],
-.pccv [data-pcc-revision-container-toggle=results] {
+.pccv [data-pcc-revision-container-toggle=results],
+.pccv [data-pcc-pii-entities-container-toggle=entities] {
     display: none;
 }
-.pccv .pcc-row-results-status { 
+.pccv .pcc-row-results-status,
+.pccv .pcc-row-pii-entities-status { 
     margin: 3px 0;
     float: left;
     
@@ -336,7 +340,8 @@
 }
 
 .pccv .pcc-search-nav,
-.pccv .pcc-revision-nav {
+.pccv .pcc-revision-nav,
+.pccv .pcc-pii-detection-nav {
     line-height: 38px;
 
     span {
@@ -363,16 +368,34 @@
 .pccv .pcc-search-filter-container,
 .pccv .pcc-revision-container,
 .pccv .pcc-search-quick-actions-container {
-  position: absolute;
-  top: 40px;
-  bottom: 5px;
-  box-sizing: border-box;
-  width: 100%;
-  overflow: auto;
-  margin: 0;
+    position: absolute;
+    top: 40px;
+    bottom: 5px;
+    box-sizing: border-box;
+    width: 100%;
+    overflow: auto;
+    margin: 0;
 }
+
+.pccv .pcc-pii-entities-container {
+    position: absolute;
+    top: 40px;
+    bottom: 5px;
+    box-sizing: border-box;
+    width: 100%;
+    overflow: auto;
+    margin: 0;
+}
+
+.pccv .pcc-confined-text {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .pccv .pcc-search-results-container,
-.pccv .pcc-revision-container {
+.pccv .pcc-revision-container,
+.pccv .pcc-pii-entities-container {
     top: @searchContainerOffset;
 
     &.pcc-loading {
@@ -451,7 +474,8 @@
     
     // search view on mobile
     .pccv [data-pcc-search-container-toggle=results],
-    .pccv [data-pcc-revision-container-toggle=results] { display: inline-block; }
+    .pccv [data-pcc-revision-container-toggle=results],
+    .pccv [data-pcc-pii-entities-container-toggle=entities] { display: inline-block; }
     
     .pccv [data-pcc-nav-tab="search"] .pcc-left {
         width: 100%;
@@ -491,7 +515,12 @@
     }
     
     .pccv .pcc-search-header,
-    .pccv .pcc-revision-header { 
+    .pccv .pcc-revision-header,
+    .pccv .pcc-pii-detection-header { 
         margin: 4px 0 0;
+    }
+
+    .pccv [data-pcc-nav-tab=search] [data-pcc-toggle=dialog-pii-detection] {
+        display: none;
     }
 });

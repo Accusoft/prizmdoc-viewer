@@ -428,12 +428,22 @@ var PCCViewer = window.PCCViewer || {};
             $pageRedactionOverlay: viewer.$dom.find("[data-pcc-page-redaction=overlay]"),
             $redactionViewMode: viewer.$dom.find("[data-pcc-redactionViewmode]"),
 
+            $piiDetectionDialog: viewer.$dom.find("[data-pcc-toggle-id=dialog-pii-detection]"),
+            $piiDetectionStatus: viewer.$dom.find("[data-pcc-pii-detection=status]"),
+            $piiEntities: viewer.$dom.find("[data-pcc-pii-detection=entities]"),
+            $piiEntityCount: viewer.$dom.find("[data-pcc-pii-detection=entityCount]"),
+            $piiEntityPrev: viewer.$dom.find("[data-pcc-pii-detection=prevEntity]"),
+            $piiEntityNext: viewer.$dom.find("[data-pcc-pii-detection=nextEntity]"),
+            $piiEntityPrevPage: viewer.$dom.find("[data-pcc-pii-detection=prevEntitiesPage]"),
+            $piiEntityNextPage: viewer.$dom.find("[data-pcc-pii-detection=nextEntitiesPage]"),
+            $piiRedact: viewer.$dom.find('[data-pcc-pii-detection=redact]'),
+            $piiEntitiesContainer: viewer.$dom.find('[data-pcc-pii-entities-container=entities]'),
+
             $revisionLoader: viewer.$dom.find("[data-pcc-revision=loader]"),
             $revisionStatus: viewer.$dom.find("[data-pcc-revision=status]"),
             $revisions: viewer.$dom.find("[data-pcc-revision=results]"),
             $revisionCount: viewer.$dom.find("[data-pcc-revision=revisionCount]"),
             $revisionsContainer: viewer.$dom.find('[data-pcc-revision-container=results]'),
-
 
             $revisionPrevItem: viewer.$dom.find("[data-pcc-revision=prevResult]"),
             $revisionNextItem: viewer.$dom.find("[data-pcc-revision=nextResult]"),
@@ -2671,6 +2681,15 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
+            if (toggleID === 'dialog-pii-detection') {
+                var isOpening = $elBeingToggled.hasClass('pcc-open');
+                if (isOpening) {
+                    viewer.piiDetection.detectPii();
+                } else {
+                    viewer.piiDetection.reset();
+                }
+            }
+
             if (toggleID === 'dropdown-search-fixed-box') {
                 ev.stopPropagation();
             }
@@ -2795,6 +2814,10 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             if(hasOpenPanel) {
+                if (toggleID !== 'dialog-pii-detection' && viewer.viewerNodes.$piiDetectionDialog.hasClass(openClass)) {
+                    viewer.piiDetection.reset();
+                }
+
                 // we are opening a panel while another panel is open, so we need to close already open ones
                 viewer.viewerNodes.$dialogs.not($dialog).not(viewer.viewerNodes.$thumbnailDialog).removeClass(openClass);
                 viewer.$dom.find('[data-pcc-toggle*="dialog"].pcc-active').not('[data-pcc-toggle*="thumbnail"]').removeClass(activeClass);
@@ -3235,6 +3258,10 @@ var PCCViewer = window.PCCViewer || {};
                 if (isPrintDisabled) {
                     viewer.viewerNodes.$printLaunch.addClass('pcc-disabled');
                 }
+
+                if (restrictions.serverSearch !== 'disabled' && options.piiDetection && typeof options.piiDetection === 'object' && options.piiDetection.enablePiiDetection === true) {
+                    viewer.$dom.find('[data-pcc-toggle="dialog-pii-detection"]').removeClass('pcc-hide');
+                }
             });
         }
 
@@ -3644,6 +3671,9 @@ var PCCViewer = window.PCCViewer || {};
         function viewingSessionChangingHandler() {
             // Cancel current search to stop requesting server
             viewer.search.cancelAndClearSearchResults();
+            if (viewer.viewerNodes.$piiDetectionDialog.hasClass('pcc-open')) {
+                viewer.$dom.find('[data-pcc-toggle="dialog-pii-detection"]:first').trigger('click');
+            }
         }
 
         // Viewing Session Changed handler
@@ -3798,6 +3828,9 @@ var PCCViewer = window.PCCViewer || {};
                 if (typeof opts.className === 'string') {
                     elem.className = opts.className;
                 }
+                if (typeof opts.title === 'string') {
+                    elem.title = opts.title;
+                }
                 if (typeof opts.text !== 'undefined') {
                     // Sanitize the text being inserted into the DOM
                     elem.appendChild( document.createTextNode(opts.text.toString()) );
@@ -3809,7 +3842,532 @@ var PCCViewer = window.PCCViewer || {};
             }
         };
 
+        this.piiDetection = (function() {
+            // The piiDetection module implements the UI control and API necessary
+            // to implement the viewer's PII detection functionality. Module members that
+            // are prefixed with private are only accessible with the module's scope while 'public'
+            // means it can be access outside the module's scope.
 
+            // The PII detection request object returned from the API.
+            var piiDetectionRequest = {},
+
+            // Current number of PII entities
+            piiEntitiesCount = 0,
+
+            // Current active entity ID
+            activePiiEntityId,
+
+            // Number of PII entities to show at a time,
+            piiEntitiesPageLength = options.piiDetection && typeof options.piiDetection === 'object' && !isNaN(options.piiDetection.piiEntitiesPageLength) && options.piiDetection.piiEntitiesPageLength > 0 ? options.piiDetection.piiEntitiesPageLength : 250,
+
+            // Toggleable elements
+            $piiDetectionContainerToggles = viewer.$dom.find('[data-pcc-pii-entities-container-toggle]'),
+            $piiDetectionContainers = viewer.$dom.find('[data-pcc-pii-entities-container]'),
+
+            // Fragment containing all sorted PII entities, only a subset of these entities are ever added to the DOM
+            allPiiEntitiesFragment = document.createDocumentFragment(),
+            currentPiiEntityPageStartIndex = 0,
+            activePiiEntityPageStartIndex,
+            piiEntityIndexMap = {};
+
+            var piiEntityView = _.clone(genericView);
+
+            var getReadableType = function (piiEntityType) {
+                var lowercaseWords = [];
+                var words = piiEntityType.split(/(?=[A-Z])/);
+                words.forEach(word => {
+                    lowercaseWords.push(word.toLowerCase());
+                });
+                return lowercaseWords.join(' ');
+            };
+
+            // This method creates and returns DOM for the PII entity
+            piiEntityView.piiEntityBuild = function(piiEntity){
+                var piiEntityItem,
+                    piiEntityId = piiEntity.id,
+                    piiEntityItem = piiEntityView.elem('div', { className: 'pcc-row' });
+
+                piiEntityItem.setAttribute('data-pcc-pii-entity-id', piiEntityId);
+                piiEntityItem.appendChild(piiEntityView.pageNumber(piiEntity.getPageNumber()));
+                piiEntityItem.appendChild(piiEntityView.elem('div', {className: 'pcc-col-4 pcc-confined-text', text: piiEntity.getText(), title: piiEntity.getText()}));
+                piiEntityItem.appendChild(piiEntityView.elem('div', {className: 'pcc-col-4', text: getReadableType(piiEntity.getType())}));
+                piiEntityItem.appendChild(piiEntityView.elem('div', {className: 'pcc-col-2', text: `${piiEntity.getScore() * 100}%`}));
+
+                // Add sorting parameters to the DOM element
+                piiEntityItem.setAttribute('data-pcc-page-number', piiEntity.getPageNumber());
+                piiEntityItem.setAttribute('data-pcc-sort-index', piiEntity.getStartIndexInPage());
+
+                $(piiEntityItem).on('click', function (ev) {
+                    viewer.viewerControl.setSelectedPiiEntity(piiEntity, true);
+
+                    // set the active entity node
+                    activePiiEntityId = piiEntity.id;
+                    activePiiEntityPageStartIndex = currentPiiEntityPageStartIndex;
+
+                    // deselect a previously selected entity in the entity UI
+                    viewer.viewerNodes.$piiEntities.find('.pcc-row.pcc-active').removeClass('pcc-active');
+
+                    // select the new entity
+                    $(this).addClass('pcc-active');
+
+                    // update PII entity UI to reflect selection
+                    updatePiiEntityPrevNextButtons();
+                    updatePiiEntityCountText();
+
+                    // collapse the expanded panel
+                    viewer.viewerNodes.$piiDetectionDialog.removeClass('pcc-expand')
+                        // switch the active PII detection button to off state
+                        .find('[data-pcc-pii-entities-container-toggle="entities"]').removeClass('pcc-active');
+
+                    viewer.viewerNodes.$piiRedact.removeClass('pcc-disabled');
+                });
+
+                allPiiEntitiesFragment.appendChild(piiEntityItem);
+                return piiEntityItem;
+            };
+
+            $piiDetectionContainerToggles.on('click', function(ev){
+                var $this = $(this),
+                    which = $this.data('pcc-pii-entities-container-toggle'),
+                    wasActive = $this.hasClass('pcc-active'),
+                    hideAllClass = 'pcc-hide pcc-hide-lg';
+
+                if (wasActive) {
+                    // turn off this toggle
+                    $this.removeClass('pcc-active');
+
+                    viewer.viewerNodes.$piiDetectionDialog.removeClass('pcc-expand');
+                } else {
+                    // turn on this toggle
+                    $piiDetectionContainerToggles.removeClass('pcc-active');
+                    $this.addClass('pcc-active');
+
+                    viewer.viewerNodes.$piiDetectionDialog.addClass('pcc-expand');
+                }
+
+                // toggle was flipped, so flip the bool
+                var isActive = !wasActive;
+
+                if (isActive) {
+
+                    // Hide all containers
+                    $piiDetectionContainers.addClass(hideAllClass);
+
+                    // Show current container
+                    $piiDetectionContainers.filter('[data-pcc-pii-entities-container="' + which + '"]').removeClass(hideAllClass);
+
+
+                } else {
+                    // Hide current container
+                    $piiDetectionContainers.filter('[data-pcc-pii-entities-container="' + which + '"]').addClass(hideAllClass);
+                }
+            });
+
+            viewer.viewerNodes.$piiEntityPrev.on('click', function (ev) {
+                ev.preventDefault();
+                previousPiiEntityClickHandler(this);
+
+            });
+            viewer.viewerNodes.$piiEntityNext.on('click', function (ev) {
+                ev.preventDefault();
+                nextPiiEntityClickHandler(this);
+            });
+
+            viewer.viewerNodes.$piiEntityPrevPage.on('click', function (ev) {
+                ev.preventDefault();
+                showPiiEntitySubset(currentPiiEntityPageStartIndex - piiEntitiesPageLength);
+            });
+
+            viewer.viewerNodes.$piiEntityNextPage.on('click', function (ev) {
+                ev.preventDefault();
+                showPiiEntitySubset(currentPiiEntityPageStartIndex + piiEntitiesPageLength);
+            });
+
+            // Selecting the Next button in the PII entity list causes the following entities to be selected and
+            // displayed.
+            var nextPiiEntityClickHandler = function (nextPiiEntityBtn) {
+                if (piiEntitiesCount === 0 || $(nextPiiEntityBtn).attr('disabled')) {
+                    return false;
+                }
+
+                var piiEntities = viewer.viewerNodes.$piiEntities;
+                var $activePiiEntity;
+
+                if (activePiiEntityId === undefined) {
+                    $activePiiEntity = piiEntities.children(":first");
+                    $activePiiEntity.click();
+                } else {
+                    if (activePiiEntityPageStartIndex !== currentPiiEntityPageStartIndex) {
+                        // Navigate to the page containing the active PII entity.
+                        showPiiEntitySubset(activePiiEntityPageStartIndex);
+                    }
+
+                    $activePiiEntity = piiEntities.find("[data-pcc-pii-entity-id='" + activePiiEntityId + "']").next();
+
+                    if ($activePiiEntity.length) {
+                        activePiiEntityId = $activePiiEntity.attr('data-pcc-pii-entity-id');
+                        $activePiiEntity.click();
+                        piiEntities.scrollTop(piiEntities.scrollTop() + $activePiiEntity.position().top - 200);
+                    }
+                    else {
+                        showPiiEntitySubset(currentPiiEntityPageStartIndex + piiEntitiesPageLength);
+                        $activePiiEntity = $(piiEntities.children()[0]);
+                        activePiiEntityId = $activePiiEntity.attr('data-pcc-pii-entity-id');
+                        $activePiiEntity.click();
+                    }
+                }
+            };
+
+            // Selecting the Previous button in the PII entity list causes the previous entity to be selected and
+            // displayed.
+            var previousPiiEntityClickHandler = function (previousPiiEntityBtn) {
+                if (piiEntitiesCount === 0 || $(previousPiiEntityBtn).attr('disabled')) {
+                    return false;
+                }
+
+                var piiEntities = viewer.viewerNodes.$piiEntities;
+                var $activePiiEntity;
+
+                if (activePiiEntityId === undefined) {
+                    $activePiiEntity = piiEntities.children(":last");
+                    $activePiiEntity.click();
+                } else {
+                    if (activePiiEntityPageStartIndex !== currentPiiEntityPageStartIndex) {
+                        // Navigate to the page containing the active PII entity.
+                        showPiiEntitySubset(activePiiEntityPageStartIndex);
+                    }
+
+                    $activePiiEntity = piiEntities.find("[data-pcc-pii-entity-id='" + activePiiEntityId + "']").prev();
+
+                    if ($activePiiEntity.length) {
+                        activePiiEntityId = $activePiiEntity.attr('data-pcc-pii-entity-id');
+                        $activePiiEntity.click();
+                        piiEntities.scrollTop(piiEntities.scrollTop() + $activePiiEntity.position().top - 200);
+                    }
+                    else {
+                        showPiiEntitySubset(currentPiiEntityPageStartIndex - piiEntitiesPageLength);
+                        piiEntities.scrollTop(piiEntities.prop('scrollHeight'));
+                        $activePiiEntity = $(piiEntities.children()[piiEntitiesPageLength - 1]);
+                        activePiiEntityId = $activePiiEntity.attr('data-pcc-pii-entity-id');
+                        $activePiiEntity.click();
+                    }
+                }
+            };
+
+            var getActivePiiEntityIndex = function () {
+                return piiEntityIndexMap[activePiiEntityId];
+            };
+
+            // This function manages the state of the Previous and Next navigation buttons in the PII entity list.
+            var updatePiiEntityPrevNextButtons = function () {
+                var activePiiEntityIndex = getActivePiiEntityIndex();
+                var hasNextResult = activePiiEntityIndex < piiEntitiesCount - 1;
+                var hasPrevResult = activePiiEntityIndex > 0;
+                if (hasNextResult) {
+                    viewer.viewerNodes.$piiEntityNext.removeAttr('disabled');
+                }
+                else {
+                    viewer.viewerNodes.$piiEntityNext.attr('disabled', 'disabled');
+                }
+
+                if (hasPrevResult) {
+                    viewer.viewerNodes.$piiEntityPrev.removeAttr('disabled');
+                }
+                else {
+                    viewer.viewerNodes.$piiEntityPrev.attr('disabled', 'disabled');
+                }
+            };
+
+            // Updates the text to display entities count and currently selected entity index
+            var updatePiiEntityCountText = function() {
+                if (activePiiEntityId !== undefined) {
+                    var index = getActivePiiEntityIndex();
+                    viewer.viewerNodes.$piiEntityCount.html(PCCViewer.Language.data.piiEntity + (index + 1) + ' / ' + piiEntitiesCount);
+                } else {
+                    var piiEntitiesVerbiage = (piiEntitiesCount === 1) ? PCCViewer.Language.data.piiEntityFound : PCCViewer.Language.data.piiEntitiesFound;
+                    viewer.viewerNodes.$piiEntityCount.html(piiEntitiesCount + ' ' + piiEntitiesVerbiage);
+                }
+            }
+
+            // This method re-creates entities list to display PII entities from startIndex
+            // to the last available entity, but no more than piiEntitiesPageLength entities.
+            var showPiiEntitySubset = function (startIndex) {
+                var indexChanged = (startIndex !== currentPiiEntityPageStartIndex);
+                currentPiiEntityPageStartIndex = startIndex;
+
+                if (currentPiiEntityPageStartIndex > 0) {
+                    viewer.viewerNodes.$piiEntityPrevPage.removeAttr('disabled');
+                }
+                else {
+                    viewer.viewerNodes.$piiEntityPrevPage.attr('disabled', 'disabled');
+                }
+
+                var allPiiEntityChildren = allPiiEntitiesFragment.childNodes;
+                var endIndex;
+                if (piiEntitiesCount > currentPiiEntityPageStartIndex + piiEntitiesPageLength) {
+                    viewer.viewerNodes.$piiEntityNextPage.removeAttr('disabled');
+                    endIndex = currentPiiEntityPageStartIndex + piiEntitiesPageLength;
+                }
+                else {
+                    viewer.viewerNodes.$piiEntityNextPage.attr('disabled', 'disabled');
+                    endIndex = piiEntitiesCount;
+                }
+
+                if (indexChanged || viewer.viewerNodes.$piiEntities.children().length < piiEntitiesPageLength) {
+                    var scrollTop = viewer.viewerNodes.$piiEntities.scrollTop();
+                    var subsetFragment = document.createDocumentFragment();
+
+                    // Clone the PII entities that should be showing currently.
+                    for (var i = currentPiiEntityPageStartIndex; i < endIndex; i++) {
+                        var subsetPiiEntities = $(allPiiEntityChildren[i]).clone(true);
+                        subsetFragment.appendChild(subsetPiiEntities[0]);
+                    }
+
+                    viewer.viewerNodes.$piiEntities.empty();
+                    viewer.viewerNodes.$piiEntities.append(subsetFragment);
+                    viewer.viewerNodes.$piiEntities.scrollTop(0);
+
+                    viewer.viewerNodes.$piiEntities.find('.pcc-row:even').removeClass('pcc-odd');
+                    viewer.viewerNodes.$piiEntities.find('.pcc-row:odd').addClass('pcc-odd');
+
+                    if (activePiiEntityId !== undefined) {
+                        var $activePiiEntity = viewer.viewerNodes.$piiEntities.find("[data-pcc-pii-entity-id='" + activePiiEntityId + "']");
+                        if ($activePiiEntity.length) {
+                            $activePiiEntity.addClass('pcc-active');
+                            viewer.viewerNodes.$piiEntities.scrollTop(scrollTop);
+                        }
+                        if (allPiiEntitiesFragment.childNodes.length > activePiiEntityPageStartIndex + piiEntitiesPageLength && activePiiEntityPageStartIndex > 0) {
+                            updatePiiEntityPrevNextButtons();
+                        }
+                    }
+                }
+
+                updatePiiEntityCountText();
+            };
+
+            // As PII entities are returned to the viewer, this function can update the progress bar as well as
+            // display a text message reflecting the status of the PII detection.
+            var updateStatusUi = function (msg, showLoader, barWidth) {
+                if (msg.length) {
+                    viewer.viewerNodes.$piiEntityCount.html(msg);
+                    parseIcons(viewer.viewerNodes.$piiEntityCount);
+                }
+
+                if (typeof showLoader === 'boolean' && showLoader === true) {
+                    viewer.viewerNodes.$piiEntitiesContainer.addClass('pcc-loading');
+                    viewer.viewerNodes.$piiDetectionStatus.show();
+                } else {
+                    viewer.viewerNodes.$piiEntitiesContainer.removeClass('pcc-loading');
+                    viewer.viewerNodes.$piiDetectionStatus.hide();
+                }
+
+                if (typeof barWidth === 'number') {
+                    if (barWidth < 0) {
+                        barWidth = 0;
+                    } else if (barWidth > 100) {
+                        barWidth = 100;
+                    }
+
+                    viewer.$dom.find('.pcc-row-pii-entities-status .pcc-bar').css('width', barWidth + '%');
+                }
+            };
+
+            // Sorts an array of live DOM elements (already in the DOM)
+            // It will also work with a jQuery-wrapped array
+            var sortDOM = (function(){
+                var sort = [].sort;
+
+                return function(elems, comparator) {
+                    // Sort the elements.
+                    // Make sure to get the pure elements array out of the jQuery wrapper.
+                    var sortCollection = sort.call($(elems).get(), comparator);
+
+                    // Check to make sure we have items in the collection
+                    if (sortCollection.length === 0) {
+                        return;
+                    }
+
+                    // Save the first element, and insert it as the first
+                    var prev = sortCollection.shift();
+                    var piiEntityId = prev.getAttribute('data-pcc-pii-entity-id');
+                    piiEntityIndexMap[piiEntityId] = 0;
+                    $(prev).insertBefore(prev.parentNode.firstChild);
+
+                    // Insert the rest of the elements in order
+                    $(sortCollection).each(function(i, el) {
+                        piiEntityId = el.getAttribute('data-pcc-pii-entity-id');
+                        piiEntityIndexMap[piiEntityId] = i + 1;
+                        el.parentNode.insertBefore(el, prev.nextSibling);
+                        prev = el;
+                    });
+                };
+            })();
+
+            // Adds new PII entities chunk to the PII entities panel.
+            function addPiiEntities(piiEntities) {
+                piiEntities.forEach(function(piiEntity) {
+                    piiEntityView.piiEntityBuild(piiEntity);
+                });
+                piiEntitiesCount += piiEntities.length;
+
+                var allResultsChildren = allPiiEntitiesFragment.childNodes;
+
+                // Sort the live DOM elements
+                sortDOM(allResultsChildren, function(a, b) {
+                    function getDataFromAttributes($e) {
+                        return {
+                            pccPageNumber : $e.attr("data-pcc-page-number"),
+                            pccSortIndex : $e.attr("data-pcc-sort-index")
+                        };
+                    }
+
+                    // get the data attributes out of the DOM
+                    var aData = getDataFromAttributes($(a));
+                    var bData = getDataFromAttributes($(b));
+
+                    // sort based on the sorting attributes
+                    return (aData.pccPageNumber !== bData.pccPageNumber) ? aData.pccPageNumber - bData.pccPageNumber :
+                           (aData.pccSortIndex !== bData.pccSortIndex) ? aData.pccSortIndex - bData.pccSortIndex : 0;
+                });
+
+                if (activePiiEntityId !== undefined) {
+                    var activeIndexAfterSort = getActivePiiEntityIndex();
+                    activePiiEntityPageStartIndex = Math.floor((activeIndexAfterSort + 1) / piiEntitiesPageLength) * piiEntitiesPageLength;
+                }
+                showPiiEntitySubset(activePiiEntityPageStartIndex || 0);
+            }
+
+            var detectPii = function () {
+                viewer.$dom.find('.pcc-row-pii-entities-status').removeClass('pcc-done');
+
+                // clear PII entities DOM
+                reset();
+
+                updateStatusUi(PCCViewer.Language.data.piiDetecting, true, 0);
+
+                piiDetectionRequest = viewer.viewerControl.detectPii();
+
+                piiDetectionRequest.on('PartialPiiAvailable', partialPiiHandler);
+                piiDetectionRequest.on('PiiDetectionCompleted', piiDetectionCompletedHandler);
+                piiDetectionRequest.on('PiiDetectionFailed', piiDetectionFailedHandler);
+                piiDetectionRequest.on('PiiAvailable', piiAvailableHandler);
+
+                // Show the PII entities panel, so user can see PII entities start to come in
+                viewer.viewerNodes.$piiEntitiesContainer.addClass('pcc-show-lg');
+            };
+
+            // Detaches all event associated with detecting PII.
+            var unhookPiiDetectionEvents = function () {
+                if (piiDetectionRequest instanceof PCCViewer.PiiDetectionRequest) {
+                    piiDetectionRequest.off('PartialPiiAvailable', partialPiiHandler);
+                    piiDetectionRequest.off('PiiDetectionCompleted', piiDetectionCompletedHandler);
+                    piiDetectionRequest.off('PiiDetectionFailed', piiDetectionFailedHandler);
+                    piiDetectionRequest.off('PiiAvailable', piiAvailableHandler);
+                }
+            };
+
+            // Triggered when a partial set of PII entities is available. This triggers one final time before the
+            // PII detection completes.
+            var partialPiiHandler = function (ev) {
+                addPiiEntities(ev.partialPiiEntities);
+
+                var lastPiiEntity = ev.partialPiiEntities.length > 0 ? ev.partialPiiEntities[ev.partialPiiEntities.length - 1] : null;
+
+                if (lastPiiEntity) {
+                    var piiEntitiesVerbiage = (piiEntitiesCount === 1) ? PCCViewer.Language.data.piiEntityFound : PCCViewer.Language.data.piiEntitiesFound;
+                    updateStatusUi(piiEntitiesCount + ' ' + piiEntitiesVerbiage, true, 100 * (lastPiiEntity.getPageNumber() / viewer.pageCount));
+                    viewer.viewerNodes.$piiEntityNext.removeAttr('disabled');
+                }
+            };
+
+            // Triggered when PII detection has completed due to failure, abort, or when the full set of PII entities is available.
+            var piiDetectionCompletedHandler = function (ev) {
+                unhookPiiDetectionEvents();
+
+                var piiEntitiesVerbiage = (piiEntitiesCount === 0) ? PCCViewer.Language.data.nothingFound : '',
+                    pagesWithoutTextMsg = '',
+                    countPagesWithoutText, pagesWithoutTextWarning = '';
+
+                updateStatusUi(piiEntitiesVerbiage, false, 100);
+
+                viewer.viewerNodes.$piiDetectionStatus.addClass('pcc-done');
+
+                viewer.viewerNodes.$piiEntitiesContainer.addClass('pcc-show-lg');
+
+                countPagesWithoutText = piiDetectionRequest.getPagesWithoutText ? piiDetectionRequest.getPagesWithoutText().length : 0;
+
+                if (viewer.pageCount === countPagesWithoutText) {
+                    var currentPiiDetectionStatusWording = viewer.viewerNodes.$piiEntityCount.html();
+
+                    pagesWithoutTextWarning = currentPiiDetectionStatusWording + '<span class="pcc-icon pcc-icon-alert" data-pcc-pii-detection="msg" data-msg="{{MSG}}"></span>'
+                        .replace('{{MSG}}', PCCViewer.Language.data.noSearchableText);
+                } else if (countPagesWithoutText > 0) {
+                    var currentPiiDetectionStatusWording = viewer.viewerNodes.$piiEntityCount.html();
+
+                    pagesWithoutTextMsg = countPagesWithoutText + ' ' + PCCViewer.Language.data.cannotSearch;
+
+                    pagesWithoutTextWarning = currentPiiDetectionStatusWording + '<span class="pcc-icon pcc-icon-alert" data-pcc-pii-detection="msg" data-msg="{{MSG}}"></span>'
+                        .replace('{{MSG}}', pagesWithoutTextMsg);
+                }
+
+                if (pagesWithoutTextWarning.length) {
+                    updateStatusUi(pagesWithoutTextWarning, false, 100);
+                }
+            };
+
+            // Triggered when the PII detection has completed due to failure.
+            var piiDetectionFailedHandler = function (ev) {
+                var msg = PCCViewer.Language.data.piiDetectionError + piiDetectionRequest.getErrorMessage();
+
+                unhookPiiDetectionEvents();
+                updateStatusUi(PCCViewer.Language.data.piiDetectionFailed, false, 100);
+
+                viewer.notify({
+                    message: msg
+                });
+            };
+
+            // Triggered when the PII detection has completed because the full set of PII entities is available.
+            var piiAvailableHandler = function () {
+                updateStatusUi('', false, 100);
+            };
+
+            viewer.$dom.find('.pcc-pii-detection-header').on('click', '[data-pcc-pii-detection=msg]', function () {
+                viewer.notify({
+                    message: this.getAttribute('data-msg')
+                });
+            });
+
+            viewer.viewerNodes.$piiRedact.on('click', function (ev) {
+                var selectedPiiEntity = viewer.viewerControl.getSelectedPiiEntity();
+                viewer.viewerControl.addMarkFromTextSelection(selectedPiiEntity, PCCViewer.Mark.Type.TextSelectionRedaction);
+            });
+
+            var reset = function () {
+                unhookPiiDetectionEvents();
+                piiDetectionRequest = {};
+                viewer.viewerControl.clearPiiDetection();
+                viewer.viewerNodes.$piiEntities.empty();
+                piiEntitiesCount = 0;
+                activePiiEntityId = undefined;
+                currentPiiEntityPageStartIndex = 0;
+                viewer.viewerNodes.$piiEntityPrev.attr('disabled', 'disabled');
+                viewer.viewerNodes.$piiEntityNext.attr('disabled', 'disabled');
+                viewer.viewerNodes.$piiEntityPrevPage.attr('disabled', 'disabled');
+                viewer.viewerNodes.$piiEntityNextPage.attr('disabled', 'disabled');
+                viewer.viewerNodes.$piiRedact.addClass('pcc-disabled');
+                $(allPiiEntitiesFragment).children().off();
+                while (allPiiEntitiesFragment.firstChild) {
+                    allPiiEntitiesFragment.removeChild(allPiiEntitiesFragment.firstChild);
+                }
+            };
+
+            // The publicly accessible methods for the piiDetection module
+            return {
+                reset,
+                detectPii
+            };
+        })();
 
         this.revision = (function() {
             // The revision module implements the UI control and API necessary
