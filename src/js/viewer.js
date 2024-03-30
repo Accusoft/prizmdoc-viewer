@@ -1,4 +1,4 @@
-// Copyright (C) 1996-2023 Accusoft Corporation
+// Copyright (C) 1996-2024 Accusoft Corporation
 // See https://github.com/Accusoft/prizmdoc-viewer/blob/master/LICENSE
 
 //---------------------------------------------------------------------------------------------------------------------
