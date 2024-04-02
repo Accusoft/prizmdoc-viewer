@@ -3,7 +3,7 @@
   "description": "Source code and build which produces the client assets for the PrizmDoc Viewer client",
   "main": "Gulpfile.js",
   "dependencies": {
-    "@prizmdoc/viewer-core": "^13.27.3"
+    "@prizmdoc/viewer-core": "^14.0.2"
   },
   "devDependencies": {
     "async": "^3.2.4",
@@ -22,7 +22,7 @@
     "builddev": "gulp build:dev",
     "build:dev": "gulp build:dev",
     "build": "gulp build",
-    "build:docker": "npm run container build\/build.sh",
+    "build:docker": "npm run container build/build.sh",
     "container": "run-script-os",
     "container:nix": "build/container.sh",
     "container:windows": "build\\container.bat",
@@ -38,5 +38,5 @@
   "author": "Accusoft",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
-  "version": "13.27.0"
+  "version": "14.0.0"
 }
