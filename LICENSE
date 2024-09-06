@@ -9,7 +9,7 @@ Exceptions:
       separately. See its associated LICENSE in the @prizmdoc/viewer-core npm
       package (https://www.npmjs.com/package/@prizmdoc/viewer-core).
 
-    - jQuery 3.6.0 is copyright the OpenJS Foundation and other contributors and licensed under
+    - jQuery 3.7.1 is copyright the OpenJS Foundation and other contributors and licensed under
       the MIT license. See https://jquery.org/license/.
 
     - jQuery Hotkeys Plugin is copyright John Resig and dual licensed under the

@@ -50,11 +50,7 @@ const pdfJsLicense = function() {
   return src('node_modules/@prizmdoc/viewer-core/LICENSE-pdfjs').pipe(rename('pdfjs-LICENSE.txt')).pipe(dest('dist/viewer-assets/js'));
 }
 
-const coreJsLicense = function() {
-  return src('node_modules/@prizmdoc/viewer-core/LICENSE-corejs').pipe(rename('corejs-LICENSE.txt')).pipe(dest('dist/viewer-assets/js'));
-}
-
-const viewerCore = parallel(viewerCoreJs, viewerCoreLicense, pdfJsLicense, coreJsLicense);
+const viewerCore = parallel(viewerCoreJs, viewerCoreLicense, pdfJsLicense);
 
 const license = function() {
   return src('LICENSE').pipe(dest('dist/viewer-assets'));
