@@ -3,7 +3,7 @@
 <div class="pcc-tabset pcc-nav-tabset" data-pcc-nav>
 
     <div class="pcc-tab" data-pcc-nav-tab="view" data-pcc-removable-id="viewTab">
-        <div class="pcc-tab-item"><span class="pcc-icon pcc-icon-view"></span> <%= data.viewLabel %></div>
+        <button class="pcc-tab-item"><span class="pcc-icon pcc-icon-view"></span> <%= data.viewLabel %></button>
         <div class="pcc-tab-pane">
             <div class="pcc-pull-right">
                 <button class="pcc-icon pcc-icon-document-compare pcc-hide" data-pcc-toggle="dialog-revision" title="<%= data.docRevision %>"></button>
@@ -81,10 +81,13 @@
     </div>
 
     <div class="pcc-tab" data-pcc-nav-tab="search" data-pcc-removable-id="searchTab">
-        <div class="pcc-tab-item"><span class="pcc-icon pcc-icon-search"></span> <%= data.search %></div>
+        <button class="pcc-tab-item"><span class="pcc-icon pcc-icon-search"></span> <%= data.search %></button>
         <div class="pcc-tab-pane pcc-tab-advanced">
             <div class="pcc-pull-right">
                 <button data-pcc-toggle="dialog-pii-detection" class="pcc-icon pcc-icon-person-search pcc-hide" title="<%= data.piiDetect %>"></button>
+                <button data-pcc-toggle="dialog-summarization" class="pcc-icon pcc-icon-text-short pcc-hide" title="<%= data.summarizeDocument %>"></button>
+                <button data-pcc-toggle="dialog-query" class="pcc-icon pcc-icon-file-question pcc-hide" title="<%= data.queryDocument %>"></button>
+                <button data-pcc-toggle="dialog-tag" class="pcc-icon pcc-icon-tag pcc-hide" title="<%= data.classifyAndTagDocument %>"></button>
             </div>
             <div class="pcc-left">
                 <button class="pcc-icon pcc-icon-list pcc-search-menu-button" title="<%= data.searchOptions %>" data-pcc-toggle="dialog-search"></button>
@@ -138,7 +141,7 @@
     </div>
 
     <div class="pcc-tab" data-pcc-nav-tab="annotate" data-pcc-removable-id="annotateTab">
-        <div class="pcc-tab-item"><span class="pcc-icon pcc-icon-edit"></span> <%= data.annotateLabel %></div>
+        <button class="pcc-tab-item"><span class="pcc-icon pcc-icon-edit"></span> <%= data.annotateLabel %></button>
         <div class="pcc-tab-pane pcc-tab-advanced">
             <div class="pcc-pull-right">
                 <button data-pcc-toggle="dialog-save-annotations" class="pcc-icon pcc-icon-save" title="<%= data.saveAnnotations %>"></button>
@@ -197,7 +200,7 @@
     </div>
 
     <div class="pcc-tab" data-pcc-nav-tab="redact" data-pcc-removable-id="redactTab">
-        <div class="pcc-tab-item"><span class="pcc-icon pcc-icon-redact"></span> <%= data.redactLabel %></div>
+        <button class="pcc-tab-item"><span class="pcc-icon pcc-icon-redact"></span> <%= data.redactLabel %></button>
         <div class="pcc-tab-pane">
             <div class="pcc-pull-right">
                 <button data-pcc-toggle="dialog-pii-detection" class="pcc-icon pcc-icon-person-search pcc-hide" title="<%= data.piiDetect %>"></button>
@@ -228,7 +231,7 @@
     </div>
 
     <div class="pcc-tab" data-pcc-nav-tab="esign" data-pcc-removable-id="esignTab">
-        <div class="pcc-tab-item"><span class="pcc-icon pcc-icon-esign"></span> <%= data.esignLabel %></div>
+        <button class="pcc-tab-item"><span class="pcc-icon pcc-icon-esign"></span> <%= data.esignLabel %></button>
         <div class="pcc-tab-pane">
             <div class="pcc-pull-right">
                 <button data-pcc-comments-panel class="pcc-icon pcc-icon-comment" title="<%= data.commentsPanel %>"></button>
@@ -581,6 +584,47 @@
             </div>
             <div class="pcc-row pcc-row-results" data-pcc-pii-detection="entities" tabindex="1"></div>
         </div>
+    </div>
+</div>
+
+<div class="pcc-dialog pcc-dialog-summarization" data-pcc-toggle-id="dialog-summarization">
+    <div class="pcc-dialog-wrapper">
+        <div>
+            <h3 class="pcc-pull-left"><%= data.summary %></h3>
+            <h3 class="pcc-pull-right">
+                <button data-pcc-copy-summary class="pcc-icon pcc-icon-content-copy pcc-hide" title="<%= data.summaryCopy %>"></button>
+                <button data-pcc-regenerate-summary class="pcc-icon pcc-icon-refresh pcc-hide" title="<%= data.summaryRegenerate %>"></button>
+            </h3>
+        </div>
+        <label data-pcc-summary class="pcc-row pcc-clear"><%= data.summarizingDocument %></label>
+    </div>
+</div>
+
+<div class="pcc-dialog pcc-dialog-query" data-pcc-toggle-id="dialog-query">
+    <div class="pcc-dialog-wrapper">
+        <h3><%= data.qAndA %></h3>
+        <h4><%= data.query %></h4>
+        <textarea data-pcc-query class="pcc-query-textarea"></textarea>
+        <div>
+            <h4 class="pcc-pull-left"><%= data.queryResponse %></h4>
+            <h4 class="pcc-pull-right">
+                <button data-pcc-copy-query-response class="pcc-icon pcc-icon-content-copy pcc-hide" title="<% data.queryResponseCopy %>"></button>
+            </h4>
+        </div>
+        <label data-pcc-query-response class="pcc-row pcc-clear"></label>
+    </div>
+</div>
+
+<div class="pcc-dialog pcc-dialog-tag" data-pcc-toggle-id="dialog-tag">
+    <div class="pcc-dialog-wrapper">
+        <h3><%= data.classification %></h3>
+        <div data-pcc-classifications><%= data.classifyingDocument %></div>
+        <h3><%= data.tags %></h3>
+        <div data-pcc-tags><%= data.taggingDocument %></div>
+        <h3 data-pcc-classification-other-title><%= data.classificationOther %></h3>
+        <div data-pcc-classification-other></div>
+        <h3 data-pcc-tags-other-title class="pcc-hide"><%= data.tagsOther %></h3>
+        <div data-pcc-tags-other></div>
     </div>
 </div>
 

@@ -439,6 +439,23 @@ var PCCViewer = window.PCCViewer || {};
             $piiRedact: viewer.$dom.find('[data-pcc-pii-detection=redact]'),
             $piiEntitiesContainer: viewer.$dom.find('[data-pcc-pii-entities-container=entities]'),
 
+            $summary: viewer.$dom.find("[data-pcc-summary]"),
+            $copySummary: viewer.$dom.find("[data-pcc-copy-summary]"),
+            $regenerateSummary: viewer.$dom.find("[data-pcc-regenerate-summary]"),
+
+            $tagDialog: viewer.$dom.find("[data-pcc-toggle-id=dialog-tag]"),
+            $classifications: viewer.$dom.find("[data-pcc-classifications]"),
+            $tags: viewer.$dom.find("[data-pcc-tags]"),
+            $tagsOther: viewer.$dom.find("[data-pcc-tags-other]"),
+            $tagsOtherTitle: viewer.$dom.find("[data-pcc-tags-other-title]"),
+            $classificationOther: viewer.$dom.find("[data-pcc-classification-other]"),
+            $classificationOtherTitle: viewer.$dom.find("[data-pcc-classification-other-title]"),
+
+            $queryDialog: viewer.$dom.find("[data-pcc-toggle-id=dialog-query]"),
+            $query: viewer.$dom.find("[data-pcc-query]"),
+            $queryResponse: viewer.$dom.find("[data-pcc-query-response]"),
+            $copyQueryResponse: viewer.$dom.find("[data-pcc-copy-query-response]"),
+
             $revisionLoader: viewer.$dom.find("[data-pcc-revision=loader]"),
             $revisionStatus: viewer.$dom.find("[data-pcc-revision=status]"),
             $revisions: viewer.$dom.find("[data-pcc-revision=results]"),
@@ -1849,15 +1866,15 @@ var PCCViewer = window.PCCViewer || {};
                 // if using anything other than jQuery, this event needs to be cancelled, prevent default, and prevent bubbling manually
 
                 switch (ev.keyCode) {
-                    // Tab
-                    case 9:
-                        // Fall through
                     // Enter
                     case 13:
                         ev.target.blur();
                         return false;
                     // Backspace
                     case 8:
+                        // Fall through
+                    // Tab
+                    case 9:
                         // Fall through
                     // Delete
                     case 46:
@@ -2011,7 +2028,7 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             viewer.viewerNodes.$searchInput.on('keydown', function (ev) {
-                if (ev.keyCode === 13 || ev.keyCode === 9) {
+                if (ev.keyCode === 13) {
                     ev.preventDefault();
                     viewer.search.executeSearch();
                 }
@@ -2690,6 +2707,21 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
+            if (toggleID === 'dialog-summarization') {
+                var isOpening = $elBeingToggled.hasClass('pcc-open');
+                if (isOpening) {
+                    viewer.ai.summarizeDocument();
+                }
+            }
+
+            if (toggleID === 'dialog-tag') {
+                var isOpening = $elBeingToggled.hasClass('pcc-open');
+                if (isOpening) {
+                    viewer.ai.classifyDocument();
+                    viewer.ai.tagDocument();
+                }
+            }
+
             if (toggleID === 'dropdown-search-fixed-box') {
                 ev.stopPropagation();
             }
@@ -3261,6 +3293,21 @@ var PCCViewer = window.PCCViewer || {};
 
                 if (restrictions.serverSearch !== 'disabled' && options.piiDetection && typeof options.piiDetection === 'object' && options.piiDetection.enablePiiDetection === true) {
                     viewer.$dom.find('[data-pcc-toggle="dialog-pii-detection"]').removeClass('pcc-hide');
+                }
+
+                if (restrictions.serverSearch !== 'disabled' && options.documentSummarization && typeof options.documentSummarization === 'object' && options.documentSummarization.enableDocumentSummarization === true) {
+                    viewer.$dom.find('[data-pcc-toggle="dialog-summarization"]').removeClass('pcc-hide');
+                }
+
+                if (restrictions.serverSearch !== 'disabled' &&
+                    options.documentClassification && typeof options.documentClassification === 'object' &&
+                    options.documentClassification.enableDocumentClassification === true &&
+                    Array.isArray(options.documentClassification.classifications) === true && options.documentClassification.classifications.length >= 2) {
+                    viewer.$dom.find('[data-pcc-toggle="dialog-tag"]').removeClass('pcc-hide');
+                }
+
+                if (restrictions.serverSearch !== 'disabled' && options.documentQuery && typeof options.documentQuery === 'object' && options.documentQuery.enableDocumentQuery === true) {
+                    viewer.$dom.find('[data-pcc-toggle="dialog-query"]').removeClass('pcc-hide');
                 }
             });
         }
@@ -4366,6 +4413,290 @@ var PCCViewer = window.PCCViewer || {};
             return {
                 reset,
                 detectPii
+            };
+        })();
+
+        this.ai = (function() {
+            var summary = '';
+            var queryResponse = '';
+            var documentTagged = false;
+            var documentClassified = false;
+
+            var summarizeDocument = function() {
+                if (summary.length > 0) {
+                    return;
+                }
+                if (options.documentSummarization && typeof options.documentSummarization === 'object' && typeof options.documentSummarization.defaultDocumentSummarization === 'string') {
+                    summary = options.documentSummarization.defaultDocumentSummarization;
+                    displaySummary();
+                    return;
+                }
+                requestDocumentSummary();
+            }
+
+            var requestDocumentSummary = function() {
+                viewer.viewerNodes.$summary.text(PCCViewer.Language.data.summarizingDocument);
+                var documentSummarizationRequest = viewer.viewerControl.summarizeDocument();
+                documentSummarizationRequest.on(PCCViewer.EventType.DocumentSummarizationCompleted, function(ev) {
+                    if (documentSummarizationRequest.getErrorMessage()) {
+                        summary = '';
+                        viewer.viewerNodes.$regenerateSummary.removeClass('pcc-hide');
+                        viewer.viewerNodes.$summary.text(PCCViewer.Language.data.summarizationError);
+                    } else {
+                        summary = ev.documentSummarization;
+                        displaySummary();
+                    }
+                });
+            };
+
+            var displaySummary = function() {
+                viewer.viewerNodes.$copySummary.removeClass('pcc-hide');
+                viewer.viewerNodes.$regenerateSummary.removeClass('pcc-hide');
+                viewer.viewerNodes.$summary.text(summary);
+            };
+
+            viewer.viewerNodes.$copySummary.on('click', function() {
+                if (summary) {
+                    navigator.clipboard.writeText(summary).then(function() {
+                        viewer.notify({
+                            message: PCCViewer.Language.data.summaryCopied,
+                            type: 'success'
+                        });
+                    }, function() {
+                        viewer.notify({
+                            message: PCCViewer.Language.data.summaryCopyError,
+                            type: 'failure'
+                        });
+                    });
+                }
+            });
+
+            viewer.viewerNodes.$regenerateSummary.on('click', function() {
+                requestDocumentSummary();
+            });
+
+            viewer.viewerNodes.$query.on('keypress', function(ev) {
+                if (ev.which === 13) {
+                    queryDocument();
+                    ev.preventDefault();
+                }
+            });
+
+            var queryDocument = function() {
+                var query = viewer.viewerNodes.$query.val();
+                if (query === '') {
+                    return;
+                }
+                viewer.viewerNodes.$queryResponse.text(PCCViewer.Language.data.queryingDocument);
+                var documentQueryRequest = viewer.viewerControl.queryDocument(query);
+                documentQueryRequest.on(PCCViewer.EventType.DocumentQueryCompleted, function(ev) {
+                    if (documentQueryRequest.getErrorMessage()) {
+                        queryResponse = '';
+                        viewer.viewerNodes.$copyQueryResponse.removeClass('pcc-hide');
+                        viewer.viewerNodes.$queryResponse.text(PCCViewer.Language.data.queryError);
+                    } else {
+                        queryResponse = ev.response;
+                        displayQuery();
+                    }
+                });
+            }
+
+            var displayQuery = function() {
+                viewer.viewerNodes.$copyQueryResponse.removeClass('pcc-hide');
+                viewer.viewerNodes.$queryResponse.text(queryResponse);
+            };
+
+            viewer.viewerNodes.$copyQueryResponse.on('click', function() {
+                if (queryResponse) {
+                    navigator.clipboard.writeText(queryResponse).then(function() {
+                        viewer.notify({
+                            message: PCCViewer.Language.data.queryResponseCopied,
+                            type: 'success'
+                        });
+                    }, function() {
+                        viewer.notify({
+                            message: PCCViewer.Language.data.queryResponseCopyError,
+                            type: 'failure'
+                        });
+                    });
+                }
+            });
+
+            var classifyDocument = function() { 
+                if (documentClassified) {
+                    return;
+                }
+                documentClassified = true;
+
+                var addClassificationOther = function(i) {
+                    var classificationEl = document.createElement('div');
+                    classificationEl.style = 'margin-bottom: 4px;';
+                    classificationEl.setAttribute('data-pcc-classification', i);
+                    classificationEl.onclick = function() {
+                        $(classificationEl).addClass('pcc-hide');
+                        addClassification(i);
+                        if (viewer.viewerNodes.$classificationOther.find('div.pcc-hide').length === classifications.length) {
+                            $(viewer.viewerNodes.$classificationOtherTitle).addClass('pcc-hide');
+                        }
+                    };
+                    var classificationCheckbox = document.createElement('div');
+                    classificationCheckbox.classList.add('pcc-checkbox');
+                    classificationCheckbox.setAttribute('data-pcc-checkbox', '');
+                    classificationEl.append(classificationCheckbox);
+                    var classificationCheck = document.createElement('span');
+                    classificationCheck.classList.add('pcc-icon');
+                    classificationCheck.classList.add('pcc-icon-check');
+                    classificationCheckbox.append(classificationCheck);
+                    classificationEl.append(document.createTextNode(` ${classifications[i]}`));
+                    parseIcons($(classificationEl));
+                    viewer.viewerNodes.$classificationOther.append(classificationEl);
+                };
+
+                var addClassification = function(i) {
+                    var text = classifications[i];
+                    if (viewer.viewerNodes.$classifications.children().length === 0) {
+                        viewer.viewerNodes.$classifications.empty();
+                    }
+                    var classificationEl = document.createElement('div');
+                    classificationEl.style = 'margin-bottom: 4px;';
+                    classificationEl.setAttribute('data-pcc-classification', i);
+                    classificationEl.onclick = function() {
+                        $(classificationEl).remove();
+                        var classificationId = classificationEl.getAttribute('data-pcc-classification');
+                        viewer.viewerNodes.$classificationOther.find(`[data-pcc-classification="${classificationId}"]`).removeClass('pcc-hide');
+                        if (viewer.viewerNodes.$classifications.children().length === 0) {
+                            viewer.viewerNodes.$classifications.text(PCCViewer.Language.data.noneSelected);
+                        }
+                        $(viewer.viewerNodes.$classificationOtherTitle).removeClass('pcc-hide');
+                    };
+                    var classificationCheckbox = document.createElement('div');
+                    classificationCheckbox.classList.add('pcc-checkbox');
+                    classificationCheckbox.classList.add('pcc-checked');
+                    classificationCheckbox.setAttribute('data-pcc-checkbox', '');
+                    classificationEl.append(classificationCheckbox);
+                    var classificationCheck = document.createElement('span');
+                    classificationCheck.classList.add('pcc-icon');
+                    classificationCheck.classList.add('pcc-icon-check');
+                    classificationCheckbox.append(classificationCheck);
+                    classificationEl.append(document.createTextNode(` ${text}`));
+                    parseIcons($(classificationEl));
+                    viewer.viewerNodes.$classifications.append(classificationEl);
+                };
+
+                var classifications = options.documentClassification.classifications;
+                for (var i = 0; i < classifications.length; i++) {
+                    addClassificationOther(i);
+                }
+
+                var documentClassificationRequest = viewer.viewerControl.classifyDocument(classifications);
+                documentClassificationRequest.on(PCCViewer.EventType.DocumentClassificationCompleted, function(ev) {
+                    if (documentClassificationRequest.getErrorMessage() || ev.documentClassification === '') {
+                        viewer.viewerNodes.$classifications.text(PCCViewer.Language.data.classificationError);
+                    } else {
+                        var classification = ev.documentClassification;
+                        viewer.viewerNodes.$classifications.empty();
+                        var i = 0;
+                        for (i = 0; i < classifications.length; i++) {
+                            if (classifications[i].toLowerCase() === classification.toLowerCase()) {
+                                break;
+                            }
+                        }
+                        viewer.viewerNodes.$classificationOther.find(`[data-pcc-classification="${i}"]`).addClass('pcc-hide');
+                        addClassification(i);
+                    }
+                });
+            }
+
+            var tagDocument = function() {
+                if (documentTagged) {
+                    return;
+                }
+
+                var tags;
+
+                var addTagOther = function(i, hide) {
+                    var tagEl = document.createElement('div');
+                    tagEl.style = 'margin-bottom: 4px;';
+                    tagEl.setAttribute('data-pcc-tag', i);
+                    if (hide) {
+                        $(tagEl).addClass('pcc-hide');
+                    }
+                    tagEl.onclick = function() {
+                        $(tagEl).addClass('pcc-hide');
+                        addTag(i);
+                        if (viewer.viewerNodes.$tagsOther.find('div.pcc-hide').length === tags.length) {
+                            $(viewer.viewerNodes.$tagsOtherTitle).addClass('pcc-hide');
+                        }
+                    };
+                    var tagCheckbox = document.createElement('div');
+                    tagCheckbox.classList.add('pcc-checkbox');
+                    tagCheckbox.setAttribute('data-pcc-checkbox', '');
+                    tagEl.append(tagCheckbox);
+                    var tagCheck = document.createElement('span');
+                    tagCheck.classList.add('pcc-icon');
+                    tagCheck.classList.add('pcc-icon-check');
+                    tagCheckbox.append(tagCheck);
+                    tagEl.append(document.createTextNode(` ${tags[i]}`));
+                    parseIcons($(tagEl));
+                    viewer.viewerNodes.$tagsOther.append(tagEl);
+                };
+
+                var addTag = function(i) {
+                    var text = tags[i];
+                    if (viewer.viewerNodes.$tags.children().length === 0) {
+                        viewer.viewerNodes.$tags.empty();
+                    }
+                    var tagEl = document.createElement('div');
+                    tagEl.style = 'margin-bottom: 4px;';
+                    tagEl.setAttribute('data-pcc-tag', i);
+                    tagEl.onclick = function() {
+                        $(tagEl).remove();
+                        var tagId = tagEl.getAttribute('data-pcc-tag');
+                        viewer.viewerNodes.$tagsOther.find(`[data-pcc-tag="${tagId}"]`).removeClass('pcc-hide');
+                        if (viewer.viewerNodes.$tags.children().length === 0) {
+                            viewer.viewerNodes.$tags.text(PCCViewer.Language.data.noneSelected);
+                        }
+                        $(viewer.viewerNodes.$tagsOtherTitle).removeClass('pcc-hide');
+                    };
+                    var tagCheckbox = document.createElement('div');
+                    tagCheckbox.classList.add('pcc-checkbox');
+                    tagCheckbox.classList.add('pcc-checked');
+                    tagCheckbox.setAttribute('data-pcc-checkbox', '');
+                    tagEl.append(tagCheckbox);
+                    var tagCheck = document.createElement('span');
+                    tagCheck.classList.add('pcc-icon');
+                    tagCheck.classList.add('pcc-icon-check');
+                    tagCheckbox.append(tagCheck);
+                    tagEl.append(document.createTextNode(` ${text}`));
+                    parseIcons($(tagEl));
+                    viewer.viewerNodes.$tags.append(tagEl);
+                };
+
+                documentTagged = true;
+                var documentTagRequest = viewer.viewerControl.tagDocument();
+                documentTagRequest.on(PCCViewer.EventType.DocumentTagCompleted, function(ev) {
+                    if (documentTagRequest.getErrorMessage()) {
+                        viewer.viewerNodes.$tags.text(PCCViewer.Language.data.taggingError);
+                    } else {
+                        tags = ev.documentTags;
+                        if (!(tags instanceof Array) || tags.length === 0) {
+                            viewer.viewerNodes.$tags.text(PCCViewer.Language.data.tagsNotFound);
+                            return;
+                        }
+                        for (var i = 0; i < tags.length; i++) {
+                            addTag(i);
+                            addTagOther(i, true);
+                        }
+                    }
+                });
+            }
+
+            // The publicly accessible methods for the AI module
+            return {
+                classifyDocument,
+                queryDocument,
+                summarizeDocument,
+                tagDocument
             };
         })();
 
