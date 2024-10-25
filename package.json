@@ -3,10 +3,11 @@
   "description": "Source code and build which produces the client assets for the PrizmDoc Viewer client",
   "main": "Gulpfile.js",
   "dependencies": {
-    "@prizmdoc/viewer-core": "^13.28.6"
+    "@prizmdoc/viewer-core": "^13.28.8"
   },
   "devDependencies": {
     "async": "^3.2.4",
+    "cheerio": "1.0.0-rc.12",
     "del": "^6.1.1",
     "gulp": "^4.0.2",
     "gulp-less": "^5.0.0",

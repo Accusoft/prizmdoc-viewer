@@ -1464,6 +1464,7 @@ var PCCViewer = window.PCCViewer || {};
                         annotationsEnabled = viewer.$dom.find('[data-pcc-checkbox="printAnnotations"]').hasClass(checkedClass),
                         redactionsEnabled = viewer.$dom.find('[data-pcc-checkbox="printRedactions"]').hasClass(checkedClass),
                         margins = viewer.$dom.find('[data-pcc-checkbox="printMargins"]').hasClass(checkedClass) ? 'default' : 'none',
+                        disableAutoRotation = !viewer.$dom.find('[data-pcc-checkbox="autoRotate"]').hasClass(checkedClass),
                         commentsPrintLocation = viewer.$dom.find('[data-pcc-select="printComments"]').val(),
                         reasonsPrintLocation = viewer.$dom.find('[data-pcc-select="printReasons"]').val(),
                         printOptions = {
@@ -1474,6 +1475,7 @@ var PCCViewer = window.PCCViewer || {};
                             includeAnnotations: annotationsEnabled,
                             includeRedactions: redactionsEnabled,
                             margins: margins,
+                            disableAutoRotation: disableAutoRotation,
                             includeComments: commentsPrintLocation,
                             includeReasons: reasonsPrintLocation,
                             redactionViewMode: viewer.viewerNodes.$printOverlay.find('[data-pcc-checkbox="printRedactionViewMode"]').hasClass('pcc-checked') ? "Draft" : "Normal"
@@ -1849,15 +1851,15 @@ var PCCViewer = window.PCCViewer || {};
                 // if using anything other than jQuery, this event needs to be cancelled, prevent default, and prevent bubbling manually
 
                 switch (ev.keyCode) {
-                    // Tab
-                    case 9:
-                        // Fall through
                     // Enter
                     case 13:
                         ev.target.blur();
                         return false;
                     // Backspace
                     case 8:
+                        // Fall through
+                    // Tab
+                    case 9:
                         // Fall through
                     // Delete
                     case 46:
@@ -2011,7 +2013,7 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             viewer.viewerNodes.$searchInput.on('keydown', function (ev) {
-                if (ev.keyCode === 13 || ev.keyCode === 9) {
+                if (ev.keyCode === 13) {
                     ev.preventDefault();
                     viewer.search.executeSearch();
                 }

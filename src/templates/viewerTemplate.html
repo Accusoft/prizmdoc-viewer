@@ -3,7 +3,7 @@
 <div class="pcc-tabset pcc-nav-tabset" data-pcc-nav>
 
     <div class="pcc-tab" data-pcc-nav-tab="view" data-pcc-removable-id="viewTab">
-        <div class="pcc-tab-item"><span class="pcc-icon pcc-icon-view"></span> <%= data.viewLabel %></div>
+        <button class="pcc-tab-item"><span class="pcc-icon pcc-icon-view"></span> <%= data.viewLabel %></button>
         <div class="pcc-tab-pane">
             <div class="pcc-pull-right">
                 <button class="pcc-icon pcc-icon-document-compare pcc-hide" data-pcc-toggle="dialog-revision" title="<%= data.docRevision %>"></button>
@@ -81,7 +81,7 @@
     </div>
 
     <div class="pcc-tab" data-pcc-nav-tab="search" data-pcc-removable-id="searchTab">
-        <div class="pcc-tab-item"><span class="pcc-icon pcc-icon-search"></span> <%= data.search %></div>
+        <button class="pcc-tab-item"><span class="pcc-icon pcc-icon-search"></span> <%= data.search %></button>
         <div class="pcc-tab-pane pcc-tab-advanced">
             <div class="pcc-pull-right">
                 <button data-pcc-toggle="dialog-pii-detection" class="pcc-icon pcc-icon-person-search pcc-hide" title="<%= data.piiDetect %>"></button>
@@ -138,7 +138,7 @@
     </div>
 
     <div class="pcc-tab" data-pcc-nav-tab="annotate" data-pcc-removable-id="annotateTab">
-        <div class="pcc-tab-item"><span class="pcc-icon pcc-icon-edit"></span> <%= data.annotateLabel %></div>
+        <button class="pcc-tab-item"><span class="pcc-icon pcc-icon-edit"></span> <%= data.annotateLabel %></button>
         <div class="pcc-tab-pane pcc-tab-advanced">
             <div class="pcc-pull-right">
                 <button data-pcc-toggle="dialog-save-annotations" class="pcc-icon pcc-icon-save" title="<%= data.saveAnnotations %>"></button>
@@ -197,7 +197,7 @@
     </div>
 
     <div class="pcc-tab" data-pcc-nav-tab="redact" data-pcc-removable-id="redactTab">
-        <div class="pcc-tab-item"><span class="pcc-icon pcc-icon-redact"></span> <%= data.redactLabel %></div>
+        <button class="pcc-tab-item"><span class="pcc-icon pcc-icon-redact"></span> <%= data.redactLabel %></button>
         <div class="pcc-tab-pane">
             <div class="pcc-pull-right">
                 <button data-pcc-toggle="dialog-pii-detection" class="pcc-icon pcc-icon-person-search pcc-hide" title="<%= data.piiDetect %>"></button>
@@ -228,7 +228,7 @@
     </div>
 
     <div class="pcc-tab" data-pcc-nav-tab="esign" data-pcc-removable-id="esignTab">
-        <div class="pcc-tab-item"><span class="pcc-icon pcc-icon-esign"></span> <%= data.esignLabel %></div>
+        <button class="pcc-tab-item"><span class="pcc-icon pcc-icon-esign"></span> <%= data.esignLabel %></button>
         <div class="pcc-tab-pane">
             <div class="pcc-pull-right">
                 <button data-pcc-comments-panel class="pcc-icon pcc-icon-comment" title="<%= data.commentsPanel %>"></button>

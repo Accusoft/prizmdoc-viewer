@@ -352,6 +352,7 @@
     "printAnnotations": "Annotations",
     "printRedactions": "Redactions",
     "printAutoFitMargins": "Auto Fit Margins",
+    "printAutoRotation": "Auto Rotate to Fit",
     "printButton": "Print",
     "printCancelButton": "Cancel",
     "printComments": "Comments",
