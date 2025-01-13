@@ -1481,6 +1481,7 @@ var PCCViewer = window.PCCViewer || {};
                         annotationsEnabled = viewer.$dom.find('[data-pcc-checkbox="printAnnotations"]').hasClass(checkedClass),
                         redactionsEnabled = viewer.$dom.find('[data-pcc-checkbox="printRedactions"]').hasClass(checkedClass),
                         margins = viewer.$dom.find('[data-pcc-checkbox="printMargins"]').hasClass(checkedClass) ? 'default' : 'none',
+                        disableAutoRotation = !viewer.$dom.find('[data-pcc-checkbox="autoRotate"]').hasClass(checkedClass),
                         commentsPrintLocation = viewer.$dom.find('[data-pcc-select="printComments"]').val(),
                         reasonsPrintLocation = viewer.$dom.find('[data-pcc-select="printReasons"]').val(),
                         printOptions = {
@@ -1491,6 +1492,7 @@ var PCCViewer = window.PCCViewer || {};
                             includeAnnotations: annotationsEnabled,
                             includeRedactions: redactionsEnabled,
                             margins: margins,
+                            disableAutoRotation: disableAutoRotation,
                             includeComments: commentsPrintLocation,
                             includeReasons: reasonsPrintLocation,
                             redactionViewMode: viewer.viewerNodes.$printOverlay.find('[data-pcc-checkbox="printRedactionViewMode"]').hasClass('pcc-checked') ? "Draft" : "Normal"
@@ -4522,7 +4524,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
             });
 
-            var classifyDocument = function() { 
+            var classifyDocument = function() {
                 if (documentClassified) {
                     return;
                 }
