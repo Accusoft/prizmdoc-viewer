@@ -1,4 +1,4 @@
-// Copyright (C) 1996-2024 Accusoft Corporation
+// Copyright (C) 1996-2025 Accusoft Corporation
 // See https://github.com/Accusoft/prizmdoc-viewer/blob/master/LICENSE
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3297,18 +3297,17 @@ var PCCViewer = window.PCCViewer || {};
                     viewer.$dom.find('[data-pcc-toggle="dialog-pii-detection"]').removeClass('pcc-hide');
                 }
 
-                if (restrictions.serverSearch !== 'disabled' && options.documentSummarization && typeof options.documentSummarization === 'object' && options.documentSummarization.enableDocumentSummarization === true) {
+                if (options.documentSummarization && typeof options.documentSummarization === 'object' && options.documentSummarization.enableDocumentSummarization === true) {
                     viewer.$dom.find('[data-pcc-toggle="dialog-summarization"]').removeClass('pcc-hide');
                 }
 
-                if (restrictions.serverSearch !== 'disabled' &&
-                    options.documentClassification && typeof options.documentClassification === 'object' &&
+                if (options.documentClassification && typeof options.documentClassification === 'object' &&
                     options.documentClassification.enableDocumentClassification === true &&
                     Array.isArray(options.documentClassification.classifications) === true && options.documentClassification.classifications.length >= 2) {
                     viewer.$dom.find('[data-pcc-toggle="dialog-tag"]').removeClass('pcc-hide');
                 }
 
-                if (restrictions.serverSearch !== 'disabled' && options.documentQuery && typeof options.documentQuery === 'object' && options.documentQuery.enableDocumentQuery === true) {
+                if (options.documentQuery && typeof options.documentQuery === 'object' && options.documentQuery.enableDocumentQuery === true) {
                     viewer.$dom.find('[data-pcc-toggle="dialog-query"]').removeClass('pcc-hide');
                 }
             });
@@ -4489,24 +4488,24 @@ var PCCViewer = window.PCCViewer || {};
                 if (query === '') {
                     return;
                 }
+                viewer.viewerNodes.$copyQueryResponse.addClass('pcc-hide');
                 viewer.viewerNodes.$queryResponse.text(PCCViewer.Language.data.queryingDocument);
                 var documentQueryRequest = viewer.viewerControl.queryDocument(query);
                 documentQueryRequest.on(PCCViewer.EventType.DocumentQueryCompleted, function(ev) {
                     if (documentQueryRequest.getErrorMessage()) {
                         queryResponse = '';
-                        viewer.viewerNodes.$copyQueryResponse.removeClass('pcc-hide');
-                        viewer.viewerNodes.$queryResponse.text(PCCViewer.Language.data.queryError);
+                        if (documentQueryRequest.getErrorCode() === 'DocumentDoesNotContainAnswer') {
+                            viewer.viewerNodes.$queryResponse.text(PCCViewer.Language.data.queryNoAnswer);
+                        } else {
+                            viewer.viewerNodes.$queryResponse.text(PCCViewer.Language.data.queryError);
+                        }
                     } else {
                         queryResponse = ev.response;
-                        displayQuery();
+                        viewer.viewerNodes.$copyQueryResponse.removeClass('pcc-hide');
+                        viewer.viewerNodes.$queryResponse.text(queryResponse);
                     }
                 });
             }
-
-            var displayQuery = function() {
-                viewer.viewerNodes.$copyQueryResponse.removeClass('pcc-hide');
-                viewer.viewerNodes.$queryResponse.text(queryResponse);
-            };
 
             viewer.viewerNodes.$copyQueryResponse.on('click', function() {
                 if (queryResponse) {
@@ -4593,7 +4592,11 @@ var PCCViewer = window.PCCViewer || {};
                 var documentClassificationRequest = viewer.viewerControl.classifyDocument(classifications);
                 documentClassificationRequest.on(PCCViewer.EventType.DocumentClassificationCompleted, function(ev) {
                     if (documentClassificationRequest.getErrorMessage() || ev.documentClassification === '') {
-                        viewer.viewerNodes.$classifications.text(PCCViewer.Language.data.classificationError);
+                        if (documentClassificationRequest.getErrorCode() === 'DocumentDoesNotContainAnswer') {
+                            viewer.viewerNodes.$classifications.text(PCCViewer.Language.data.classificationNoMatch);
+                        } else {
+                            viewer.viewerNodes.$classifications.text(PCCViewer.Language.data.classificationError);
+                        }
                     } else {
                         var classification = ev.documentClassification;
                         viewer.viewerNodes.$classifications.empty();
