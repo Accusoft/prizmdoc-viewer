@@ -2266,6 +2266,60 @@ var PCCViewer = window.PCCViewer || {};
                 return true;
             });
 
+            var tabList = document.getElementById('pcc-tablist');
+            var tabButtons = document.querySelectorAll('#pcc-tablist .pcc-tab-item');
+            if (tabList) {
+                tabButtons.forEach(function(tabButton) {
+                    tabButton.addEventListener('keydown', function(event) {
+                        if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+                            event.preventDefault();
+                            event.stopPropagation();
+        
+                            var currentIndex = Array.from(tabButtons).indexOf(event.target);
+                            var nextIndex = event.key === 'ArrowRight' ? currentIndex + 1 : currentIndex - 1;
+                            var nextTabButton;
+                            var attempts = 0;
+        
+                            while (attempts < tabButtons.length) {
+                                if (nextIndex < 0) {
+                                    nextIndex = tabButtons.length - 1;
+                                } else if (nextIndex >= tabButtons.length) {
+                                    nextIndex = 0;
+                                }
+        
+                                nextTabButton = tabButtons[nextIndex];
+                                var parentLi = nextTabButton.parentElement;
+        
+                                if (window.getComputedStyle(parentLi).display !== 'none') {
+                                    setTimeout(function() {
+                                        nextTabButton.click();
+                                        nextTabButton.focus();
+                                    }, 10);
+                                    break;
+                                }
+        
+                                nextIndex = event.key === 'ArrowRight' ? nextIndex + 1 : nextIndex - 1;
+                                attempts++;
+                            }
+                        }
+                    });
+
+                    tabButton.addEventListener('focus', function() {
+                        var $focusedTabButton = $(this);
+                        var $navTabs = $focusedTabButton.closest('#pcc-tablist');
+
+                        // Deactivate all tabs and panels
+                        $navTabs.find('.pcc-tab-item').attr('aria-selected', 'false').removeClass('pcc-active').attr('tabindex', '-1');
+                        $navTabs.find('.pcc-tab-pane').removeClass('pcc-active');
+
+                        // Activate the focused tab and panel
+                        $focusedTabButton.attr('aria-selected', 'true').addClass('pcc-active').attr('tabindex', '0');
+                        var tabId = $focusedTabButton.attr('aria-controls');
+                        $navTabs.find(`#${tabId}`).addClass('pcc-active');
+                    });
+                });
+            }
+
             //zoomin/zoomout keyboard shortcuts
             $('body').on('keydown', null, '= +', function () {
                 if ($(viewer.viewerNodes.$pageList[0]).is(':visible')) {
@@ -3916,7 +3970,8 @@ var PCCViewer = window.PCCViewer || {};
             allPiiEntitiesFragment = document.createDocumentFragment(),
             currentPiiEntityPageStartIndex = 0,
             activePiiEntityPageStartIndex,
-            piiEntityIndexMap = {};
+            piiEntityIndexMap = {},
+            selectedPiiEntities = [];
 
             var piiEntityView = _.clone(genericView);
 
@@ -3946,28 +4001,60 @@ var PCCViewer = window.PCCViewer || {};
                 piiEntityItem.setAttribute('data-pcc-sort-index', piiEntity.getStartIndexInPage());
 
                 $(piiEntityItem).on('click', function (ev) {
-                    viewer.viewerControl.setSelectedPiiEntity(piiEntity, true);
+                    var $this = $(this);
 
-                    // set the active entity node
-                    activePiiEntityId = piiEntity.id;
-                    activePiiEntityPageStartIndex = currentPiiEntityPageStartIndex;
+                    var selectPiiEntity = function () {
+                        selectedPiiEntities.push(piiEntity);
+                        viewer.viewerControl.setSelectedPiiEntity(piiEntity, true);
+                        $this.addClass('pcc-active');
+                        activePiiEntityId = piiEntity.id;
+                        activePiiEntityPageStartIndex = currentPiiEntityPageStartIndex;
+                    };
 
-                    // deselect a previously selected entity in the entity UI
-                    viewer.viewerNodes.$piiEntities.find('.pcc-row.pcc-active').removeClass('pcc-active');
+                    if (ev.ctrlKey) {
+                        var index = selectedPiiEntities.findIndex(entity => entity.id === piiEntity.id);
+                        if (index > -1) {
+                            // Remove PII entity from selection
+                            selectedPiiEntities.splice(index, 1);
+                            $this.removeClass('pcc-active');
+                            if (activePiiEntityId === piiEntity.id) {
+                                if (selectedPiiEntities.length > 0) {
+                                    var previousActiveEntity = selectedPiiEntities[selectedPiiEntities.length - 1];
+                                    activePiiEntityId = previousActiveEntity.id;
+                                    viewer.viewerControl.setSelectedPiiEntity(previousActiveEntity, false);
+                                } else {
+                                    activePiiEntityId = undefined;
+                                    currentPiiEntityPageStartIndex = 0;
+                                    activePiiEntityPageStartIndex = 0;
+                                    viewer.viewerControl.clearSelectedPiiEntity();
+                                }
+                            }
+                        } else {
+                            selectPiiEntity();
+                        }
+                    } else {
+                        // Clear PII entity selection and select PII entity
+                        viewer.viewerNodes.$piiEntities.find('.pcc-row.pcc-active').removeClass('pcc-active');
+                        viewer.viewerControl.clearSelectedPiiEntity();
+                        selectedPiiEntities = [];
+                        selectPiiEntity();
 
-                    // select the new entity
-                    $(this).addClass('pcc-active');
-
+                        // collapse the expanded panel
+                        viewer.viewerNodes.$piiDetectionDialog.removeClass('pcc-expand')
+                            // switch the active PII detection button to off state
+                            .find('[data-pcc-pii-entities-container-toggle="entities"]').removeClass('pcc-active');
+                    }
+        
                     // update PII entity UI to reflect selection
                     updatePiiEntityPrevNextButtons();
                     updatePiiEntityCountText();
 
-                    // collapse the expanded panel
-                    viewer.viewerNodes.$piiDetectionDialog.removeClass('pcc-expand')
-                        // switch the active PII detection button to off state
-                        .find('[data-pcc-pii-entities-container-toggle="entities"]').removeClass('pcc-active');
-
-                    viewer.viewerNodes.$piiRedact.removeClass('pcc-disabled');
+                    // Enable or disable the redact button based on whether any entities are selected
+                    if (selectedPiiEntities.length > 0) {
+                        viewer.viewerNodes.$piiRedact.removeClass('pcc-disabled');
+                    } else {
+                        viewer.viewerNodes.$piiRedact.addClass('pcc-disabled');
+                    }
                 });
 
                 allPiiEntitiesFragment.appendChild(piiEntityItem);
@@ -4387,8 +4474,9 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             viewer.viewerNodes.$piiRedact.on('click', function (ev) {
-                var selectedPiiEntity = viewer.viewerControl.getSelectedPiiEntity();
-                viewer.viewerControl.addMarkFromTextSelection(selectedPiiEntity, PCCViewer.Mark.Type.TextSelectionRedaction);
+                for (var i = 0; i < selectedPiiEntities.length; i++) {
+                    viewer.viewerControl.addMarkFromTextSelection(selectedPiiEntities[i], PCCViewer.Mark.Type.TextSelectionRedaction);
+                }
             });
 
             var reset = function () {
