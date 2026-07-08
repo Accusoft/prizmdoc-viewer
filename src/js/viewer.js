@@ -289,7 +289,9 @@ var PCCViewer = window.PCCViewer || {};
             HighlightAnnotation: true,
             FreehandAnnotation: true,
             RectangleRedaction: true,
+            InverseRedaction: true,
             TransparentRectangleRedaction: true,
+            PageRedaction: true,
             TextRedaction: true,
             StampRedaction: true,
             TextSelectionRedaction: true,
@@ -1847,7 +1849,7 @@ var PCCViewer = window.PCCViewer || {};
 
             function mouseToolSelectHandler(ev) {
                 var $target = $(ev.currentTarget),
-                    mouseToolName = $target.data('pccMouseTool'),
+                    mouseToolName = $target.attr('data-pcc-mouse-tool') || $target.data('pccMouseTool'),
                     mouseTool = PCCViewer.MouseTools.getMouseTool(mouseToolName);
 
                 if (!mouseToolName || mouseTool.getType() === PCCViewer.MouseTool.Type.PlaceSignature) {
@@ -2129,12 +2131,43 @@ var PCCViewer = window.PCCViewer || {};
             // We can use this one for dropdowns in overlays
             function handleDropdownBehavior(ev) {
                 var isSelect = $(ev.target).parents().hasClass('pcc-select'),
+                    isRedactionToolDropdown = $(ev.target).parents().hasClass('pcc-redaction-tool-dropdown'),
                     isLoadMarkup = $(ev.target).parents().hasClass('pcc-select-load-annotations'),
                     isLoadMarkupLayers = $(ev.target).parents().hasClass('pcc-select-load-annotation-layers'),
                     $selection = $(ev.target).is('span') ? $(ev.target).parent().clone() : $(ev.target).clone();
 
                 if (isLoadMarkupLayers) {
                     $(ev.target).parents('.pcc-select').find('.pcc-label').html($(ev.target).html());
+                    return;
+                } else if (isRedactionToolDropdown) {
+                    var $option = $(ev.target).closest('[data-pcc-redaction-tool-option]'),
+                        $label = $option.parents('.pcc-select').find('.pcc-label'),
+                        mouseToolName = $option.data('pccRedactionToolOption');
+
+                    if (!mouseToolName) {
+                        return;
+                    }
+
+                    $label
+                        .attr('data-pcc-mouse-tool', mouseToolName)
+                        .attr('data-pcc-context-menu', $option.data('pccContextMenu'))
+                        .html($option.find('.pcc-icon').first().clone());
+
+                    if ($option.data('pccDefaultFillColor')) {
+                        $label.attr('data-pcc-default-fill-color', $option.data('pccDefaultFillColor'));
+                    } else {
+                        $label.removeAttr('data-pcc-default-fill-color');
+                    }
+
+                    $option.parents('.pcc-select')
+                        .attr('title', $.trim($option.text()))
+                        .removeClass('pcc-active')
+                        .find('.pcc-dropdown').removeClass('pcc-open');
+
+                    viewer.setMouseTool({
+                        mouseToolName: mouseToolName,
+                        thisButton: $label
+                    });
                     return;
                 } else if (isSelect && !isLoadMarkup) {
                     $(ev.target).parents('.pcc-select').find('.pcc-label').replaceWith($selection.addClass('pcc-label'));
@@ -2598,7 +2631,8 @@ var PCCViewer = window.PCCViewer || {};
             var mouseToolName = opts.mouseToolName,
                 $thisButton = $(opts.thisButton),
                 forceLock = viewer.stickyToolsAlwaysOn,
-                active = $thisButton.hasClass('pcc-active'),
+                isSameTool = this.uiMouseToolName === mouseToolName,
+                active = $thisButton.hasClass('pcc-active') && isSameTool,
                 locked = $thisButton.hasClass('pcc-locked'),
                 canLock = !!this.stickyTools[getMouseToolType(mouseToolName)];
 
@@ -2622,6 +2656,11 @@ var PCCViewer = window.PCCViewer || {};
             } else {
                 // activate the non-active buttons
                 buttons.addClass('pcc-active');
+
+                // Redaction tool options share one label element; clear stale lock state when switching tools.
+                if (!isSameTool) {
+                    buttons.removeClass('pcc-locked');
+                }
             }
 
             // set the current mouse tool known to the UI

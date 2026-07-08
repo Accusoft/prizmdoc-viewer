@@ -237,6 +237,7 @@
     "includeAnnotations": "Include Annotations",
     "includeInBurnedDocument": "Include in Burned Document",
     "invalidLicense": "Invalid License",
+    "inverseRedact": "Inverse Redact",
     "landscape": "Landscape",
     "lastPage": "Last Page",
     "layerOrder": "Layer Order",

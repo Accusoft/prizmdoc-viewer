@@ -221,8 +221,22 @@
         <span class="pcc-separator"></span>
         <% } %>
 
-        <button data-pcc-mouse-tool="AccusoftRectangleRedaction" data-pcc-default-fill-color="#000000"
-            class="pcc-icon pcc-icon-annotate-rectangle-filled" title="<%= data.rectangleRedaction %>"></button>
+        <div class="pcc-select pcc-redaction-tool-dropdown" title="<%= data.redact %>">
+            <div class="pcc-label" data-pcc-mouse-tool="AccusoftRectangleRedaction" data-pcc-default-fill-color="#000000" data-pcc-context-menu="true">
+                <span class="pcc-icon pcc-icon-annotate-rectangle-filled"></span>
+            </div>
+            <div class="pcc-redaction-dropdown-toggle" data-pcc-toggle="dropdown-rectangle-redaction">
+                <div class="pcc-arrow-down"></div>
+            </div>
+            <div data-pcc-toggle-id="dropdown-rectangle-redaction" class="pcc-dropdown">
+                <div data-pcc-redaction-tool-option="AccusoftRectangleRedaction" data-pcc-default-fill-color="#000000" data-pcc-context-menu="true" title="<%= data.redact %>">
+                    <span class="pcc-icon pcc-icon-annotate-rectangle-filled"></span> <%= data.redact %>
+                </div>
+                <div data-pcc-redaction-tool-option="AccusoftInverseRedaction" data-pcc-context-menu="true" title="<%= data.inverseRedact %>">
+                    <span class="pcc-icon pcc-icon-annotate-rectangle-inverse"></span> <%= data.inverseRedact %>
+                </div>
+            </div>
+        </div>
 
         <button data-pcc-mouse-tool="AccusoftTextSelectionRedaction" data-pcc-default-fill-color="#000000"
             class="pcc-icon pcc-icon-redact-textselection pcc-disabled" title="<%= data.textSelectionRedaction %>"></button>
