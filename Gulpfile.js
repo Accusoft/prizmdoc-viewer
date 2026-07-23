@@ -5,7 +5,7 @@ var rename = gulp.rename;
 var series = gulp.series;
 var parallel = gulp.parallel;
 var watch = gulp.watch;
-var del = require('del');
+var { deleteAsync } = require('del');
 var compileLess = require('gulp-less');
 var rename = require('gulp-rename');
 var svgstore = require('gulp-svgstore');
@@ -17,7 +17,7 @@ var getDirName = require('path').dirname;
 var _ = require('lodash');
 
 const clean = function() {
-  return del([
+  return deleteAsync([
     'dist/**/*'
   ]);
 }
