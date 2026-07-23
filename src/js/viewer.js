@@ -1,4 +1,4 @@
-// Copyright (C) 1996-2026 Accusoft Corporation
+// Copyright (C) 1996-2025 Accusoft Corporation
 // See https://github.com/Accusoft/prizmdoc-viewer/blob/master/LICENSE
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -29,10 +29,10 @@ var PCCViewer = window.PCCViewer || {};
     // The callback is debounced at 300ms. This means that the callback
     // will be called only one time for any sequence of resize events where
     // each happens within 300ms of the previous event.
-    function onWindowResize(callback) {
+    function onWindowResize (callback) {
         var timeout;
 
-        var debouncedCallback = function() {
+        var debouncedCallback = function () {
             if (timeout) {
                 clearTimeout(timeout);
             }
@@ -80,7 +80,7 @@ var PCCViewer = window.PCCViewer || {};
             return _.reduce(node.childNodes, childReducer, '');
         }
 
-        _.forEach(icons, function(icon) {
+        _.forEach(icons, function (icon) {
             var id = icon.getAttribute('id');
 
             if (!id) {
@@ -101,7 +101,7 @@ var PCCViewer = window.PCCViewer || {};
 
         if (icons.length > 0) {
             if ($elem.find('svg').length === 0) {
-                $elem.append('<svg style="pointer-events:none;" viewBox="0 0 52 52" aria-hidden="true">' + ICON_MAP[icons[0]] + '</svg>');
+                $elem.append('<svg style="pointer-events:none;" viewBox="0 0 52 52">' + ICON_MAP[icons[0]] + '</svg>');
             }
         }
     }
@@ -159,21 +159,21 @@ var PCCViewer = window.PCCViewer || {};
         }
 
         this.redactionReasons = (options.redactionReasons && options.redactionReasons.reasons && options.redactionReasons.reasons.length) ?
-            options.redactionReasons :
-            {};
+                options.redactionReasons:
+        {};
 
         this.redactionReasonsExtended = $.extend(true, {}, this.redactionReasons);
 
         if (typeof this.redactionReasons.reasons !== 'undefined' && this.redactionReasons.reasons.length) {
 
-            this.redactionReasonsExtended.reasons.forEach(function(reason) {
+            this.redactionReasonsExtended.reasons.forEach(function (reason) {
                 reason.selectable = true;
             });
             if (this.redactionReasons.enableFreeformRedactionReasons === true) {
-                this.redactionReasonsExtended.reasons.unshift({ "reason": PCCViewer.Language.data.redactionReasonFreeform, "class": "pcc-custom-redaction-reasons" });
+                this.redactionReasonsExtended.reasons.unshift({"reason": PCCViewer.Language.data.redactionReasonFreeform, "class": "pcc-custom-redaction-reasons"});
             }
 
-            this.redactionReasonsExtended.reasons.unshift({ "reason": PCCViewer.Language.data.redactionReasonClear, "class": "pcc-clear-redaction-reasons" });
+            this.redactionReasonsExtended.reasons.unshift({"reason": PCCViewer.Language.data.redactionReasonClear, "class": "pcc-clear-redaction-reasons"});
         }
 
         this.annotationsModeEnum = {
@@ -236,15 +236,15 @@ var PCCViewer = window.PCCViewer || {};
 
         // Load template with localization vars, then show the viewer once vars are in place, prevents fouc
         this.$dom
-            .html(renderTemplate(options.template.viewer, _.extend({
-                reasons: this.redactionReasonsExtended,
-                annotationsMode: options.annotationsMode,
-                downloadFormats: downloadFormats,
-                annotationDownloads: annotationDownloads,
-                redactionDownloads: redactionDownloads,
-                esignatureDownloads: esignatureDownloads,
-                enableMultipleRedactionReasons: options.enableMultipleRedactionReasons
-            }, PCCViewer.Language.data)))
+        .html(renderTemplate(options.template.viewer, _.extend({
+            reasons: this.redactionReasonsExtended,
+            annotationsMode: options.annotationsMode,
+            downloadFormats: downloadFormats,
+            annotationDownloads: annotationDownloads,
+            redactionDownloads: redactionDownloads,
+            esignatureDownloads: esignatureDownloads,
+            enableMultipleRedactionReasons: options.enableMultipleRedactionReasons
+        },PCCViewer.Language.data)))
             .addClass('pccv')
             .show();
 
@@ -289,16 +289,14 @@ var PCCViewer = window.PCCViewer || {};
             HighlightAnnotation: true,
             FreehandAnnotation: true,
             RectangleRedaction: true,
-            InverseRedaction: true,
             TransparentRectangleRedaction: true,
-            PageRedaction: true,
             TextRedaction: true,
             StampRedaction: true,
             TextSelectionRedaction: true,
             PlaceSignature: true,
             ImageStampAnnotation: true,
             ImageStampRedaction: true,
-            PolylineAnnotation: true,
+            PolylineAnnotation : true,
             TextHyperlinkAnnotation: true,
             StrikethroughAnnotation: true
         }, options.stickyToolsFilter);
@@ -455,24 +453,6 @@ var PCCViewer = window.PCCViewer || {};
             $piiFilterSelectAllCheckbox: viewer.$dom.find("[data-pcc-pii-filter-section=piiFilterEntities] .pcc-pii-filter-select-all-container [data-pcc-checkbox='pii-select-all-toggle']"),
             $piiFilterSelectAllLabel: viewer.$dom.find("[data-pcc-pii-filter-section=piiFilterEntities] .pcc-pii-filter-select-all-container [data-pcc-select-all-label]"),
 
-
-            $summary: viewer.$dom.find("[data-pcc-summary]"),
-            $copySummary: viewer.$dom.find("[data-pcc-copy-summary]"),
-            $regenerateSummary: viewer.$dom.find("[data-pcc-regenerate-summary]"),
-
-            $tagDialog: viewer.$dom.find("[data-pcc-toggle-id=dialog-tag]"),
-            $classifications: viewer.$dom.find("[data-pcc-classifications]"),
-            $tags: viewer.$dom.find("[data-pcc-tags]"),
-            $tagsOther: viewer.$dom.find("[data-pcc-tags-other]"),
-            $tagsOtherTitle: viewer.$dom.find("[data-pcc-tags-other-title]"),
-            $classificationOther: viewer.$dom.find("[data-pcc-classification-other]"),
-            $classificationOtherTitle: viewer.$dom.find("[data-pcc-classification-other-title]"),
-
-            $queryDialog: viewer.$dom.find("[data-pcc-toggle-id=dialog-query]"),
-            $query: viewer.$dom.find("[data-pcc-query]"),
-            $queryResponse: viewer.$dom.find("[data-pcc-query-response]"),
-            $copyQueryResponse: viewer.$dom.find("[data-pcc-copy-query-response]"),
-
             $revisionLoader: viewer.$dom.find("[data-pcc-revision=loader]"),
             $revisionStatus: viewer.$dom.find("[data-pcc-revision=status]"),
             $revisions: viewer.$dom.find("[data-pcc-revision=results]"),
@@ -559,8 +539,8 @@ var PCCViewer = window.PCCViewer || {};
 
             // Chances are good that browsers with no getComputedStyle also don't support media queries.
             if (window.getComputedStyle) {
-                var tag = window.getComputedStyle(viewer.viewerNodes.$breakpointTrigger.get(0), ':after').getPropertyValue('content') || '';
-                tag = tag.replace(/["']/g, ''); // remove quotes in browsers that return them
+                var tag = window.getComputedStyle(viewer.viewerNodes.$breakpointTrigger.get(0),':after').getPropertyValue('content') || '';
+                tag = tag.replace(/["']/g,''); // remove quotes in browsers that return them
                 breakpoint = this.breakpointEnum[tag] || breakpoint;
             }
 
@@ -586,14 +566,14 @@ var PCCViewer = window.PCCViewer || {};
         this.prevActiveElement = document.activeElement;
 
         // Call the various methods required for initialization
-        this.initializeViewer = function() {
+        this.initializeViewer = function () {
 
             var maxPageWidth = 0;
             this.createPageList();
             this.bindMarkup();
 
             var me = this;
-            var initOnPageCountReady = function() {
+            var initOnPageCountReady = function () {
                 viewer.viewerControl.off('PageCountReady', initOnPageCountReady);
 
                 me.imageToolsDropdownUI.init();
@@ -612,7 +592,7 @@ var PCCViewer = window.PCCViewer || {};
                     if (opts.autoLoadAllLayers) {
                         // check if layered annotations are turned on, and we should
                         // load all of the layers by default
-                        me.annotationIo.autoLoadAllLayers(function(err) {
+                        me.annotationIo.autoLoadAllLayers(function(err){
                             // open the comments panel if there are comments present
                             commentUIManager.openIfVisibleMarks();
                         });
@@ -641,7 +621,7 @@ var PCCViewer = window.PCCViewer || {};
                 if (viewer.redactionReasons.autoApplyDefaultReason === true) {
                     var defaultReasons = [];
 
-                    _.each(viewer.redactionReasons.reasons, function(reasonObj) {
+                    _.each(viewer.redactionReasons.reasons, function (reasonObj) {
 
                         if (typeof reasonObj.defaultReason !== 'undefined' && reasonObj.defaultReason === true) {
                             defaultReasons.push(reasonObj.reason);
@@ -650,7 +630,7 @@ var PCCViewer = window.PCCViewer || {};
                     });
 
                     if (!options.enableMultipleRedactionReasons && defaultReasons.length > 1) {
-                        viewer.notify({ message: PCCViewer.Language.data.redactionErrorDefault });
+                        viewer.notify({message: PCCViewer.Language.data.redactionErrorDefault});
                     }
 
                     if (defaultReasons.length) {
@@ -680,9 +660,9 @@ var PCCViewer = window.PCCViewer || {};
 
             viewer.viewerControl.on('PageCountReady', initOnPageCountReady);
 
-            viewer.viewerControl.on('PageDisplayed', function(ev) {
+            viewer.viewerControl.on('PageDisplayed', function (ev) {
                 viewer.viewerControl.requestPageAttributes(ev.pageNumber).then(
-                    function(pageAttributes) {
+                    function (pageAttributes) {
                         if (maxPageWidth === 0) {
                             // The first page has displayed. Set the initial maxPageWidth.
                             maxPageWidth = pageAttributes.width;
@@ -713,44 +693,36 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             // On window resize adjust dialogs and fit document
-            onWindowResize(function() {
+            onWindowResize(function () {
                 toggleDialogOffset();
                 if (viewer.isFitTypeActive === true) { viewer.viewerControl.fitContent(viewer.currentFitType); }
             });
             viewer.$pageListContainerWrapper = viewer.viewerNodes.$pageList.find('.pccPageListContainerWrapper');
             //bind the keyboard keys
             this.initKeyBindings();
-
-            var skipLink = document.getElementById('pcc-skip-link');
-            if (skipLink) {
-                skipLink.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    viewer.viewerNodes.$pageList.find('.pccPageListContainerWrapper').focus();
-                });
-            }
         };
 
         // Bind the public API to the nodes
-        this.bindMarkup = function() {
+        this.bindMarkup = function () {
 
             var documentScrollPosition;
 
             // Page Navigation buttons
-            viewer.viewerNodes.$firstPage.on('click', function() {
+            viewer.viewerNodes.$firstPage.on('click', function () {
                 viewer.viewerControl.changeToFirstPage();
             });
-            viewer.viewerNodes.$prevPage.on('click', function() {
+            viewer.viewerNodes.$prevPage.on('click', function () {
                 viewer.viewerControl.changeToPrevPage();
             });
-            viewer.viewerNodes.$nextPage.on('click', function() {
+            viewer.viewerNodes.$nextPage.on('click', function () {
                 viewer.viewerControl.changeToNextPage();
             });
-            viewer.viewerNodes.$lastPage.on('click', function() {
+            viewer.viewerNodes.$lastPage.on('click', function () {
                 viewer.viewerControl.changeToLastPage();
             });
 
             // Fit Document to Width button
-            viewer.viewerNodes.$fitContent.on('click', function() {
+            viewer.viewerNodes.$fitContent.on('click', function () {
 
                 if (viewer.isFitTypeActive === false) {
                     viewer.isFitTypeActive = true;
@@ -767,35 +739,35 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             // Rotate Page button
-            viewer.viewerNodes.$rotatePage.on('click', function() {
+            viewer.viewerNodes.$rotatePage.on('click', function () {
                 viewer.viewerControl.rotatePage(90);
                 if (viewer.isFitTypeActive === true) { viewer.viewerControl.fitContent(viewer.currentFitType); }
             });
 
             // Rotate Document button
-            viewer.viewerNodes.$rotateDocument.on('click', function() {
+            viewer.viewerNodes.$rotateDocument.on('click', function () {
                 viewer.viewerControl.rotateDocument(90);
                 if (viewer.isFitTypeActive === true) { viewer.viewerControl.fitContent(viewer.currentFitType); }
             });
 
             // Zoom buttons
-            viewer.viewerNodes.$zoomIn.on('click', function() {
+            viewer.viewerNodes.$zoomIn.on('click', function () {
                 if (!this.className.match('pcc-disabled')) {
                     viewer.viewerControl.zoomIn(1.25);
                 }
             });
-            viewer.viewerNodes.$zoomOut.on('click', function() {
+            viewer.viewerNodes.$zoomOut.on('click', function () {
                 if (!this.className.match('pcc-disabled')) {
                     viewer.viewerControl.zoomOut(1.25);
                 }
             });
 
-            function dismissFitMenuHandler() {
+            function dismissFitMenuHandler () {
                 viewer.viewerNodes.$scaleDropdown.removeClass('pcc-show');
                 $(document.body).off('click', dismissFitMenuHandler);
             }
 
-            viewer.viewerNodes.$zoomLevel.on('click', function() {
+            viewer.viewerNodes.$zoomLevel.on('click', function () {
                 if (viewer.viewerNodes.$scaleDropdown.hasClass('pcc-show') === false) {
                     viewer.viewerNodes.$scaleDropdown.addClass('pcc-show');
                     setTimeout(function() {
@@ -803,7 +775,7 @@ var PCCViewer = window.PCCViewer || {};
                     }, 0);
                 }
             });
-            viewer.viewerNodes.$scaleDropdown.on('click', function(ev) {
+            viewer.viewerNodes.$scaleDropdown.on('click', function (ev) {
                 var $target = $(ev.target);
                 var data = $target.data();
 
@@ -820,7 +792,7 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             // Full-screen toggle button
-            viewer.viewerNodes.$fullScreen.on('click', function(ev) {
+            viewer.viewerNodes.$fullScreen.on('click', function (ev) {
                 viewer.$dom.toggleClass('pcc-full-screen');
                 viewer.viewerNodes.$fullScreen.toggleClass('pcc-active');
                 updateContextMenuDropdownsMaxHeight();
@@ -829,7 +801,7 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             // Comments Panel toggle button
-            viewer.viewerNodes.$commentsPanel.on('click', function() {
+            viewer.viewerNodes.$commentsPanel.on('click', function () {
 
                 var $pageListWrapper = viewer.viewerNodes.$pageList.find('.pccPageListContainerWrapper');
 
@@ -852,11 +824,11 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             // End Preview button
-            viewer.viewerNodes.$endPreview.on('click', function() {
+            viewer.viewerNodes.$endPreview.on('click', function () {
                 fileDownloadManager.endPreview();
             });
 
-            viewer.viewerNodes.$esignPlace.on('click', function(ev) {
+            viewer.viewerNodes.$esignPlace.on('click', function (ev) {
                 // get last known signature
                 var accusoftPlaceSignature = PCCViewer.MouseTools.getMouseTool('AccusoftPlaceSignature');
                 var prevSignature = accusoftPlaceSignature.getTemplateMark().getSignature() || undefined;
@@ -867,7 +839,7 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.eSignature.changeMouseToolSignature(prevSignature, false, false);
             });
 
-            viewer.viewerNodes.$esignPlaceDate.on('click', function(ev) {
+            viewer.viewerNodes.$esignPlaceDate.on('click', function (ev) {
                 // get last known signature
                 var accusoftPlaceSignature = PCCViewer.MouseTools.getMouseTool('AccusoftPlaceDateSignature');
 
@@ -889,35 +861,35 @@ var PCCViewer = window.PCCViewer || {};
             // E-Signature modal
             viewer.viewerNodes.$esignOverlay
                 // Close/Cancel button
-                .on('click', '[data-pcc-esign="cancel"]', function() {
+                .on('click', '[data-pcc-esign="cancel"]', function () {
                     viewer.closeEsignModal();
                     $(window).off('resize', resizeESignContext);
                 })
 
                 // Toggle nodes
-                .on('click', '[data-pcc-toggle]', function(ev) {
+                .on('click', '[data-pcc-toggle]', function (ev) {
                     toggleNodes(ev, viewer.viewerNodes.$esignOverlay);
                 })
 
                 // Clear signature
-                .on('click', '[data-pcc-esign="clear"]', function() {
+                .on('click', '[data-pcc-esign="clear"]', function () {
                     if (viewer.esignContext && viewer.esignContext.clear) {
                         viewer.esignContext.clear();
                     }
                 })
 
                 // Download signature
-                .on('click', '[data-pcc-esign="download"]', function() {
+                .on('click', '[data-pcc-esign="download"]', function () {
                     viewer.viewerControl.downloadSignature(PCCViewer.Signatures.toArray()[0]);
                 })
 
-                .on('click', '[data-pcc-checkbox]', function(ev) {
+                .on('click', '[data-pcc-checkbox]', function (ev) {
                     var $el = $(ev.currentTarget);
                     $el.toggleClass('pcc-checked');
                 })
 
                 // Save
-                .on('click', '[data-pcc-esign="save"]', function() {
+                .on('click', '[data-pcc-esign="save"]', function () {
                     var futureUse = viewer.viewerNodes.$esignOverlay.find('[data-pcc-checkbox]').hasClass('pcc-checked'),
                         categry = viewer.viewerNodes.$esignOverlay.find('[data-pcc-esign-category] .pcc-label').html();
 
@@ -967,27 +939,27 @@ var PCCViewer = window.PCCViewer || {};
                 .on('click', '[data-pcc-esign="typeNew"]', viewer.launchESignText)
 
                 // Prevent default behavior of buttons inside the e-sign overlay to prevent form submission.
-                .on('click', 'button', function(ev) {
+                .on('click', 'button', function (ev) {
                     ev.preventDefault();
                 })
 
                 // Configure dropdown in the esign overlay
-                .on('click', '[data-pcc-toggle-id*="dropdown"]', function(ev) {
+                .on('click', '[data-pcc-toggle-id*="dropdown"]', function(ev){
                     handleDropdownBehavior(ev);
                 });
 
             viewer.viewerNodes.$imageStampOverlay
                 // Toggle nodes
-                .on('click', '[data-pcc-toggle]', function(ev) {
+                .on('click', '[data-pcc-toggle]', function (ev) {
                     toggleNodes(ev, viewer.viewerNodes.$imageStampOverlay);
                 })
                 // Configure dropdown in the esign overlay
-                .on('click', '[data-pcc-toggle-id*="dropdown"]', function(ev) {
+                .on('click', '[data-pcc-toggle-id*="dropdown"]', function(ev){
                     handleDropdownBehavior(ev);
                 });
 
             // Launch page redaction modal
-            viewer.viewerNodes.$pageRedactionLaunch.on('click', function(ev) {
+            viewer.viewerNodes.$pageRedactionLaunch.on('click', function (ev) {
                 // a switch we use to cancel page redaction
                 viewer.isPageRedactionCanceled = false;
 
@@ -1018,7 +990,7 @@ var PCCViewer = window.PCCViewer || {};
                         .on('input', function(ev) {
                             var val = $(this).val();
                             if (viewer.redactionReasons.maxLengthFreeformRedactionReasons && val.length > viewer.redactionReasons.maxLengthFreeformRedactionReasons) {
-                                viewer.notify({ message: PCCViewer.Language.data.redactionReasonFreeforMaxLengthOver });
+                                viewer.notify({message: PCCViewer.Language.data.redactionReasonFreeforMaxLengthOver});
                                 $(this).val(val.substring(0, viewer.redactionReasons.maxLengthFreeformRedactionReasons));
                             }
                             viewer.fullPageRedactionReason = options.enableMultipleRedactionReasons ? [val] : val;
@@ -1039,7 +1011,7 @@ var PCCViewer = window.PCCViewer || {};
                             if (options.enableMultipleRedactionReasons) {
                                 // Activate selected reasons
                                 var $pageRedactionReasons = viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-checkbox="redaction-reasons"]');
-                                $pageRedactionReasons.each(function() {
+                                $pageRedactionReasons.each(function () {
                                     var $this = $(this);
                                     if (viewer.fullPageRedactionReason.indexOf($this.find('.pcc-select-multiple-redaction-reason').text()) >= 0) {
                                         $this.addClass('pcc-checked');
@@ -1080,7 +1052,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
 
                 // re-validate page ranges. The error state may change when the checked state changes
-                validateRangeAndUpdateErrorClass($includeRangeEl, { ignoreErrors: !redactRangeChecked, allIsValid: true });
+                validateRangeAndUpdateErrorClass($includeRangeEl, {ignoreErrors: !redactRangeChecked, allIsValid: true});
                 validateRangeAndUpdateErrorClass($excludeRangeEl, {
                     ignoreErrors: !redactAllPagesChecked,
                     emptyIsValid: true,
@@ -1112,7 +1084,7 @@ var PCCViewer = window.PCCViewer || {};
                     ignoreBecauseAll = range === 'all' && allIsValid;
 
                 var isValid = ignoreErrors || ignoreBecauseEmpty || PCCViewer.Util.validatePageRange(range, {
-                    upperLimit: viewer.viewerControl.getPageCount()
+                        upperLimit: viewer.viewerControl.getPageCount()
                 }) && !(range === 'all' && allIsValid === false),
                     errorClass = 'pccError';
 
@@ -1165,14 +1137,14 @@ var PCCViewer = window.PCCViewer || {};
             // Redact page redaction modal
             viewer.viewerNodes.$pageRedactionOverlay
                 // Cancel button
-                .on('click', '[data-pcc-page-redaction="cancel"]', function() {
+                .on('click', '[data-pcc-page-redaction="cancel"]', function () {
                     viewer.viewerNodes.$pageRedactionOverlay.removeClass('pcc-open');
                     viewer.viewerNodes.$overlayFade.hide();
                     viewer.isPageRedactionCanceled = true;
                 })
 
                 // Radio buttons
-                .on('click', '[data-pcc-radio]', function(ev) {
+                .on('click', '[data-pcc-radio]', function (ev) {
                     var $el = $(ev.currentTarget);
 
                     $el.addClass('pcc-checked');
@@ -1183,7 +1155,7 @@ var PCCViewer = window.PCCViewer || {};
                 })
 
                 // Validate include range if required
-                .on('click', '[data-pcc-page-redaction=redactRange]', function(ev) {
+                .on('click', '[data-pcc-page-redaction=redactRange]', function (ev) {
                     var $el = $(ev.currentTarget);
 
                     $el.addClass('pcc-checked');
@@ -1193,7 +1165,7 @@ var PCCViewer = window.PCCViewer || {};
                 })
 
                 // Page range
-                .on('focus', '[data-pcc-page-redaction-range=include]', function() {
+                .on('focus', '[data-pcc-page-redaction-range=include]', function () {
                     var $el = viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-page-redaction="redactRange"]');
 
                     viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-radio="' + $el.data('pccRadio') + '"]').removeClass('pcc-checked');
@@ -1201,22 +1173,22 @@ var PCCViewer = window.PCCViewer || {};
 
                     updatePageRedactionOverlayRangeInputs();
                 })
-                .on('keyup', '[data-pcc-page-redaction-range=exclude]', function(ev) {
+                .on('keyup', '[data-pcc-page-redaction-range=exclude]', function (ev) {
                     var $target = $(ev.target);
-                    validateRangeAndUpdateErrorClass($target, { emptyIsValid: true, allIsValid: false });
+                    validateRangeAndUpdateErrorClass($target, {emptyIsValid: true, allIsValid: false});
                 })
-                .on('keyup', '[data-pcc-page-redaction-range=include]', function(ev) {
+                .on('keyup', '[data-pcc-page-redaction-range=include]', function (ev) {
                     var $target = $(ev.target);
-                    validateRangeAndUpdateErrorClass($target, { allIsValid: true });
+                    validateRangeAndUpdateErrorClass($target, {allIsValid: true});
                 })
 
                 // Toggle nodes
-                .on('click', '[data-pcc-toggle]', function(ev) {
+                .on('click', '[data-pcc-toggle]', function (ev) {
                     toggleNodes(ev, viewer.viewerNodes.$contextMenu);
                 })
 
                 // Select box dropdown menu click
-                .on('click', '.pcc-dropdown div', function(ev) {
+                .on('click', '.pcc-dropdown div', function (ev) {
                     var $target = $(ev.target),
                         $div = $(this),
                         $parent = $target.parents('.pcc-select');
@@ -1243,7 +1215,7 @@ var PCCViewer = window.PCCViewer || {};
                             // collect all checked reasons
                             var $checkedReasons = $parent.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked');
                             var reasons = [];
-                            $checkedReasons.each(function(index) {
+                            $checkedReasons.each(function(index){
                                 reasons.push($(this).find('.pcc-select-multiple-redaction-reason').text());
                             });
                             viewer.fullPageRedactionReason = reasons;
@@ -1270,7 +1242,7 @@ var PCCViewer = window.PCCViewer || {};
                 })
 
                 // Submit
-                .on('click', '[data-pcc-page-redaction="submit"]', function() {
+                .on('click', '[data-pcc-page-redaction="submit"]', function () {
                     // Extract data from the page redaction overlay form. This data will be used to
                     // create full page rectangle redactions to the user's specification.
                     var checkedClass = 'pcc-checked',
@@ -1280,9 +1252,9 @@ var PCCViewer = window.PCCViewer || {};
                         includeRangeVal = getInputValueNotPlaceholder(viewer.$dom.find('[data-pcc-page-redaction-range=include]')).toLowerCase(),
                         excludeRangeVal = getInputValueNotPlaceholder(viewer.$dom.find('[data-pcc-page-redaction-range=exclude]')).toLowerCase(),
                         pageCount = viewer.viewerControl.getPageCount(),
-                        includeRangeIsValid = PCCViewer.Util.validatePageRange(includeRangeVal, { upperLimit: pageCount }),
+                        includeRangeIsValid = PCCViewer.Util.validatePageRange(includeRangeVal, {upperLimit: pageCount}),
                         excludeRangeIsValid = (excludeRangeVal.length === 0 ||
-                            PCCViewer.Util.validatePageRange(excludeRangeVal, { upperLimit: pageCount })) && excludeRangeVal !== 'all',
+                            PCCViewer.Util.validatePageRange(excludeRangeVal, {upperLimit: pageCount})) && excludeRangeVal !== 'all',
                         pages,
                         tmplData = _.extend({
                             show: 'status'
@@ -1297,13 +1269,13 @@ var PCCViewer = window.PCCViewer || {};
                                 allowEmpty: true
                             }));
                         } else {
-                            viewer.notify({ message: PCCViewer.Language.data.pageRedactionExcludeRangeError });
+                            viewer.notify({message: PCCViewer.Language.data.pageRedactionExcludeRangeError});
                         }
                     } else if (isRange) {
                         if (includeRangeIsValid) {
-                            pages = PCCViewer.Util.convertPageRangeToArray(includeRangeVal, { upperLimit: pageCount });
+                            pages = PCCViewer.Util.convertPageRangeToArray(includeRangeVal, {upperLimit: pageCount});
                         } else {
-                            viewer.notify({ message: PCCViewer.Language.data.pageRedactionIncludeRangeError });
+                            viewer.notify({message: PCCViewer.Language.data.pageRedactionIncludeRangeError});
                         }
                     } else if (isCurrent) {
                         pages = [viewer.viewerControl.getPageNumber()];
@@ -1331,7 +1303,7 @@ var PCCViewer = window.PCCViewer || {};
 
                                     // Now that we have page attributes for all pages, we create a rectangle redaction
                                     // for each page that covers the full page.
-                                    _.each(allPageAttributes, function(pageAttributes, index) {
+                                    _.each(allPageAttributes, function (pageAttributes, index) {
                                         var pageNumber = pages[index];
 
                                         // Use ViewerControl#addMark to add the rectangle redaction to the page.
@@ -1365,7 +1337,7 @@ var PCCViewer = window.PCCViewer || {};
                             // hide the Page Redaction overlay
                             function onRejected(reason) {
                                 // Notify the user of error and close the page redaction dialog.
-                                viewer.notify({ message: PCCViewer.Language.data.pageRedactionAttributeRequestError });
+                                viewer.notify({message: PCCViewer.Language.data.pageRedactionAttributeRequestError});
                                 viewer.viewerNodes.$pageRedactionOverlay.removeClass('pcc-open');
                                 viewer.viewerNodes.$overlayFade.hide();
                             });
@@ -1373,12 +1345,12 @@ var PCCViewer = window.PCCViewer || {};
                 })
 
                 // Prevent default behavior of buttons inside the page redaction overlay menu to prevent form submission.
-                .on('click', 'button', function(ev) {
+                .on('click', 'button', function (ev) {
                     ev.preventDefault();
                 });
 
             // Launch print modal
-            viewer.viewerNodes.$printLaunch.on('click', function(ev) {
+            viewer.viewerNodes.$printLaunch.on('click', function (ev) {
                 var tmplData = _.extend({
                     canPrintMarks: viewer.viewerControl.canPrintMarks(),
                     show: 'form'
@@ -1398,7 +1370,7 @@ var PCCViewer = window.PCCViewer || {};
                 // Promises do not guarantee synchronous execution
 
 
-                viewer.viewerControl.requestPageAttributes(1).then(function(attributes) {
+                viewer.viewerControl.requestPageAttributes(1).then(function (attributes) {
 
                     var orientation = attributes.width > attributes.height ? 'landscape' : 'portrait';
                     viewer.viewerNodes.$printOverlay.find('[data-pcc-select="orientation"]').val(orientation);
@@ -1416,11 +1388,11 @@ var PCCViewer = window.PCCViewer || {};
                     viewer.$dom.find('[data-pcc-select="printComments"]').prop('disabled', true);
                 }
 
-                if (redactionsEnabled) {
+                if(redactionsEnabled){
                     viewer.$dom.find('[data-pcc-select="printReasons"]').prop('disabled', false);
                     viewer.$dom.find('[data-pcc-checkbox="printRedactionViewMode"]').removeClass('pcc-disabled');
                 }
-                else {
+                else{
                     viewer.$dom.find('[data-pcc-select="printReasons"]').prop('disabled', true);
                     viewer.$dom.find('[data-pcc-checkbox="printRedactionViewMode"]').addClass('pcc-disabled');
                 }
@@ -1429,7 +1401,7 @@ var PCCViewer = window.PCCViewer || {};
             // Print modal
             viewer.viewerNodes.$printOverlay
                 // Cancel button
-                .on('click', '[data-pcc-print="cancel"]', function() {
+                .on('click', '[data-pcc-print="cancel"]', function () {
                     viewer.viewerNodes.$printOverlay.removeClass('pcc-open');
                     viewer.viewerNodes.$overlayFade.hide();
                     if (viewer.printRequest.cancel) {
@@ -1437,10 +1409,10 @@ var PCCViewer = window.PCCViewer || {};
                     }
                 })
 
-                .on('click', '[data-pcc-print="optionsToggle"]', function() {
+                .on('click', '[data-pcc-print="optionsToggle"]', function () {
                     var moreOptions = viewer.viewerNodes.$printOverlay.find(".pcc-print-more-options");
 
-                    if (moreOptions.is(':visible')) {
+                    if(moreOptions.is(':visible')){
                         $(this).find("label").html(PCCViewer.Language.data.printMoreOptions);
                         $(this).find("span").removeClass().addClass("pcc-arrow-down");
                     }
@@ -1453,7 +1425,7 @@ var PCCViewer = window.PCCViewer || {};
                 })
 
                 // Radio buttons
-                .on('click', '[data-pcc-radio]', function(ev) {
+                .on('click', '[data-pcc-radio]', function (ev) {
                     var $el = $(ev.currentTarget);
                     var $siblings = viewer.$dom.find('[data-pcc-radio="' + $el.data('pccRadio') + '"]').not(this);
 
@@ -1462,7 +1434,7 @@ var PCCViewer = window.PCCViewer || {};
                 })
 
                 // Checkboxes
-                .on('click', '[data-pcc-checkbox]', function(ev) {
+                .on('click', '[data-pcc-checkbox]', function (ev) {
                     var $el = $(ev.currentTarget);
                     if ($el.hasClass('pcc-disabled')) {
                         return;
@@ -1473,14 +1445,14 @@ var PCCViewer = window.PCCViewer || {};
                 })
 
                 // Page range
-                .on('focus', '[data-pcc-print="range"]', function() {
+                .on('focus', '[data-pcc-print="range"]', function () {
                     var $el = viewer.$dom.find('[data-pcc-print-page="printRange"]');
                     var $siblings = viewer.$dom.find('[data-pcc-radio="' + $el.data('pccRadio') + '"]').not(this);
 
                     $el.addClass('pcc-checked');
                     $siblings.removeClass('pcc-checked');
                 })
-                .on('keyup', '[data-pcc-print="range"]', function(ev) {
+                .on('keyup', '[data-pcc-print="range"]', function (ev) {
                     var $target = $(ev.target),
                         isValid = viewer.viewerControl.validatePrintRange(getInputValueNotPlaceholder($target)),
                         errorClass = 'pccError';
@@ -1493,7 +1465,7 @@ var PCCViewer = window.PCCViewer || {};
                 })
 
                 // Print submit
-                .on('click', '[data-pcc-print="submit"]', function() {
+                .on('click', '[data-pcc-print="submit"]', function () {
                     var tmplData = {},
                         checkedClass = 'pcc-checked',
                         errorClass = 'pccError',
@@ -1512,7 +1484,7 @@ var PCCViewer = window.PCCViewer || {};
                         printOptions = {
                             range: isCurrent ? viewer.viewerControl.getPageNumber().toString() : (isRange ? rangeVal : 'all'),
                             orientation: orientation,
-                            paperSize: paperSize,
+                            paperSize:paperSize,
                             includeMarks: annotationsEnabled,
                             includeAnnotations: annotationsEnabled,
                             includeRedactions: redactionsEnabled,
@@ -1523,7 +1495,7 @@ var PCCViewer = window.PCCViewer || {};
                             redactionViewMode: viewer.viewerNodes.$printOverlay.find('[data-pcc-checkbox="printRedactionViewMode"]').hasClass('pcc-checked') ? "Draft" : "Normal"
                         },
                         percent = 0,
-                        dismissOverlay = function() {
+                        dismissOverlay = function () {
                             viewer.viewerNodes.$printOverlay.removeClass('pcc-open');
                             viewer.viewerNodes.$overlayFade.hide();
                         };
@@ -1546,7 +1518,7 @@ var PCCViewer = window.PCCViewer || {};
 
                         viewer.printRequest
                             // As each page is prepared.
-                            .on(PCCViewer.PrintRequest.EventType.PrintPagePrepared, function() {
+                            .on(PCCViewer.PrintRequest.EventType.PrintPagePrepared, function () {
                                 percent = Math.round(100 * (viewer.printRequest.getPreparedCount() / viewer.printRequest.getPageCount())) + '%';
 
                                 // Show page count.
@@ -1558,37 +1530,37 @@ var PCCViewer = window.PCCViewer || {};
                             })
 
                             // When the print job has been prepared hide overlay.
-                            .on(PCCViewer.PrintRequest.EventType.PrintCompleted, function() {
+                            .on(PCCViewer.PrintRequest.EventType.PrintCompleted, function () {
                                 dismissOverlay();
                             })
 
                             // The print completed due to failure, hide overlay and show error.
-                            .on(PCCViewer.PrintRequest.EventType.PrintFailed, function() {
+                            .on(PCCViewer.PrintRequest.EventType.PrintFailed, function () {
                                 dismissOverlay();
-                                viewer.notify({ message: PCCViewer.Language.data.printFailedError });
+                                viewer.notify({message: PCCViewer.Language.data.printFailedError});
                             });
 
                     }
                     if (isRange && !rangeIsValid) {
-                        viewer.notify({ message: PCCViewer.Language.data.printRangeError });
+                        viewer.notify({message: PCCViewer.Language.data.printRangeError});
                         viewer.$dom.find('[data-pcc-print="range"]').addClass(errorClass);
                     }
                 })
 
                 // Prevent default behavior of buttons inside the print menu to prevent form submission.
-                .on('click', 'button', function(ev) {
+                .on('click', 'button', function (ev) {
                     ev.preventDefault();
                 });
 
             // Context Menu
             viewer.viewerNodes.$contextMenu
                 // Toggle nodes
-                .on('click', '[data-pcc-toggle]', function(ev) {
+                .on('click', '[data-pcc-toggle]', function (ev) {
                     toggleNodes(ev, viewer.viewerNodes.$contextMenu);
                 })
 
                 // Select box dropdown menu click
-                .on('click', '.pcc-dropdown div', function(ev) {
+                .on('click', '.pcc-dropdown div', function (ev) {
                     var $target = $(ev.target),
                         $parent = $target.parents('.pcc-select'),
                         $dropdown = $parent.find('.pcc-dropdown'),
@@ -1633,7 +1605,7 @@ var PCCViewer = window.PCCViewer || {};
 
                             if ($target.data('pccColorKey')) {
                                 fillColor = $target.data('pccColorKey');
-                            } else if (backgroundColor.indexOf('rgb') > -1) {
+                            } else if ( backgroundColor.indexOf('rgb') > -1 ) {
                                 fillColor = rgbToHex(backgroundColor);
                             } else {
                                 fillColor = backgroundColor;
@@ -1659,7 +1631,7 @@ var PCCViewer = window.PCCViewer || {};
 
                             if ($target.data('pccColorKey')) {
                                 borderColor = $target.data('pccColorKey');
-                            } else if (backgroundColor.indexOf('rgb') > -1) {
+                            } else if ( backgroundColor.indexOf('rgb') > -1 ) {
                                 borderColor = rgbToHex(backgroundColor);
                             } else {
                                 borderColor = backgroundColor;
@@ -1720,7 +1692,7 @@ var PCCViewer = window.PCCViewer || {};
                                     // collect all checked reasons
                                     var $checkedReasons = $parent.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked');
                                     var reasons = [];
-                                    $checkedReasons.each(function(index) {
+                                    $checkedReasons.each(function(index){
                                         reasons.push($(this).find('.pcc-select-multiple-redaction-reason').text());
                                     });
                                     mark.setReasons(reasons);
@@ -1760,7 +1732,7 @@ var PCCViewer = window.PCCViewer || {};
                 })
 
                 // Set font style array
-                .on('click', '[data-pcc-font-style]', function(ev) {
+                .on('click', '[data-pcc-font-style]', function (ev) {
                     var $target = $(ev.target).closest('button'),
                         str = $target.data('pccFontStyle'),
                         mark = viewer.currentMarks[0];
@@ -1782,10 +1754,10 @@ var PCCViewer = window.PCCViewer || {};
 
                 // Set font text alignment
                 // Each click cycles through an array of 0-2 returning 0, 1, or 2
-                .on('click', '[data-pcc-font-align]', function(ev) {
+                .on('click', '[data-pcc-font-align]', function (ev) {
                     var $target = $(ev.target).closest('button'),
                         counter = $target.data('counter'),
-                        i = counter ? counter + 1 : 1,
+                        i = counter ? counter + 1: 1,
                         mark = viewer.currentMarks[0],
                         arr = [PCCViewer.Mark.HorizontalAlignment.Left, PCCViewer.Mark.HorizontalAlignment.Center, PCCViewer.Mark.HorizontalAlignment.Right];
 
@@ -1806,29 +1778,29 @@ var PCCViewer = window.PCCViewer || {};
                 })
 
                 // Delete marks button
-                .on('click', '[data-pcc-delete-mark]', function(ev) {
+                .on('click', '[data-pcc-delete-mark]', function (ev) {
                     viewer.viewerControl.deleteMarks(viewer.currentMarks);
                 })
 
-                .on('click', '[data-pcc-add-comment-context-menu]', function(ev) {
+                .on('click', '[data-pcc-add-comment-context-menu]', function (ev) {
                     if (viewer.currentMarks.length) {
                         commentUIManager.addComment(viewer.currentMarks[0].getConversation());
                     }
                 })
 
                 // Move context menu up/down button
-                .on('click', '[data-pcc-move-context-menu]', function(ev) {
+                .on('click', '[data-pcc-move-context-menu]', function (ev) {
                     viewer.viewerNodes.$contextMenu.toggleClass('pcc-move-bottom');
                     updateContextMenuDropdownsMaxHeight();
                 })
 
                 // Move mark layer order
-                .on('click', '[data-pcc-move-mark]', function(ev) {
+                .on('click', '[data-pcc-move-mark]', function (ev) {
                     viewer.viewerControl['moveMark' + $(ev.target).data('pccMoveMark')](viewer.currentMarks[0]);
                 })
 
                 // Checkbox click
-                .on('click', '[data-pcc-checkbox="includeInBurnedDocument"]', function(ev) {
+                .on('click', '[data-pcc-checkbox="includeInBurnedDocument"]', function (ev) {
                     var $this = $(this),
                         wasChecked = $this.hasClass('pcc-checked'),
                         marks = viewer.currentMarks;
@@ -1837,19 +1809,19 @@ var PCCViewer = window.PCCViewer || {};
                     $this.toggleClass('pcc-checked');
 
                     // If the checkbox was checked, remove the data
-                    marks.forEach(function(mark) {
+                    marks.forEach(function (mark) {
                         mark.setData('Accusoft-burnAnnotation', !wasChecked ? '1' : undefined);
                     });
                 })
 
                 // Prevent default behavior of buttons inside the context menu to prevent form submission.
-                .on('click', 'button', function(ev) {
+                .on('click', 'button', function (ev) {
                     ev.preventDefault();
                 });
 
-            function mouseToolSelectHandler(ev) {
+            function mouseToolSelectHandler(ev){
                 var $target = $(ev.currentTarget),
-                    mouseToolName = $target.attr('data-pcc-mouse-tool') || $target.data('pccMouseTool'),
+                    mouseToolName = $target.data('pccMouseTool'),
                     mouseTool = PCCViewer.MouseTools.getMouseTool(mouseToolName);
 
                 if (!mouseToolName || mouseTool.getType() === PCCViewer.MouseTool.Type.PlaceSignature) {
@@ -1880,7 +1852,7 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             // Mouse tool buttons
-            this.viewerNodes.$mouseTools.on('click', function(ev) {
+            this.viewerNodes.$mouseTools.on('click', function (ev) {
                 mouseToolSelectHandler(ev);
             });
 
@@ -1888,7 +1860,7 @@ var PCCViewer = window.PCCViewer || {};
             // giving access to the invalid value for JavaScript validation. We want the number input to trigger
             // the number keyboard on Android and iOS. So instead, we will filter out invalid characters before
             // they are populated in the intup field.
-            viewer.viewerNodes.$pageSelect.on("keydown", function(ev) {
+            viewer.viewerNodes.$pageSelect.on("keydown", function (ev) {
                 // jQuery cancels the event based on true/false return value
                 // if using anything other than jQuery, this event needs to be cancelled, prevent default, and prevent bubbling manually
 
@@ -1899,10 +1871,10 @@ var PCCViewer = window.PCCViewer || {};
                         return false;
                     // Backspace
                     case 8:
-                    // Fall through
+                        // Fall through
                     // Tab
                     case 9:
-                    // Fall through
+                        // Fall through
                     // Delete
                     case 46:
                         return true;
@@ -1911,15 +1883,15 @@ var PCCViewer = window.PCCViewer || {};
                         return false;
                 }
 
-                var arrows = function() {
+                var arrows = function () {
                     // Keyboard arrow keys
                     return (ev.keyCode >= 37 && ev.keyCode <= 40);
                 };
-                var numPad = function() {
+                var numPad = function () {
                     // Number pad keys are 96 - 105 (NumLock is on)
                     return (ev.keyCode >= 96 && ev.keyCode <= 105);
                 };
-                var numKeys = function() {
+                var numKeys = function () {
                     // Check if original event provides keyIdentifier
                     if (ev.originalEvent && ev.originalEvent.keyIdentifier) {
                         // Numbers are U+30 - U+39 (modern browsers have these)
@@ -1935,7 +1907,7 @@ var PCCViewer = window.PCCViewer || {};
             });
             // When the input changes, we can trigger the page change. We already know this will be
             // a number, since all other characters have been filtered out.
-            viewer.viewerNodes.$pageSelect.on("change", function(ev) {
+            viewer.viewerNodes.$pageSelect.on("change", function (ev) {
                 var val = $(ev.target).val();
 
                 if (val.length > 0) {
@@ -1943,7 +1915,7 @@ var PCCViewer = window.PCCViewer || {};
                     if (val > viewer.viewerControl.getPageCount() || val < 1) {
                         // Add error class
                         ev.target.className += ' pccError';
-                        setTimeout(function() {
+                        setTimeout(function () {
                             // Remove error class
                             ev.target.className = ev.target.className.replace('pccError', '');
                             $(ev.target).val(viewer.viewerControl.getPageNumber());
@@ -1963,7 +1935,7 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             //allows the redaction marks to show/hide underneath document content text
-            viewer.viewerNodes.$redactionViewMode.on('click', function() {
+            viewer.viewerNodes.$redactionViewMode.on('click', function () {
                 var redactionViewMode = viewer.viewerControl.getRedactionViewMode();
                 if (redactionViewMode === "Draft") {
                     viewer.viewerControl.setRedactionViewMode('Normal');
@@ -1976,7 +1948,7 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             // Tab navigation
-            viewer.viewerNodes.$tabItems.on('click', function(ev) {
+            viewer.viewerNodes.$tabItems.on('click', function (ev) {
                 var $el = $(ev.currentTarget),
                     $elTrigger = viewer.$dom.find('.pcc-trigger'),
                     $elTabItem = viewer.$dom.find('.pcc-tab-item'),
@@ -2000,7 +1972,7 @@ var PCCViewer = window.PCCViewer || {};
                     if ($el.hasClass('pcc-trigger')) {
                         viewer.$dom.find('.pcc-tab-item:not(.pcc-trigger)').removeClass('pcc-hide');
                         viewer.$dom.find('.pcc-tab-item:not(.pcc-trigger):contains("' + $el.text().replace(/^\s+|\s+$/g, '') + '")').addClass('pcc-hide');
-                        _.each(viewer.$dom.find('.pcc-tabset .pcc-tab-item'), function(item) {
+                        _.each(viewer.$dom.find('.pcc-tabset .pcc-tab-item'), function (item) {
                             menuIncr = $(item).parent().prev().find('.pcc-tab-item').hasClass('pcc-hide') ? 0 : menuIncr;
                             $(item).css('top', ($(item).parent().index() * menuItemHeight) + menuIncr + 'px');
                         });
@@ -2008,10 +1980,9 @@ var PCCViewer = window.PCCViewer || {};
                 }
 
                 $el.addClass('pcc-active');
-                $('.pcc-tab-pane').removeClass('pcc-open');
+                $el.parents('.pcc-tab').siblings().find('.pcc-tab-pane').removeClass('pcc-open');
 
-                var targetTabPaneId = $el.attr('aria-controls');
-                $(`#${targetTabPaneId}`).addClass('pcc-open');
+                $thisTabPane.addClass('pcc-open');
 
                 // Add offset to dialogs, context menu, pagelist
                 if ($thisTabPane.hasClass('pcc-tab-vertical pcc-right')) {
@@ -2036,12 +2007,12 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             // Toggle nodes
-            viewer.viewerNodes.$toggles.on('click', function(ev) {
+            viewer.viewerNodes.$toggles.on('click', function (ev) {
                 toggleNodes(ev);
             });
 
             // Search buttons
-            viewer.viewerNodes.$searchSubmit.on('click', function(ev) {
+            viewer.viewerNodes.$searchSubmit.on('click', function (ev) {
                 // prevent this event from firing anything else
                 ev.stopPropagation();
 
@@ -2051,42 +2022,42 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.search.executeSearch();
             });
 
-            viewer.viewerNodes.$searchCancel.on('click', function(ev) {
+            viewer.viewerNodes.$searchCancel.on('click', function (ev) {
                 viewer.search.cancelSearch();
             });
 
-            viewer.viewerNodes.$searchInput.on('keydown', function(ev) {
+            viewer.viewerNodes.$searchInput.on('keydown', function (ev) {
                 if (ev.keyCode === 13) {
                     ev.preventDefault();
                     viewer.search.executeSearch();
                 }
             });
 
-            viewer.viewerNodes.$searchPrevResult.on('click', function(ev) {
+            viewer.viewerNodes.$searchPrevResult.on('click', function (ev) {
                 ev.preventDefault();
                 viewer.search.previousResultClickHandler(this);
 
             });
-            viewer.viewerNodes.$searchNextResult.on('click', function(ev) {
+            viewer.viewerNodes.$searchNextResult.on('click', function (ev) {
                 ev.preventDefault();
                 viewer.search.nextResultClickHandler(this);
             });
 
-            viewer.viewerNodes.$revisionPrevItem.on('click', function(ev) {
+            viewer.viewerNodes.$revisionPrevItem.on('click', function (ev) {
                 ev.preventDefault();
                 viewer.revision.previousRevisionClickHandler(this);
 
             });
-            viewer.viewerNodes.$revisionNextItem.on('click', function(ev) {
+            viewer.viewerNodes.$revisionNextItem.on('click', function (ev) {
                 ev.preventDefault();
                 viewer.revision.nextRevisionClickHandler(this);
             });
 
-            viewer.viewerNodes.$searchClear.on('click', function(ev) {
+            viewer.viewerNodes.$searchClear.on('click', function (ev) {
                 viewer.search.clearSearch(ev);
                 toggleDialogOffset();
             });
-            viewer.viewerNodes.$searchToggleAllPresets.on('click', function(ev) {
+            viewer.viewerNodes.$searchToggleAllPresets.on('click', function (ev) {
                 ev.stopPropagation();
 
                 var checked = false,
@@ -2102,10 +2073,10 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.$dom.find('[data-pcc-predefined-search] input').prop('checked', checked);
             });
 
-            viewer.viewerNodes.$searchExactPhrase.on('click', function(ev) {
+            viewer.viewerNodes.$searchExactPhrase.on('click', function (ev) {
                 return viewer.search.exactPhraseClickHandler(this);
             });
-            viewer.viewerNodes.$searchMatchCase.on('click', function(ev) {
+            viewer.viewerNodes.$searchMatchCase.on('click', function (ev) {
                 return viewer.search.matchCaseClickHandler(this);
             });
             viewer.viewerNodes.$searchMatchWholeWord.on('click', function(ev) {
@@ -2123,7 +2094,7 @@ var PCCViewer = window.PCCViewer || {};
             viewer.viewerNodes.$searchProximity.on('click', function(ev) {
                 return viewer.search.proximityClickHandler(this);
             });
-            viewer.$dom.find('[data-pcc-nav-tab=search]').on('click', function() {
+            viewer.$dom.find('[data-pcc-nav-tab=search]').on('click', function () {
                 viewer.viewerNodes.$searchInput.focus();
             });
 
@@ -2131,43 +2102,12 @@ var PCCViewer = window.PCCViewer || {};
             // We can use this one for dropdowns in overlays
             function handleDropdownBehavior(ev) {
                 var isSelect = $(ev.target).parents().hasClass('pcc-select'),
-                    isRedactionToolDropdown = $(ev.target).parents().hasClass('pcc-redaction-tool-dropdown'),
                     isLoadMarkup = $(ev.target).parents().hasClass('pcc-select-load-annotations'),
                     isLoadMarkupLayers = $(ev.target).parents().hasClass('pcc-select-load-annotation-layers'),
                     $selection = $(ev.target).is('span') ? $(ev.target).parent().clone() : $(ev.target).clone();
 
                 if (isLoadMarkupLayers) {
                     $(ev.target).parents('.pcc-select').find('.pcc-label').html($(ev.target).html());
-                    return;
-                } else if (isRedactionToolDropdown) {
-                    var $option = $(ev.target).closest('[data-pcc-redaction-tool-option]'),
-                        $label = $option.parents('.pcc-select').find('.pcc-label'),
-                        mouseToolName = $option.data('pccRedactionToolOption');
-
-                    if (!mouseToolName) {
-                        return;
-                    }
-
-                    $label
-                        .attr('data-pcc-mouse-tool', mouseToolName)
-                        .attr('data-pcc-context-menu', $option.data('pccContextMenu'))
-                        .html($option.find('.pcc-icon').first().clone());
-
-                    if ($option.data('pccDefaultFillColor')) {
-                        $label.attr('data-pcc-default-fill-color', $option.data('pccDefaultFillColor'));
-                    } else {
-                        $label.removeAttr('data-pcc-default-fill-color');
-                    }
-
-                    $option.parents('.pcc-select')
-                        .attr('title', $.trim($option.text()))
-                        .removeClass('pcc-active')
-                        .find('.pcc-dropdown').removeClass('pcc-open');
-
-                    viewer.setMouseTool({
-                        mouseToolName: mouseToolName,
-                        thisButton: $label
-                    });
                     return;
                 } else if (isSelect && !isLoadMarkup) {
                     $(ev.target).parents('.pcc-select').find('.pcc-label').replaceWith($selection.addClass('pcc-label'));
@@ -2178,7 +2118,7 @@ var PCCViewer = window.PCCViewer || {};
             viewer.viewerNodes.$dropdowns.on('click', handleDropdownBehavior);
 
             // On document click close open dropdown menus
-            $(document).click(function(ev) {
+            $(document).click(function (ev) {
                 if (!viewer) {
                     return;
                 }
@@ -2198,13 +2138,13 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             // Prevent default behavior of buttons inside the viewer to prevent form submission.
-            viewer.$dom.on('click', 'button', function(ev) {
+            viewer.$dom.on('click', 'button', function (ev) {
                 ev.preventDefault();
             });
         };
 
         // Function to resize the eSign drawing context
-        function resizeESignContext() {
+        function resizeESignContext () {
             if (viewer.esignContext && viewer.esignContext.resize) {
                 viewer.esignContext.resize();
             }
@@ -2219,7 +2159,7 @@ var PCCViewer = window.PCCViewer || {};
                 heightDecrease += 80;
             }
             var dropdownMaxHeight = Math.max(150, viewer.$dom.height() - heightDecrease);
-            $dropdowns.css({ 'max-height': dropdownMaxHeight + 'px' });
+            $dropdowns.css({'max-height': dropdownMaxHeight + 'px'});
         }
 
         // A helper to dynamically adjust the max-height of full page redaction dropdowns
@@ -2229,7 +2169,7 @@ var PCCViewer = window.PCCViewer || {};
             var $redactAllPagesRadio = viewer.viewerNodes.$pageRedactionOverlay.find('[data-pcc-radio="pageRedaction"][data-pcc-page-redaction="redactAllPages"]');
             var heightDecrease = $redactAllPagesRadio.hasClass('pcc-checked') ? 395 : 360;
             var dropdownMaxHeight = Math.max(150, viewer.$dom.height() - heightDecrease);
-            $dropdowns.css({ 'max-height': dropdownMaxHeight + 'px' });
+            $dropdowns.css({'max-height': dropdownMaxHeight + 'px'});
         }
 
         // Function to return separated reasons string for the reasons array
@@ -2240,7 +2180,7 @@ var PCCViewer = window.PCCViewer || {};
         //Bind Keyboard shortcuts
         this.initKeyBindings = function() {
             //keyboard shortcuts for page navigation
-            $('body').on('keydown', null, 'pageup', function() {
+            $('body').on('keydown', null, 'pageup', function () {
                 if ($(viewer.viewerNodes.$pageList[0]).is(':visible')) {
                     if (!$(viewer.viewerNodes.$overlayFade[0]).is(':visible')) {
                         viewer.viewerControl.changeToPrevPage();
@@ -2250,7 +2190,7 @@ var PCCViewer = window.PCCViewer || {};
                 return true;
             });
 
-            $('body').on('keydown', null, 'home', function() {
+            $('body').on('keydown', null, 'home', function () {
                 if ($(viewer.viewerNodes.$pageList[0]).is(':visible')) {
                     if (!$(viewer.viewerNodes.$overlayFade[0]).is(':visible')) {
                         viewer.viewerControl.changeToFirstPage();
@@ -2259,7 +2199,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
                 return true;
             });
-            $('body').on('keydown', null, 'end', function() {
+            $('body').on('keydown', null, 'end', function () {
                 if ($(viewer.viewerNodes.$pageList[0]).is(':visible')) {
                     if (!$(viewer.viewerNodes.$overlayFade[0]).is(':visible')) {
                         viewer.viewerControl.changeToLastPage();
@@ -2268,7 +2208,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
                 return true;
             });
-            $('body').on('keydown', null, 'pagedown', function() {
+            $('body').on('keydown', null, 'pagedown', function () {
                 if ($(viewer.viewerNodes.$pageList[0]).is(':visible')) {
                     if (!$(viewer.viewerNodes.$overlayFade[0]).is(':visible')) {
                         viewer.viewerControl.changeToNextPage();
@@ -2276,7 +2216,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
                 return true;
             });
-            $('body').on('keydown', null, 'Ctrl+g', function() {
+            $('body').on('keydown', null, 'Ctrl+g', function () {
                 if ($(viewer.viewerNodes.$pageList[0]).is(':visible')) {
                     if (!$(viewer.viewerNodes.$overlayFade[0]).is(':visible')) {
                         viewer.viewerNodes.$pageSelect.focus().select();
@@ -2318,7 +2258,7 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             //arrow keys for page navigation
-            $('body').on('keydown', null, 'down up left right', function() {
+            $('body').on('keydown', null, 'down up left right', function () {
                 scrolling();
                 return true;
             });
@@ -2345,8 +2285,9 @@ var PCCViewer = window.PCCViewer || {};
                                 }
         
                                 nextTabButton = tabButtons[nextIndex];
+                                var parentLi = nextTabButton.parentElement;
         
-                                if (window.getComputedStyle(nextTabButton).display !== 'none' && !nextTabButton.hasAttribute('aria-hidden')) {
+                                if (window.getComputedStyle(parentLi).display !== 'none') {
                                     setTimeout(function() {
                                         nextTabButton.click();
                                         nextTabButton.focus();
@@ -2366,18 +2307,18 @@ var PCCViewer = window.PCCViewer || {};
 
                         // Deactivate all tabs and panels
                         $navTabs.find('.pcc-tab-item').attr('aria-selected', 'false').removeClass('pcc-active').attr('tabindex', '-1');
-                        $('.pcc-tab-pane').removeClass('pcc-active');
+                        $navTabs.find('.pcc-tab-pane').removeClass('pcc-active');
 
                         // Activate the focused tab and panel
                         $focusedTabButton.attr('aria-selected', 'true').addClass('pcc-active').attr('tabindex', '0');
                         var tabId = $focusedTabButton.attr('aria-controls');
-                        $(`#${tabId}`).addClass('pcc-active');
+                        $navTabs.find(`#${tabId}`).addClass('pcc-active');
                     });
                 });
             }
 
             //zoomin/zoomout keyboard shortcuts
-            $('body').on('keydown', null, '= +', function() {
+            $('body').on('keydown', null, '= +', function () {
                 if ($(viewer.viewerNodes.$pageList[0]).is(':visible')) {
                     if (!$(viewer.viewerNodes.$overlayFade[0]).is(':visible')) {
                         if (!viewer.viewerNodes.$zoomIn[0].className.match('pcc-disabled')) {
@@ -2389,7 +2330,7 @@ var PCCViewer = window.PCCViewer || {};
                 return true;
             });
 
-            $('body').on('keydown', null, '-', function() {
+            $('body').on('keydown', null, '-', function () {
                 if ($(viewer.viewerNodes.$pageList[0]).is(':visible')) {
                     if (!$(viewer.viewerNodes.$overlayFade[0]).is(':visible')) {
                         if (!viewer.viewerNodes.$zoomOut[0].className.match('pcc-disabled')) {
@@ -2402,7 +2343,7 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             //Delete selected marks, use delete button
-            $('body').on('keydown', null, 'del', function() {
+            $('body').on('keydown', null, 'del', function () {
                 if ($(viewer.viewerNodes.$pageList[0]).is(':visible')) {
                     if (!$(viewer.viewerNodes.$overlayFade[0]).is(':visible')) {
                         var selectedMarks = viewer.viewerControl.getSelectedMarks();
@@ -2419,7 +2360,7 @@ var PCCViewer = window.PCCViewer || {};
             //Note the Text esig and comments cancel button may not work if the focus
             //is still on the Text area of each of these dialogs. The user has to hit a tab key or mnually
             //change the focus with a mouse. Future work: These two dialogs need to be implemented differently for keyboard support
-            $('body').on('keydown', null, 'esc', function() {
+            $('body').on('keydown', null, 'esc', function () {
                 var $cancelBtn;
                 if ($(viewer.viewerNodes.$pageList[0]).is(':visible')) {
 
@@ -2463,7 +2404,7 @@ var PCCViewer = window.PCCViewer || {};
                 return true;
             });
             //used for navigation with arrow keys puropose
-            $('body').on('keydown', null, 'tab', function() {
+            $('body').on('keydown', null, 'tab', function () {
                 if (viewer.prevActiveElement === viewer.viewerNodes.$searchResults[0] || document.activeElement === viewer.$pageListContainerWrapper[0]) {
                     viewer.prevActiveElement = viewer.activeElement;
                     viewer.activeElement = document.activeElement;
@@ -2566,7 +2507,7 @@ var PCCViewer = window.PCCViewer || {};
         }; //end initKeyBindings
 
         // Launch E-Signature modal
-        this.launchESignModal = function launchESignModal(activeTab) {
+        this.launchESignModal = function launchESignModal (activeTab) {
             // Load the template, extending the language object with the signatures array
             viewer.viewerNodes.$esignOverlay.html(renderTemplate(options.template.esignOverlay, _.extend({
                 signatures: PCCViewer.Signatures.toArray(),
@@ -2580,7 +2521,7 @@ var PCCViewer = window.PCCViewer || {};
         };
 
         // Launch E-Signature modal in Freehand Mode
-        this.launchESignFreehand = function launchESignFreehand() {
+        this.launchESignFreehand = function launchESignFreehand () {
             viewer.viewerControl.deselectAllMarks();
             viewer.launchESignModal("freehand");
 
@@ -2592,7 +2533,7 @@ var PCCViewer = window.PCCViewer || {};
         };
 
         // Launch E-Signature modal in Text Mode
-        this.launchESignText = function launchESignText() {
+        this.launchESignText = function launchESignText () {
             viewer.viewerControl.deselectAllMarks();
             viewer.launchESignModal("text");
 
@@ -2601,7 +2542,7 @@ var PCCViewer = window.PCCViewer || {};
         };
 
         // Launch E-Signature modal in Manage Mode
-        this.launchESignManage = function launchESignManage() {
+        this.launchESignManage = function launchESignManage () {
             viewer.launchESignModal("manage");
 
             // check if there are any signatures
@@ -2614,13 +2555,13 @@ var PCCViewer = window.PCCViewer || {};
         };
 
         // Close the eSign modal and clean up
-        this.closeEsignModal = function closeEsignModal() {
+        this.closeEsignModal = function closeEsignModal () {
             viewer.viewerNodes.$esignOverlay.removeClass('pcc-open');
             viewer.viewerNodes.$overlayFade.hide();
         };
 
         // Set mouse tool, update current marks and show context menu
-        this.setMouseTool = function(opts) {
+        this.setMouseTool = function (opts) {
             opts = opts || {};
 
             if (!opts.thisButton) {
@@ -2631,8 +2572,7 @@ var PCCViewer = window.PCCViewer || {};
             var mouseToolName = opts.mouseToolName,
                 $thisButton = $(opts.thisButton),
                 forceLock = viewer.stickyToolsAlwaysOn,
-                isSameTool = this.uiMouseToolName === mouseToolName,
-                active = $thisButton.hasClass('pcc-active') && isSameTool,
+                active = $thisButton.hasClass('pcc-active'),
                 locked = $thisButton.hasClass('pcc-locked'),
                 canLock = !!this.stickyTools[getMouseToolType(mouseToolName)];
 
@@ -2656,11 +2596,6 @@ var PCCViewer = window.PCCViewer || {};
             } else {
                 // activate the non-active buttons
                 buttons.addClass('pcc-active');
-
-                // Redaction tool options share one label element; clear stale lock state when switching tools.
-                if (!isSameTool) {
-                    buttons.removeClass('pcc-locked');
-                }
             }
 
             // set the current mouse tool known to the UI
@@ -2731,7 +2666,7 @@ var PCCViewer = window.PCCViewer || {};
 
         // Notification messages that display errors and messages to user
         this.notifyTimer = 0;
-        this.notify = function(args) {
+        this.notify = function (args) {
             var el = viewer.$dom.find('[data-pcc-notify]');
 
             if (typeof args.type !== 'undefined') {
@@ -2744,14 +2679,14 @@ var PCCViewer = window.PCCViewer || {};
 
             if (!args.sticky) {
                 clearTimeout(viewer.notifyTimer);
-                viewer.notifyTimer = setTimeout(function() {
+                viewer.notifyTimer = setTimeout(function () {
                     el.removeClass('pcc-open');
                 }, 3000);
             }
         };
 
         // Toggle elements on or off using the data-pcc-toggle attribute
-        function toggleNodes(ev, tabParent) {
+        function toggleNodes (ev, tabParent) {
             var $elBeingToggled = {},
                 $elContextMenu = viewer.viewerNodes.$contextMenu,
                 $target = $(ev.target),
@@ -2825,21 +2760,6 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
-            if (toggleID === 'dialog-summarization') {
-                var isOpening = $elBeingToggled.hasClass('pcc-open');
-                if (isOpening) {
-                    viewer.ai.summarizeDocument();
-                }
-            }
-
-            if (toggleID === 'dialog-tag') {
-                var isOpening = $elBeingToggled.hasClass('pcc-open');
-                if (isOpening) {
-                    viewer.ai.classifyDocument();
-                    viewer.ai.tagDocument();
-                }
-            }
-
             if (toggleID === 'dropdown-search-fixed-box') {
                 ev.stopPropagation();
             }
@@ -2855,7 +2775,7 @@ var PCCViewer = window.PCCViewer || {};
                 toggleArgs = {},
                 openClass = 'pcc-open',
                 secondaryClass = 'pcc-open-as-secondary',
-                isOpen = function($el) {
+                isOpen = function($el){
                     return $el.hasClass(openClass);
                 },
                 isThumbnailsOpen = isOpen($thumbDialog),
@@ -2935,7 +2855,7 @@ var PCCViewer = window.PCCViewer || {};
             updateContextMenuDropdownsMaxHeight();
         }
 
-        function openDialog(opts) {
+        function openDialog (opts){
             var toggleID = opts.toggleID,
                 $dialog = opts.$dialog || viewer.$dom.find('[data-pcc-toggle-id="' + toggleID + '"]'),
                 $trigger = opts.$trigger || viewer.$dom.find('[data-pcc-toggle="' + toggleID + '"]'),
@@ -2963,7 +2883,7 @@ var PCCViewer = window.PCCViewer || {};
                 toggleArgs.secondaryDialog = 'open';
             }
 
-            if (hasOpenPanel) {
+            if(hasOpenPanel) {
                 if (toggleID !== 'dialog-pii-detection' && viewer.viewerNodes.$piiDetectionDialog.hasClass(openClass)) {
                     viewer.piiDetection.reset();
                 }
@@ -3012,7 +2932,7 @@ var PCCViewer = window.PCCViewer || {};
             var selectionChangeAndNoMarks = args.markSelectionChanged && !viewer.viewerControl.getSelectedMarks().length && viewer.viewerControl.getCurrentMouseTool() === 'AccusoftPanAndEdit',
                 editToolAndNoMarks = args.mouseToolType && (args.mouseToolType === PCCViewer.MouseTool.Type.EditMarks || args.mouseToolType === PCCViewer.MouseTool.Type.PanAndEdit) && !viewer.viewerControl.getSelectedMarks().length,
                 isToolWithoutContext = args.mouseToolType && (args.mouseToolType === PCCViewer.MouseTool.Type.TransparentRectangleRedaction || args.mouseToolType === PCCViewer.MouseTool.Type.SelectText ||
-                    args.mouseToolType === PCCViewer.MouseTool.Type.Magnifier || args.mouseToolType === PCCViewer.MouseTool.Type.SelectToZoom || viewer.viewerControl.getCurrentMouseTool() === "AccusoftPlaceDateSignature"),
+                        args.mouseToolType === PCCViewer.MouseTool.Type.Magnifier || args.mouseToolType === PCCViewer.MouseTool.Type.SelectToZoom || viewer.viewerControl.getCurrentMouseTool() === "AccusoftPlaceDateSignature"),
                 multipleMarksSelected = viewer.currentMarks.length > 1 ? true : false,
                 isImageStampTool = args.mouseToolType && args.mouseToolType.search(/ImageStampAnnotation|ImageStampRedaction$/g) !== -1,
                 isImageStampMenu = (mark && !!mark.getImage) || isImageStampTool,
@@ -3154,9 +3074,9 @@ var PCCViewer = window.PCCViewer || {};
                 // Check if any tabs are actually turned on at this point.
                 // Note that multiple selected marks will always mean to hide the tab area
                 if (!multipleMarksSelected) {
-                    _.forEach(menuOptions, function(val, key) {
+                    _.forEach(menuOptions, function(val, key){
                         //if (val === true && key.match(/show[^tT]+Tab/)){
-                        if (val === true && key.match(/show[a-zA-Z]+Tab/)) {
+                        if (val === true && key.match(/show[a-zA-Z]+Tab/)){
                             menuOptions.showTabArea = true;
                         }
                     });
@@ -3188,7 +3108,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
                 if (mark.getReasons && options.enableMultipleRedactionReasons) {
 
-                    if (mark.getReasons().length && !redactionReasonMenu.isPreloadedRedactionReason(mark.getReasons())) {
+                    if(mark.getReasons().length && !redactionReasonMenu.isPreloadedRedactionReason(mark.getReasons())){
                         menuOptions.enableCustomRedactionReason = true;
                         args.enableCustomRedactionReason = true;
                     }
@@ -3205,8 +3125,8 @@ var PCCViewer = window.PCCViewer || {};
                         }
                     }
 
-                    tmplRedactionReasons.reasons.forEach(function(reason) {
-                        if (reason.selectable) {
+                    tmplRedactionReasons.reasons.forEach(function (reason) {
+                        if(reason.selectable){
                             reason.checked = _reasons.indexOf(reason.reason) >= 0;
                         }
                     });
@@ -3237,7 +3157,7 @@ var PCCViewer = window.PCCViewer || {};
                         signature = mouseTool.getTemplateMark().getSignature();
 
                     if (signature) {
-                        viewer.eSignature.insertSignatureView(signature, dom, function() {
+                        viewer.eSignature.insertSignatureView(signature, dom, function () {
                             viewer.launchESignManage();
                         }, false);
                     }
@@ -3248,16 +3168,16 @@ var PCCViewer = window.PCCViewer || {};
 
                     $input.val(menuOptions.linkText);
 
-                    var submitLinkInput = function submitLinkInput(value) {
+                    var submitLinkInput = function submitLinkInput(value){
                         hyperlinkMenu.setHref(mark, value);
 
                         // update the menu in order to update the views
                         updateContextMenu(args);
                     };
 
-                    $input.on('change', function(ev) {
+                    $input.on('change', function(ev){
                         submitLinkInput($(this).val());
-                    }).on('keypress', function(ev) {
+                    }).on('keypress', function(ev){
                         if (ev.which === 13) { // Enter key to submit
                             submitLinkInput($(this).val());
                             $(this).blur();
@@ -3274,8 +3194,8 @@ var PCCViewer = window.PCCViewer || {};
                     $input.val(reasonsValue)
                         .on('input', function(ev) {
                             var val = $(this).val();
-                            if (viewer.redactionReasons.maxLengthFreeformRedactionReasons && val.length > viewer.redactionReasons.maxLengthFreeformRedactionReasons) {
-                                viewer.notify({ message: PCCViewer.Language.data.redactionReasonFreeforMaxLengthOver });
+                            if (viewer.redactionReasons.maxLengthFreeformRedactionReasons && val.length > viewer.redactionReasons.maxLengthFreeformRedactionReasons){
+                                viewer.notify({message: PCCViewer.Language.data.redactionReasonFreeforMaxLengthOver});
                                 $(this).val(val.substring(0, viewer.redactionReasons.maxLengthFreeformRedactionReasons));
                             }
                             if (options.enableMultipleRedactionReasons) {
@@ -3292,13 +3212,13 @@ var PCCViewer = window.PCCViewer || {};
                     $image.click(function() {
                         if (isImageStampMenu && !isImageStampTool) {
                             // this is a change for an existing mark, so switch the image
-                            viewer.imageStamp.selectMarkImage(function(newImage) {
+                            viewer.imageStamp.selectMarkImage(function(newImage){
                                 mark.setImage(newImage);
                                 updateContextMenu(args);
                             });
                         } else {
                             // this is a change for the image associated with a mouse tool
-                            viewer.imageStamp.selectToolImage(function(newImage) {
+                            viewer.imageStamp.selectToolImage(function(newImage){
                                 // update the menu in order to update the views
                                 updateContextMenu(args);
                             });
@@ -3313,14 +3233,14 @@ var PCCViewer = window.PCCViewer || {};
                 }
 
                 // Scroll Dropdown if needed
-                if (args.scrollTop) {
+                if(args.scrollTop){
                     $contextMenu.find('.pcc-dropdown').scrollTop(args.scrollTop);
                 }
             }
         }
 
         // Enable/disable features based on viewer configuration uiElements options
-        function setUIElements() {
+        function setUIElements () {
             var $firstTabItem = viewer.viewerNodes.$navTabs.eq(0).find('.pcc-tab-item'),
                 $firstTabPane = $firstTabItem.next('.pcc-tab-pane'),
                 $elDialogs = viewer.viewerNodes.$dialogs,
@@ -3355,10 +3275,8 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
-            // Activate the first tab item and show its tab pane.
-            $firstTabItem.addClass('pcc-active');
-            var firstTabPaneId = $firstTabItem.attr('aria-controls');
-            $(`#${firstTabPaneId}`).addClass('pcc-open');
+            // Activate the first tab item and show it's tab pane.
+            $firstTabItem.addClass('pcc-active').next('.pcc-tab-pane').addClass('pcc-open');
 
             // Offset the page list if the first tab has a vertical menu
             if ($firstTabPane.hasClass('pcc-tab-vertical')) {
@@ -3413,20 +3331,6 @@ var PCCViewer = window.PCCViewer || {};
 
                 if (restrictions.serverSearch !== 'disabled' && options.piiDetection && typeof options.piiDetection === 'object' && options.piiDetection.enablePiiDetection === true) {
                     viewer.$dom.find('[data-pcc-toggle="dialog-pii-detection"]').removeClass('pcc-hide');
-                }
-
-                if (options.documentSummarization && typeof options.documentSummarization === 'object' && options.documentSummarization.enableDocumentSummarization === true) {
-                    viewer.$dom.find('[data-pcc-toggle="dialog-summarization"]').removeClass('pcc-hide');
-                }
-
-                if (options.documentClassification && typeof options.documentClassification === 'object' &&
-                    options.documentClassification.enableDocumentClassification === true &&
-                    Array.isArray(options.documentClassification.classifications) === true && options.documentClassification.classifications.length >= 2) {
-                    viewer.$dom.find('[data-pcc-toggle="dialog-tag"]').removeClass('pcc-hide');
-                }
-
-                if (options.documentQuery && typeof options.documentQuery === 'object' && options.documentQuery.enableDocumentQuery === true) {
-                    viewer.$dom.find('[data-pcc-toggle="dialog-query"]').removeClass('pcc-hide');
                 }
             });
         }
@@ -3497,8 +3401,8 @@ var PCCViewer = window.PCCViewer || {};
         }
 
         // Set mouse tool default colors set in template
-        function setMouseToolDefaults() {
-            _.each(viewer.viewerNodes.$mouseTools, function(el) {
+        function setMouseToolDefaults () {
+            _.each(viewer.viewerNodes.$mouseTools,function (el) {
                 var color = $(el).data('pccDefaultFillColor'),
                     name = $(el).data('pccMouseTool'),
                     label = $(el).data('pccDefaultLabel'),
@@ -3527,27 +3431,27 @@ var PCCViewer = window.PCCViewer || {};
         }
 
         // Disable tabbing to context menu elements when it is hidden -- it is closed by default
-        function disableContextMenuTabbing() {
+        function disableContextMenuTabbing () {
             viewer.$dom.find('.pcc-context-menu').find('a, area, button, input, object, select').attr('tabindex', '-1');
         }
 
         // Polyfill for placeholder attribute
-        function placeholderPolyfill() {
-            if (!('placeholder' in document.createElement('input'))) {
-                _.each(viewer.$dom.find('[placeholder]'), function(el) {
+        function placeholderPolyfill () {
+            if (!('placeholder' in document.createElement('input'))){
+                _.each(viewer.$dom.find('[placeholder]'), function (el) {
                     var placeholderVal = $(el).attr('placeholder'),
                         placeholderClass = 'pcc-placeholder';
 
                     $(el)
                         .val(placeholderVal)
                         .addClass(placeholderClass)
-                        .on('focus', function(ev) {
+                        .on('focus', function (ev) {
                             var $el = $(ev.target);
                             if ($el.val() === placeholderVal) {
                                 $el.val('').removeClass(placeholderClass);
                             }
                         })
-                        .on('blur', function(ev) {
+                        .on('blur', function (ev) {
                             var $el = $(ev.target);
                             if (!$el.val().length) {
                                 $el.val(placeholderVal).addClass(placeholderClass);
@@ -3572,7 +3476,7 @@ var PCCViewer = window.PCCViewer || {};
         }
 
         // Convert RGB string to HEX string
-        function rgbToHex(rgb) {
+        function rgbToHex (rgb) {
             var rgbHexCode = '';
             // IE8 returns HEX, modern browsers return RGB.
             if (rgb.substring(0, 1) === '#') {
@@ -3588,29 +3492,29 @@ var PCCViewer = window.PCCViewer || {};
         }
 
         // Gets the type of any mouse tool
-        function getMouseToolType(name) {
+        function getMouseToolType(name){
             return PCCViewer.MouseTools.getMouseTool(name).getType();
         }
         // Gets the MouseTool type of the current mouse tool
-        function getCurrentMouseToolType() {
+        function getCurrentMouseToolType(){
             var currentToolName = viewer.viewerControl.getCurrentMouseTool();
             return PCCViewer.MouseTools.getMouseTool(currentToolName).getType();
         }
         // Gets the current mouse tool
-        function getCurrentMouseTool() {
+        function getCurrentMouseTool(){
             var currentToolName = viewer.viewerControl.getCurrentMouseTool();
             return PCCViewer.MouseTools.getMouseTool(currentToolName);
         }
 
         // Add class to offset pagelist when vertical dialogs are present
-        function toggleDialogOffset(args) {
+        function toggleDialogOffset (args) {
             args = args || {};
 
             var $openDialog = viewer.$dom.find('.pcc-dialog.pcc-open'),
                 $pageList = viewer.viewerNodes.$pageList,
                 isThumbnails = $openDialog.is(viewer.viewerNodes.$thumbnailDialog),
                 manualOffset,
-                removeManualOffset = function() {
+                removeManualOffset = function(){
                     // Remove the padding only if it is defined directly on the element. Do not
                     // bother removing it if we are applying a new manual offset, since it will
                     // just be overwritten in one operation.
@@ -3623,7 +3527,7 @@ var PCCViewer = window.PCCViewer || {};
                 // Offset based on the right side of the thumbnail list. This takes into account
                 // both primary and secondary offsets.
                 manualOffset = viewer.viewerNodes.$thumbnailDialog.get(0).getBoundingClientRect().right -
-                    viewer.$dom.get(0).getBoundingClientRect().left;
+                               viewer.$dom.get(0).getBoundingClientRect().left;
             }
 
             // Only apply offset if there is an open dialog
@@ -3652,13 +3556,13 @@ var PCCViewer = window.PCCViewer || {};
         // Page list event handlers
 
         // Estimated page count is available
-        function estimatedCountHandler(ev) {
+        function estimatedCountHandler (ev) {
             viewer.pageCount = ev.pageCount;
             viewer.viewerNodes.$pageCount.html(ev.pageCount);
         }
 
         // Page count is available
-        function pageCountHandler(ev) {
+        function pageCountHandler (ev) {
             viewer.pageCount = ev.pageCount;
             viewer.viewerNodes.$pageCount.html(ev.pageCount);
 
@@ -3673,7 +3577,7 @@ var PCCViewer = window.PCCViewer || {};
             // Initialize predefined search
             viewer.search.initialSearchHandler();
             // Register event to allow the search module to open the UI
-            viewer.search.on('open', function() {
+            viewer.search.on('open', function(){
                 openDialog({ toggleID: 'dialog-search' });
             });
         }
@@ -3682,7 +3586,7 @@ var PCCViewer = window.PCCViewer || {};
         // Error Codes:
         // 504 - Document Not Found or Server Error
         // 403 - Session Expired
-        function pageLoadFailedHandler(ev) {
+        function pageLoadFailedHandler (ev) {
             var message = PCCViewer.Language.data.documentNotFound;
             if (ev.statusCode === 504 || ev.statusCode === 403) {
                 if (ev.statusCode === 403) {
@@ -3694,12 +3598,12 @@ var PCCViewer = window.PCCViewer || {};
         }
 
         // Page has changed
-        function pageChangedHandler(ev) {
+        function pageChangedHandler (ev) {
             viewer.viewerNodes.$pageSelect.val(ev.pageNumber);
         }
 
         // Once a mark has been created
-        function markCreatedHandler(ev) {
+        function markCreatedHandler (ev) {
             // Leave text tool selected so you can enter text, otherwise select edit annotation tool.
             if (ev.mark.getType() !== PCCViewer.Mark.Type.TextAnnotation &&
                 ev.mark.getType() !== PCCViewer.Mark.Type.TextRedaction &&
@@ -3719,7 +3623,7 @@ var PCCViewer = window.PCCViewer || {};
         }
 
         // Mark has changed
-        function markChangedHandler(ev) {
+        function markChangedHandler (ev) {
             var markType = ev.mark.getType();
 
             // Once text is entered into the text tool and click outside, select edit annotation tool.
@@ -3735,8 +3639,8 @@ var PCCViewer = window.PCCViewer || {};
         }
 
         // Mark selection has changed
-        function markSelectionChangedHandler() {
-            if (getCurrentMouseTool().getName() !== 'AccusoftPanAndEdit') {
+        function markSelectionChangedHandler () {
+            if (getCurrentMouseTool().getName() !== 'AccusoftPanAndEdit'){
                 return;
             }
             var marks = viewer.viewerControl.getSelectedMarks();
@@ -3753,7 +3657,7 @@ var PCCViewer = window.PCCViewer || {};
         }
 
         // Document has text promise is resolved
-        function documentHasTextResolved(hasText) {
+        function documentHasTextResolved (hasText) {
             if (hasText) {
                 viewer.documentHasText = true;
 
@@ -3769,12 +3673,12 @@ var PCCViewer = window.PCCViewer || {};
         }
 
         // Page text is ready
-        function pageTextReadyHandler(ev) {
+        function pageTextReadyHandler (ev) {
             viewer.search.pageTextReadyHandler(ev);
         }
 
         // Scaling of page(s) in the viewer has changed
-        function scaleChangedHandler(ev) {
+        function scaleChangedHandler (ev) {
             var disabledClass = 'pcc-disabled';
 
             viewer.viewerNodes.$zoomLevel.html(Math.round(ev.scaleFactor * 100) + '%');
@@ -3791,7 +3695,7 @@ var PCCViewer = window.PCCViewer || {};
             // If the viewer is at or beyond the maximum scale, and cannot be zoomed in any further, disable the Zoom In Tool
             if (viewer.viewerControl.getAtMaxScale()) {
                 viewer.viewerNodes.$zoomIn.addClass(disabledClass);
-                // Otherwise show the Zoom In Tool
+            // Otherwise show the Zoom In Tool
             } else {
                 if (viewer.viewerNodes.$zoomIn.hasClass(disabledClass)) {
                     viewer.viewerNodes.$zoomIn.removeClass(disabledClass);
@@ -3799,9 +3703,9 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             // If the viewer is at or beyond the minimum scale, and cannot be zoomed out any further, disable the Zoom Out Tool
-            if (viewer.viewerControl.getAtMinScale()) {
+            if (viewer.viewerControl.getAtMinScale()){
                 viewer.viewerNodes.$zoomOut.addClass(disabledClass);
-                // Otherwise show the Zoom Out Tool
+            // Otherwise show the Zoom Out Tool
             } else {
                 if (viewer.viewerNodes.$zoomOut.hasClass(disabledClass)) {
                     viewer.viewerNodes.$zoomOut.removeClass(disabledClass);
@@ -3810,7 +3714,7 @@ var PCCViewer = window.PCCViewer || {};
         }
 
         // Viewer Ready event handler
-        function viewerReadyHandler() {
+        function viewerReadyHandler () {
             viewer.viewerReady = true;
             // pre-load signature fonts
             fontLoader.preLoad();
@@ -3827,7 +3731,7 @@ var PCCViewer = window.PCCViewer || {};
 
             handleComparisonTools();
 
-            viewer.$events.on('pagelistresize', function(ev, params) {
+            viewer.$events.on('pagelistresize', function(ev, params){
                 commentUIManager.updatePanel(params);
             });
             viewer.viewerNodes.$zoomLevel.html(Math.round(viewer.viewerControl.getScaleFactor() * 100) + '%');
@@ -3851,9 +3755,9 @@ var PCCViewer = window.PCCViewer || {};
             viewer.viewerNodes.$panTool.click();
 
             if (viewer.viewerControl.redactionViewMode === PCCViewer.RedactionViewMode.Draft) {
-                viewer.viewerNodes.$redactionViewMode.addClass('pcc-active');
+              viewer.viewerNodes.$redactionViewMode.addClass('pcc-active');
             } else {
-                viewer.viewerNodes.$redactionViewMode.removeClass('pcc-active');
+              viewer.viewerNodes.$redactionViewMode.removeClass('pcc-active');
             }
 
             viewer.imageStamp.refresh();
@@ -3874,21 +3778,21 @@ var PCCViewer = window.PCCViewer || {};
         // MS Edge does not repaint certain elements properly whenever they change so
         // we are simply forcing the browser to repaint the element by hiding and showing it.
         // TODO: Follow up to see if in a future release of MS Edge we no longer need this code
-        function edgeForceRepaintWorkaround(elem) {
+        function edgeForceRepaintWorkaround(elem){
             var isEdge = !!navigator.userAgent.match('Edge');
             if (!isEdge) {
                 return;
             }
             var originalDisplay = $(elem).get(0).style.display;
-            setTimeout(function() {
-                $(elem).hide().show(0, function() {
+            setTimeout(function(){
+                $(elem).hide().show(0, function(){
                     $(elem).css('display', originalDisplay);
                 });
             }, 5);
         }
 
         // Create the page list
-        this.createPageList = function() {
+        this.createPageList = function () {
             try {
                 // Use the whole options object here.
                 this.viewerControl = new PCCViewer.ViewerControl(viewer.viewerNodes.$pageList.get(0), viewer.viewerControlOptions);
@@ -3952,12 +3856,12 @@ var PCCViewer = window.PCCViewer || {};
                 viewer: viewer.$dom,
                 dom: viewer.viewerNodes.$thumbnailList
             });
-            viewer.thumbnailManager.on('resize', function(ev, params) {
+            viewer.thumbnailManager.on('resize', function(ev, params){
                 // Perform an offset on the PageList and fit if necessary
                 toggleDialogOffset();
                 if (viewer.isFitTypeActive === true) { viewer.viewerControl.fitContent(viewer.currentFitType); }
             });
-            viewer.thumbnailManager.on('reset', function(ev) {
+            viewer.thumbnailManager.on('reset', function(ev){
                 // remove the manual offset on the PageList and fit if necessary
                 viewer.viewerNodes.$pageList.css('padding-left', '');
                 if (viewer.isFitTypeActive === true) { viewer.viewerControl.fitContent(viewer.currentFitType); }
@@ -3968,7 +3872,7 @@ var PCCViewer = window.PCCViewer || {};
         };
 
         // Destroy the viewer control
-        this.destroy = function() {
+        this.destroy = function () {
             if (viewer.viewerControl) {
                 viewer.viewerControl.destroy();
                 delete viewer.viewerControl;
@@ -3988,7 +3892,7 @@ var PCCViewer = window.PCCViewer || {};
 
         //Generic object for making result views for search and revisions
         var genericView = {
-            elem: function(type, opts) {
+            elem: function(type, opts){
                 opts = opts || {};
                 var elem = document.createElement(type || 'div');
                 if (typeof opts.className === 'string') {
@@ -3999,11 +3903,11 @@ var PCCViewer = window.PCCViewer || {};
                 }
                 if (typeof opts.text !== 'undefined') {
                     // Sanitize the text being inserted into the DOM
-                    elem.appendChild(document.createTextNode(opts.text.toString()));
+                    elem.appendChild( document.createTextNode(opts.text.toString()) );
                 }
                 return elem;
             },
-            pageNumber: function(number) {
+            pageNumber: function(number){
                 return genericView.elem('div', { className: 'pcc-col-2 pcc-center', text: number });
             }
         };
@@ -4017,46 +3921,46 @@ var PCCViewer = window.PCCViewer || {};
             // The PII detection request object returned from the API.
             var piiDetectionRequest = {},
 
-                // Current number of PII entities
-                piiEntitiesCount = 0,
+            // Current number of PII entities
+            piiEntitiesCount = 0,
 
-                // An array containing the current PII entities
-                piiEntities = [],
-                allPiiEntities = [],
-                runCount = 0,
+            // An array containing the current PII entities
+            piiEntities = [],
+            allPiiEntities = [],
+            runCount = 0,
 
-                // Current active entity ID
-                activePiiEntityId,
+            // Current active entity ID
+            activePiiEntityId,
 
-                // Number of PII entities to show at a time,
-                piiEntitiesPageLength = options.piiDetection && typeof options.piiDetection === 'object' && !isNaN(options.piiDetection.piiEntitiesPageLength) && options.piiDetection.piiEntitiesPageLength > 0 ? options.piiDetection.piiEntitiesPageLength : 250,
+            // Number of PII entities to show at a time,
+            piiEntitiesPageLength = options.piiDetection && typeof options.piiDetection === 'object' && !isNaN(options.piiDetection.piiEntitiesPageLength) && options.piiDetection.piiEntitiesPageLength > 0 ? options.piiDetection.piiEntitiesPageLength : 250,
 
-                // Toggleable elements
-                $piiDetectionContainerToggles = viewer.$dom.find('[data-pcc-pii-entities-container-toggle]'),
-                $piiDetectionContainers = viewer.$dom.find('[data-pcc-pii-entities-container]'),
-                $piiFilterEntitiesContainer = viewer.viewerNodes.$piiFilterEntities.find('.pcc-section-content'),
-                $piiFilterRedactButton = viewer.viewerNodes.$piiFilterRedact,
-                $piiFilterSelectAllContainer = viewer.viewerNodes.$piiFilterSelectAllContainer,
-                $piiFilterSelectAllCheckbox = viewer.viewerNodes.$piiFilterSelectAllCheckbox,
-                $piiFilterSelectAllLabel = viewer.viewerNodes.$piiFilterSelectAllLabel,
+            // Toggleable elements
+            $piiDetectionContainerToggles = viewer.$dom.find('[data-pcc-pii-entities-container-toggle]'),
+            $piiDetectionContainers = viewer.$dom.find('[data-pcc-pii-entities-container]'),
+            $piiFilterEntitiesContainer = viewer.viewerNodes.$piiFilterEntities.find('.pcc-section-content'),
+            $piiFilterRedactButton = viewer.viewerNodes.$piiFilterRedact,
+            $piiFilterSelectAllContainer = viewer.viewerNodes.$piiFilterSelectAllContainer,
+            $piiFilterSelectAllCheckbox = viewer.viewerNodes.$piiFilterSelectAllCheckbox,
+            $piiFilterSelectAllLabel = viewer.viewerNodes.$piiFilterSelectAllLabel,
 
-                // A function that is executed whenever the filter UI is dismissed.
-                // This is used to apply the selected filters.
-                onPiiFilterDismissFunction,
+            // A function that is executed whenever the filter UI is dismissed.
+            // This is used to apply the selected filters.
+            onPiiFilterDismissFunction,
 
-                allPiiTypes = {},
-                selectedPiiTypes = {},
+            allPiiTypes = {},
+            selectedPiiTypes = {},
 
-                // Fragment containing all sorted PII entities, only a subset of these entities are ever added to the DOM
-                allPiiEntitiesFragment = document.createDocumentFragment(),
-                currentPiiEntityPageStartIndex = 0,
-                activePiiEntityPageStartIndex,
-                piiEntityIndexMap = {},
-                selectedPiiEntities = [];
+            // Fragment containing all sorted PII entities, only a subset of these entities are ever added to the DOM
+            allPiiEntitiesFragment = document.createDocumentFragment(),
+            currentPiiEntityPageStartIndex = 0,
+            activePiiEntityPageStartIndex,
+            piiEntityIndexMap = {},
+            selectedPiiEntities = [];
 
             var piiEntityView = _.clone(genericView);
 
-            var getReadableType = function(piiEntityType) {
+            var getReadableType = function (piiEntityType) {
                 var lowercaseWords = [];
                 var words = piiEntityType.split(/(?=[A-Z])/);
                 words.forEach(word => {
@@ -4066,25 +3970,25 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // This method creates and returns DOM for the PII entity
-            piiEntityView.piiEntityBuild = function(piiEntity) {
+            piiEntityView.piiEntityBuild = function(piiEntity){
                 var piiEntityItem,
                     piiEntityId = piiEntity.id,
                     piiEntityItem = piiEntityView.elem('div', { className: 'pcc-row' });
 
                 piiEntityItem.setAttribute('data-pcc-pii-entity-id', piiEntityId);
                 piiEntityItem.appendChild(piiEntityView.pageNumber(piiEntity.getPageNumber()));
-                piiEntityItem.appendChild(piiEntityView.elem('div', { className: 'pcc-col-4 pcc-confined-text', text: piiEntity.getText(), title: piiEntity.getText() }));
-                piiEntityItem.appendChild(piiEntityView.elem('div', { className: 'pcc-col-4', text: getReadableType(piiEntity.getType()) }));
-                piiEntityItem.appendChild(piiEntityView.elem('div', { className: 'pcc-col-2', text: `${piiEntity.getScore() * 100}%` }));
+                piiEntityItem.appendChild(piiEntityView.elem('div', {className: 'pcc-col-4 pcc-confined-text', text: piiEntity.getText(), title: piiEntity.getText()}));
+                piiEntityItem.appendChild(piiEntityView.elem('div', {className: 'pcc-col-4', text: getReadableType(piiEntity.getType())}));
+                piiEntityItem.appendChild(piiEntityView.elem('div', {className: 'pcc-col-2', text: `${piiEntity.getScore() * 100}%`}));
 
                 // Add sorting parameters to the DOM element
                 piiEntityItem.setAttribute('data-pcc-page-number', piiEntity.getPageNumber());
                 piiEntityItem.setAttribute('data-pcc-sort-index', piiEntity.getStartIndexInPage());
 
-                $(piiEntityItem).on('click', function(ev) {
+                $(piiEntityItem).on('click', function (ev) {
                     var $this = $(this);
 
-                    var selectPiiEntity = function() {
+                    var selectPiiEntity = function () {
                         selectedPiiEntities.push(piiEntity);
                         viewer.viewerControl.setSelectedPiiEntity(piiEntity, true);
                         $this.addClass('pcc-active');
@@ -4125,7 +4029,7 @@ var PCCViewer = window.PCCViewer || {};
                             // switch the active PII detection button to off state
                             .find('[data-pcc-pii-entities-container-toggle="entities"]').removeClass('pcc-active');
                     }
-
+        
                     // update PII entity UI to reflect selection
                     updatePiiEntityPrevNextButtons();
                     updatePiiEntityCountText();
@@ -4142,7 +4046,7 @@ var PCCViewer = window.PCCViewer || {};
                 return piiEntityItem;
             };
 
-            $piiDetectionContainerToggles.on('click', function(ev) {
+            $piiDetectionContainerToggles.on('click', function(ev){
                 var $this = $(this),
                     which = $this.data('pcc-pii-entities-container-toggle'),
                     wasActive = $this.hasClass('pcc-active'),
@@ -4198,29 +4102,29 @@ var PCCViewer = window.PCCViewer || {};
                 }
             });
 
-            viewer.viewerNodes.$piiEntityPrev.on('click', function(ev) {
+            viewer.viewerNodes.$piiEntityPrev.on('click', function (ev) {
                 ev.preventDefault();
                 previousPiiEntityClickHandler(this);
 
             });
-            viewer.viewerNodes.$piiEntityNext.on('click', function(ev) {
+            viewer.viewerNodes.$piiEntityNext.on('click', function (ev) {
                 ev.preventDefault();
                 nextPiiEntityClickHandler(this);
             });
 
-            viewer.viewerNodes.$piiEntityPrevPage.on('click', function(ev) {
+            viewer.viewerNodes.$piiEntityPrevPage.on('click', function (ev) {
                 ev.preventDefault();
                 showPiiEntitySubset(currentPiiEntityPageStartIndex - piiEntitiesPageLength);
             });
 
-            viewer.viewerNodes.$piiEntityNextPage.on('click', function(ev) {
+            viewer.viewerNodes.$piiEntityNextPage.on('click', function (ev) {
                 ev.preventDefault();
                 showPiiEntitySubset(currentPiiEntityPageStartIndex + piiEntitiesPageLength);
             });
 
             // Selecting the Next button in the PII entity list causes the following entities to be selected and
             // displayed.
-            var nextPiiEntityClickHandler = function(nextPiiEntityBtn) {
+            var nextPiiEntityClickHandler = function (nextPiiEntityBtn) {
                 if (piiEntitiesCount === 0 || $(nextPiiEntityBtn).attr('disabled')) {
                     return false;
                 }
@@ -4255,7 +4159,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // Selecting the Previous button in the PII entity list causes the previous entity to be selected and
             // displayed.
-            var previousPiiEntityClickHandler = function(previousPiiEntityBtn) {
+            var previousPiiEntityClickHandler = function (previousPiiEntityBtn) {
                 if (piiEntitiesCount === 0 || $(previousPiiEntityBtn).attr('disabled')) {
                     return false;
                 }
@@ -4289,12 +4193,12 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
-            var getActivePiiEntityIndex = function() {
+            var getActivePiiEntityIndex = function () {
                 return piiEntityIndexMap[activePiiEntityId];
             };
 
             // This function manages the state of the Previous and Next navigation buttons in the PII entity list.
-            var updatePiiEntityPrevNextButtons = function() {
+            var updatePiiEntityPrevNextButtons = function () {
                 var activePiiEntityIndex = getActivePiiEntityIndex();
                 var hasNextResult = activePiiEntityIndex < piiEntitiesCount - 1;
                 var hasPrevResult = activePiiEntityIndex > 0;
@@ -4326,7 +4230,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // This method re-creates entities list to display PII entities from startIndex
             // to the last available entity, but no more than piiEntitiesPageLength entities.
-            var showPiiEntitySubset = function(startIndex) {
+            var showPiiEntitySubset = function (startIndex) {
                 var indexChanged = (startIndex !== currentPiiEntityPageStartIndex);
                 currentPiiEntityPageStartIndex = startIndex;
 
@@ -4382,7 +4286,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // As PII entities are returned to the viewer, this function can update the progress bar as well as
             // display a text message reflecting the status of the PII detection.
-            var updateStatusUi = function(msg, showLoader, barWidth) {
+            var updateStatusUi = function (msg, showLoader, barWidth) {
                 if (msg.length) {
                     viewer.viewerNodes.$piiEntityCount.html(msg);
                     parseIcons(viewer.viewerNodes.$piiEntityCount);
@@ -4410,7 +4314,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // Sorts an array of live DOM elements (already in the DOM)
             // It will also work with a jQuery-wrapped array
-            var sortDOM = (function() {
+            var sortDOM = (function(){
                 var sort = [].sort;
 
                 return function(elems, comparator) {
@@ -4473,7 +4377,7 @@ var PCCViewer = window.PCCViewer || {};
                     var aData = getDataFromAttributes($(a)),
                         bData = getDataFromAttributes($(b));
                     return (aData.pccPageNumber !== bData.pccPageNumber) ? aData.pccPageNumber - bData.pccPageNumber :
-                        (aData.pccSortIndex !== bData.pccSortIndex) ? aData.pccSortIndex - bData.pccSortIndex : 0;
+                           (aData.pccSortIndex !== bData.pccSortIndex) ? aData.pccSortIndex - bData.pccSortIndex : 0;
                 });
 
                 $(allResultsChildren).each(function(i, el) {
@@ -4496,7 +4400,7 @@ var PCCViewer = window.PCCViewer || {};
                 showPiiEntitySubset(activePiiEntityPageStartIndex || 0);
             }
 
-            var detectPii = function() {
+            var detectPii = function () {
                 runCount++;
                 viewer.$dom.find('.pcc-row-pii-entities-status').removeClass('pcc-done');
 
@@ -4506,7 +4410,7 @@ var PCCViewer = window.PCCViewer || {};
                     viewer.viewerNodes.$piiEntityCount.html(PCCViewer.Language.data.piiEntitiesNone);
                     return;
                 }
-                
+
                 // clear PII entities DOM
                 reset(true);
 
@@ -4524,7 +4428,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Detaches all event associated with detecting PII.
-            var unhookPiiDetectionEvents = function() {
+            var unhookPiiDetectionEvents = function () {
                 if (piiDetectionRequest instanceof PCCViewer.PiiDetectionRequest) {
                     piiDetectionRequest.off('PartialPiiAvailable', partialPiiHandler);
                     piiDetectionRequest.off('PiiDetectionCompleted', piiDetectionCompletedHandler);
@@ -4535,7 +4439,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // Triggered when a partial set of PII entities is available. This triggers one final time before the
             // PII detection completes.
-            var partialPiiHandler = function(ev) {
+            var partialPiiHandler = function (ev) {
                 addPiiEntities(ev.partialPiiEntities);
 
                 var lastPiiEntity = ev.partialPiiEntities.length > 0 ? ev.partialPiiEntities[ev.partialPiiEntities.length - 1] : null;
@@ -4549,7 +4453,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Triggered when PII detection has completed due to failure, abort, or when the full set of PII entities is available.
-            var piiDetectionCompletedHandler = function(ev) {
+            var piiDetectionCompletedHandler = function (ev) {
                 unhookPiiDetectionEvents();
 
                 var piiEntitiesVerbiage = (piiEntitiesCount === 0) ? PCCViewer.Language.data.nothingFound : '',
@@ -4586,7 +4490,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Triggered when the PII detection has completed due to failure.
-            var piiDetectionFailedHandler = function(ev) {
+            var piiDetectionFailedHandler = function (ev) {
                 var msg = PCCViewer.Language.data.piiDetectionError + piiDetectionRequest.getErrorMessage();
 
                 unhookPiiDetectionEvents();
@@ -4598,7 +4502,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Triggered when the PII detection has completed because the full set of PII entities is available.
-            var piiAvailableHandler = function() {
+            var piiAvailableHandler = function () {
                 updateStatusUi('', false, 100);
             };
 
@@ -5114,13 +5018,13 @@ var PCCViewer = window.PCCViewer || {};
                 });
             };
 
-            viewer.$dom.find('.pcc-pii-detection-header').on('click', '[data-pcc-pii-detection=msg]', function() {
+            viewer.$dom.find('.pcc-pii-detection-header').on('click', '[data-pcc-pii-detection=msg]', function () {
                 viewer.notify({
                     message: this.getAttribute('data-msg')
                 });
             });
 
-            viewer.viewerNodes.$piiRedact.on('click', function(ev) {
+            viewer.viewerNodes.$piiRedact.on('click', function (ev) {
                 for (var i = 0; i < selectedPiiEntities.length; i++) {
                     viewer.viewerControl.addMarkFromTextSelection(selectedPiiEntities[i], PCCViewer.Mark.Type.TextSelectionRedaction);
                 }
@@ -5179,294 +5083,6 @@ var PCCViewer = window.PCCViewer || {};
             };
         })();
 
-        this.ai = (function() {
-            var summary = '';
-            var queryResponse = '';
-            var documentTagged = false;
-            var documentClassified = false;
-
-            var summarizeDocument = function() {
-                if (summary.length > 0) {
-                    return;
-                }
-                if (options.documentSummarization && typeof options.documentSummarization === 'object' && typeof options.documentSummarization.defaultDocumentSummarization === 'string') {
-                    summary = options.documentSummarization.defaultDocumentSummarization;
-                    displaySummary();
-                    return;
-                }
-                requestDocumentSummary();
-            };
-
-            var requestDocumentSummary = function() {
-                viewer.viewerNodes.$summary.text(PCCViewer.Language.data.summarizingDocument);
-                var documentSummarizationRequest = viewer.viewerControl.summarizeDocument();
-                documentSummarizationRequest.on(PCCViewer.EventType.DocumentSummarizationCompleted, function(ev) {
-                    if (documentSummarizationRequest.getErrorMessage()) {
-                        summary = '';
-                        viewer.viewerNodes.$regenerateSummary.removeClass('pcc-hide');
-                        viewer.viewerNodes.$summary.text(PCCViewer.Language.data.summarizationError);
-                    } else {
-                        summary = ev.documentSummarization;
-                        displaySummary();
-                    }
-                });
-            };
-
-            var displaySummary = function() {
-                viewer.viewerNodes.$copySummary.removeClass('pcc-hide');
-                viewer.viewerNodes.$regenerateSummary.removeClass('pcc-hide');
-                viewer.viewerNodes.$summary.text(summary);
-            };
-
-            viewer.viewerNodes.$copySummary.on('click', function() {
-                if (summary) {
-                    navigator.clipboard.writeText(summary).then(function() {
-                        viewer.notify({
-                            message: PCCViewer.Language.data.summaryCopied,
-                            type: 'success'
-                        });
-                    }, function() {
-                        viewer.notify({
-                            message: PCCViewer.Language.data.summaryCopyError,
-                            type: 'failure'
-                        });
-                    });
-                }
-            });
-
-            viewer.viewerNodes.$regenerateSummary.on('click', function() {
-                requestDocumentSummary();
-            });
-
-            viewer.viewerNodes.$query.on('keypress', function(ev) {
-                if (ev.which === 13) {
-                    queryDocument();
-                    ev.preventDefault();
-                }
-            });
-
-            var queryDocument = function() {
-                var query = viewer.viewerNodes.$query.val();
-                if (query === '') {
-                    return;
-                }
-                viewer.viewerNodes.$copyQueryResponse.addClass('pcc-hide');
-                viewer.viewerNodes.$queryResponse.text(PCCViewer.Language.data.queryingDocument);
-                var documentQueryRequest = viewer.viewerControl.queryDocument(query);
-                documentQueryRequest.on(PCCViewer.EventType.DocumentQueryCompleted, function(ev) {
-                    if (documentQueryRequest.getErrorMessage()) {
-                        queryResponse = '';
-                        if (documentQueryRequest.getErrorCode() === 'DocumentDoesNotContainAnswer') {
-                            viewer.viewerNodes.$queryResponse.text(PCCViewer.Language.data.queryNoAnswer);
-                        } else {
-                            viewer.viewerNodes.$queryResponse.text(PCCViewer.Language.data.queryError);
-                        }
-                    } else {
-                        queryResponse = ev.response;
-                        viewer.viewerNodes.$copyQueryResponse.removeClass('pcc-hide');
-                        viewer.viewerNodes.$queryResponse.text(queryResponse);
-                    }
-                });
-            };
-
-            viewer.viewerNodes.$copyQueryResponse.on('click', function() {
-                if (queryResponse) {
-                    navigator.clipboard.writeText(queryResponse).then(function() {
-                        viewer.notify({
-                            message: PCCViewer.Language.data.queryResponseCopied,
-                            type: 'success'
-                        });
-                    }, function() {
-                        viewer.notify({
-                            message: PCCViewer.Language.data.queryResponseCopyError,
-                            type: 'failure'
-                        });
-                    });
-                }
-            });
-
-            var classifyDocument = function() {
-                if (documentClassified) {
-                    return;
-                }
-                documentClassified = true;
-
-                var addClassificationOther = function(i) {
-                    var classificationEl = document.createElement('div');
-                    classificationEl.style = 'margin-bottom: 4px;';
-                    classificationEl.setAttribute('data-pcc-classification', i);
-                    classificationEl.onclick = function() {
-                        $(classificationEl).addClass('pcc-hide');
-                        addClassification(i);
-                        if (viewer.viewerNodes.$classificationOther.find('div.pcc-hide').length === classifications.length) {
-                            $(viewer.viewerNodes.$classificationOtherTitle).addClass('pcc-hide');
-                        }
-                    };
-                    var classificationCheckbox = document.createElement('div');
-                    classificationCheckbox.classList.add('pcc-checkbox');
-                    classificationCheckbox.setAttribute('data-pcc-checkbox', '');
-                    classificationEl.append(classificationCheckbox);
-                    var classificationCheck = document.createElement('span');
-                    classificationCheck.classList.add('pcc-icon');
-                    classificationCheck.classList.add('pcc-icon-check');
-                    classificationCheckbox.append(classificationCheck);
-                    classificationEl.append(document.createTextNode(` ${classifications[i]}`));
-                    parseIcons($(classificationEl));
-                    viewer.viewerNodes.$classificationOther.append(classificationEl);
-                };
-
-                var addClassification = function(i) {
-                    var text = classifications[i];
-                    if (viewer.viewerNodes.$classifications.children().length === 0) {
-                        viewer.viewerNodes.$classifications.empty();
-                    }
-                    var classificationEl = document.createElement('div');
-                    classificationEl.style = 'margin-bottom: 4px;';
-                    classificationEl.setAttribute('data-pcc-classification', i);
-                    classificationEl.onclick = function() {
-                        $(classificationEl).remove();
-                        var classificationId = classificationEl.getAttribute('data-pcc-classification');
-                        viewer.viewerNodes.$classificationOther.find(`[data-pcc-classification="${classificationId}"]`).removeClass('pcc-hide');
-                        if (viewer.viewerNodes.$classifications.children().length === 0) {
-                            viewer.viewerNodes.$classifications.text(PCCViewer.Language.data.noneSelected);
-                        }
-                        $(viewer.viewerNodes.$classificationOtherTitle).removeClass('pcc-hide');
-                    };
-                    var classificationCheckbox = document.createElement('div');
-                    classificationCheckbox.classList.add('pcc-checkbox');
-                    classificationCheckbox.classList.add('pcc-checked');
-                    classificationCheckbox.setAttribute('data-pcc-checkbox', '');
-                    classificationEl.append(classificationCheckbox);
-                    var classificationCheck = document.createElement('span');
-                    classificationCheck.classList.add('pcc-icon');
-                    classificationCheck.classList.add('pcc-icon-check');
-                    classificationCheckbox.append(classificationCheck);
-                    classificationEl.append(document.createTextNode(` ${text}`));
-                    parseIcons($(classificationEl));
-                    viewer.viewerNodes.$classifications.append(classificationEl);
-                };
-
-                var classifications = options.documentClassification.classifications;
-                for (var i = 0; i < classifications.length; i++) {
-                    addClassificationOther(i);
-                }
-
-                var documentClassificationRequest = viewer.viewerControl.classifyDocument(classifications);
-                documentClassificationRequest.on(PCCViewer.EventType.DocumentClassificationCompleted, function(ev) {
-                    if (documentClassificationRequest.getErrorMessage() || ev.documentClassification === '') {
-                        if (documentClassificationRequest.getErrorCode() === 'DocumentDoesNotContainAnswer') {
-                            viewer.viewerNodes.$classifications.text(PCCViewer.Language.data.classificationNoMatch);
-                        } else {
-                            viewer.viewerNodes.$classifications.text(PCCViewer.Language.data.classificationError);
-                        }
-                    } else {
-                        var classification = ev.documentClassification;
-                        viewer.viewerNodes.$classifications.empty();
-                        var i = 0;
-                        for (i = 0; i < classifications.length; i++) {
-                            if (classifications[i].toLowerCase() === classification.toLowerCase()) {
-                                break;
-                            }
-                        }
-                        viewer.viewerNodes.$classificationOther.find(`[data-pcc-classification="${i}"]`).addClass('pcc-hide');
-                        addClassification(i);
-                    }
-                });
-            };
-
-            var tagDocument = function() {
-                if (documentTagged) {
-                    return;
-                }
-
-                var tags;
-
-                var addTagOther = function(i, hide) {
-                    var tagEl = document.createElement('div');
-                    tagEl.style = 'margin-bottom: 4px;';
-                    tagEl.setAttribute('data-pcc-tag', i);
-                    if (hide) {
-                        $(tagEl).addClass('pcc-hide');
-                    }
-                    tagEl.onclick = function() {
-                        $(tagEl).addClass('pcc-hide');
-                        addTag(i);
-                        if (viewer.viewerNodes.$tagsOther.find('div.pcc-hide').length === tags.length) {
-                            $(viewer.viewerNodes.$tagsOtherTitle).addClass('pcc-hide');
-                        }
-                    };
-                    var tagCheckbox = document.createElement('div');
-                    tagCheckbox.classList.add('pcc-checkbox');
-                    tagCheckbox.setAttribute('data-pcc-checkbox', '');
-                    tagEl.append(tagCheckbox);
-                    var tagCheck = document.createElement('span');
-                    tagCheck.classList.add('pcc-icon');
-                    tagCheck.classList.add('pcc-icon-check');
-                    tagCheckbox.append(tagCheck);
-                    tagEl.append(document.createTextNode(` ${tags[i]}`));
-                    parseIcons($(tagEl));
-                    viewer.viewerNodes.$tagsOther.append(tagEl);
-                };
-
-                var addTag = function(i) {
-                    var text = tags[i];
-                    if (viewer.viewerNodes.$tags.children().length === 0) {
-                        viewer.viewerNodes.$tags.empty();
-                    }
-                    var tagEl = document.createElement('div');
-                    tagEl.style = 'margin-bottom: 4px;';
-                    tagEl.setAttribute('data-pcc-tag', i);
-                    tagEl.onclick = function() {
-                        $(tagEl).remove();
-                        var tagId = tagEl.getAttribute('data-pcc-tag');
-                        viewer.viewerNodes.$tagsOther.find(`[data-pcc-tag="${tagId}"]`).removeClass('pcc-hide');
-                        if (viewer.viewerNodes.$tags.children().length === 0) {
-                            viewer.viewerNodes.$tags.text(PCCViewer.Language.data.noneSelected);
-                        }
-                        $(viewer.viewerNodes.$tagsOtherTitle).removeClass('pcc-hide');
-                    };
-                    var tagCheckbox = document.createElement('div');
-                    tagCheckbox.classList.add('pcc-checkbox');
-                    tagCheckbox.classList.add('pcc-checked');
-                    tagCheckbox.setAttribute('data-pcc-checkbox', '');
-                    tagEl.append(tagCheckbox);
-                    var tagCheck = document.createElement('span');
-                    tagCheck.classList.add('pcc-icon');
-                    tagCheck.classList.add('pcc-icon-check');
-                    tagCheckbox.append(tagCheck);
-                    tagEl.append(document.createTextNode(` ${text}`));
-                    parseIcons($(tagEl));
-                    viewer.viewerNodes.$tags.append(tagEl);
-                };
-
-                documentTagged = true;
-                var documentTagRequest = viewer.viewerControl.tagDocument();
-                documentTagRequest.on(PCCViewer.EventType.DocumentTagCompleted, function(ev) {
-                    if (documentTagRequest.getErrorMessage()) {
-                        viewer.viewerNodes.$tags.text(PCCViewer.Language.data.taggingError);
-                    } else {
-                        tags = ev.documentTags;
-                        if (!(tags instanceof Array) || tags.length === 0) {
-                            viewer.viewerNodes.$tags.text(PCCViewer.Language.data.tagsNotFound);
-                            return;
-                        }
-                        for (var i = 0; i < tags.length; i++) {
-                            addTag(i);
-                            addTagOther(i, true);
-                        }
-                    }
-                });
-            };
-
-            // The publicly accessible methods for the AI module
-            return {
-                classifyDocument,
-                queryDocument,
-                summarizeDocument,
-                tagDocument
-            };
-        })();
-
         this.revision = (function() {
             // The revision module implements the UI control and API necessary
             // to implement the viewer's document comparision functionality. Module members that
@@ -5476,31 +5092,31 @@ var PCCViewer = window.PCCViewer || {};
             // Current number of revisions
             var revisionsCount = 0,
 
-                // An array of revision results
-                revisions = [],
+            // An array of revision results
+            revisions = [],
 
-                // Current active revision ID
-                activeRevisionId,
+            // Current active revision ID
+            activeRevisionId,
 
-                // Number of revisions to show at a time,
-                revisionsPageLength = !isNaN(options.revisionsPageLength) && options.revisionsPageLength > 0 ? options.revisionsPageLength : 250,
+            // Number of revisions to show at a time,
+            revisionsPageLength = !isNaN(options.revisionsPageLength) && options.revisionsPageLength > 0 ? options.revisionsPageLength : 250,
 
-                // Use jQuery events to subscribe and trigger events internal to revision
-                $event = $({}),
+            // Use jQuery events to subscribe and trigger events internal to revision
+            $event = $({}),
 
-                // Toggleable elements
-                $revisionContainerToggles = viewer.$dom.find('[data-pcc-revision-container-toggle]'),
-                $revisionContainers = viewer.$dom.find('[data-pcc-revision-container]'),
+            // Toggleable elements
+            $revisionContainerToggles = viewer.$dom.find('[data-pcc-revision-container-toggle]'),
+            $revisionContainers = viewer.$dom.find('[data-pcc-revision-container]'),
 
-                // Fragment containing all sorted revisions, only a subset of these results are ever added to the DOM
-                allRevisionsFragment = document.createDocumentFragment(),
-                currentRevisionPageStartIndex = 0,
-                activeRevisionPageStartIndex;
+            // Fragment containing all sorted revisions, only a subset of these results are ever added to the DOM
+            allRevisionsFragment = document.createDocumentFragment(),
+            currentRevisionPageStartIndex = 0,
+            activeRevisionPageStartIndex;
 
             var revisionView = _.clone(genericView);
 
             // This method creates and returns DOM for the revision item
-            revisionView.revisionBuild = function(revision) {
+            revisionView.revisionBuild = function(revision){
                 var revisionItem,
                     revisionType,
                     // get the lowercase version of the revision type so we can use it as a key for reference
@@ -5535,11 +5151,11 @@ var PCCViewer = window.PCCViewer || {};
 
                 revisionItem.setAttribute('data-pcc-revision-id', revisionId);
                 revisionItem.appendChild(revisionView.pageNumber(revision.getEndPageNumber()));
-                revisionItem.appendChild(revisionView.elem('div', { className: 'pcc-col-8', text: revisionType }));
+                revisionItem.appendChild(revisionView.elem('div', {className: 'pcc-col-8', text: revisionType}));
                 revisionItem.appendChild(revisionView.typeIcon(icon));
                 parseIcons($(revisionItem));
 
-                $(revisionItem).on('click', function(ev) {
+                $(revisionItem).on('click', function (ev) {
                     $event.trigger('selectRevision', {
                         type: 'revision',
                         result: revision,
@@ -5553,11 +5169,11 @@ var PCCViewer = window.PCCViewer || {};
                 return revisionItem;
             };
 
-            revisionView.typeIcon = function(icon) {
+            revisionView.typeIcon = function(icon){
                 return genericView.elem('div', { className: 'pcc-icon pcc-icon-' + icon });
             };
 
-            $revisionContainerToggles.on('click', function(ev) {
+            $revisionContainerToggles.on('click', function(ev){
                 var $this = $(this),
                     which = $this.data('pcc-revision-container-toggle'),
                     wasActive = $this.hasClass('pcc-active'),
@@ -5595,16 +5211,16 @@ var PCCViewer = window.PCCViewer || {};
                 }
             });
 
-            viewer.viewerNodes.$revisionPrevPage.on('click', function(ev) {
+            viewer.viewerNodes.$revisionPrevPage.on('click', function (ev) {
                 ev.preventDefault();
                 showRevisionSubset(currentRevisionPageStartIndex - revisionsPageLength);
             });
-            viewer.viewerNodes.$revisionNextPage.on('click', function(ev) {
+            viewer.viewerNodes.$revisionNextPage.on('click', function (ev) {
                 ev.preventDefault();
                 showRevisionSubset(currentRevisionPageStartIndex + revisionsPageLength);
             });
 
-            $event.on('selectRevision', function(ev, data) {
+            $event.on('selectRevision', function(ev, data){
                 // set the active revision node
                 var $activeRevision = $(data.node);
                 activeRevisionId = data.result.id;
@@ -5626,13 +5242,13 @@ var PCCViewer = window.PCCViewer || {};
 
                 // collapse the expanded panel
                 viewer.viewerNodes.$revisionDialog.removeClass('pcc-expand')
-                    // switch the active results button to off state
-                    .find('[data-pcc-revision-container-toggle="results"]').removeClass('pcc-active');
+                      // switch the active results button to off state
+                      .find('[data-pcc-revision-container-toggle="results"]').removeClass('pcc-active');
             });
 
             // Selecting the Next button in the revision result list causes the following revisions to be selected and
             // displayed.
-            var nextRevisionClickHandler = function(nextResultBtn) {
+            var nextRevisionClickHandler = function (nextResultBtn) {
                 if (revisionsCount === 0 || $(nextResultBtn).attr('disabled')) {
                     return false;
                 }
@@ -5667,7 +5283,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // Selecting the Previous button in the revision list causes the previous revision to be selected and
             // displayed.
-            var previousRevisionClickHandler = function(previousResultBtn) {
+            var previousRevisionClickHandler = function (previousResultBtn) {
                 if (revisionsCount === 0 || $(previousResultBtn).attr('disabled')) {
                     return false;
                 }
@@ -5702,7 +5318,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // This function manages the state of the Previous and Next navigation buttons in the revision list.
-            var updateRevisionPrevNextButtons = function() {
+            var updateRevisionPrevNextButtons = function () {
                 var hasNextResult = activeRevisionId < revisionsCount - 1;
                 var hasPrevResult = activeRevisionId > 0;
                 if (hasNextResult) {
@@ -5733,7 +5349,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // This method re-creates revisions list to display revisions from startIndex
             // to the last available revision, but no more than revisionsPageLength revisions.
-            var showRevisionSubset = function(startIndex) {
+            var showRevisionSubset = function (startIndex) {
                 var indexChanged = (startIndex !== currentRevisionPageStartIndex);
                 currentRevisionPageStartIndex = startIndex;
 
@@ -5809,83 +5425,83 @@ var PCCViewer = window.PCCViewer || {};
         // to implement the viewer's document text search functionality. Module members that
         // are prefixed with 'private' are only accessible with the module's scope while 'public'
         // means it can be accessed outside the module's scope.
-        this.search = (function() {
+        this.search = (function () {
 
             // The search request object returned from the API.
             var searchRequest = {},
 
-                // The number of search hits currently known to the viewer.
+            // The number of search hits currently known to the viewer.
                 searchResultsCount = 0,
 
-                // An array containing the current search results.
+            // An array containing the current search results.
                 searchResults = [],
 
-                // Number of results to show at a time,
+            // Number of results to show at a time,
                 resultsPageLength = !isNaN(options.searchResultsPageLength) && options.searchResultsPageLength > 0 ? options.searchResultsPageLength : 250,
 
-                // The search result currently selected by the user.
+            // The search result currently selected by the user.
                 activeSearchResultId,
 
-                // The index of the search result selected by the user, which will be restored when running search again.
+            // The index of the search result selected by the user, which will be restored when running search again.
                 activeSearchResultRestoreId,
 
-                // An array containing search items loaded from predefinedSearch.json.
+            // An array containing search items loaded from predefinedSearch.json.
                 presetSearchTerms = [],
 
-                // An array containing fixed search items loaded from predefinedSearch.json.
+            // An array containing fixed search items loaded from predefinedSearch.json.
                 presetFixedSearchTerms = [],
 
-                // This is a container object that maps search terms (as keys) to search option objects (as values).
+            // This is a container object that maps search terms (as keys) to search option objects (as values).
                 previousSearches = {},
 
-                // A simple search uses a basic text query versus a more advanced regular expression.
+            // A simple search uses a basic text query versus a more advanced regular expression.
                 privateSimpleSearch = true,
 
-                // Find the advanced search toggle button and panel
-                // We will toggle these to off mode when search is executed
+            // Find the advanced search toggle button and panel
+            // We will toggle these to off mode when search is executed
                 $advancedSearchToggle = viewer.$dom.find('[data-pcc-toggle=advanced-options]'),
                 $advancedSearchPanel = viewer.$dom.find('[data-pcc-toggle-id="advanced-options"]'),
                 $searchContainerToggles = viewer.$dom.find('[data-pcc-search-container-toggle]'),
                 $searchContainers = viewer.$dom.find('[data-pcc-search-container]'),
                 $searchFilterSections = viewer.$dom.find('[data-pcc-search-container=filter] [data-pcc-section]'),
 
-                // Find advanced search type column elements
+            // Find advanced search type column elements
                 $advancedSearchColumnHeader = viewer.$dom.find('.pcc-row-results-header').children(),
-                // A search query object to store all processed search terms
+            // A search query object to store all processed search terms
                 globalSearchTerms = {},
 
-                // A search query object to store all processed fixed search terms
+            // A search query object to store all processed fixed search terms
                 globalFixedSearchTerms = {},
 
-                // A search query object to store all processed unfixed search terms
+            // A search query object to store all processed unfixed search terms
                 globalUnfixedSearchTerms = {},
 
-                // Save the previous search query to reuse if needed
+            // Save the previous search query to reuse if needed
                 prevSearchQuery = {},
-                // Save the previous matching options
+            // Save the previous matching options
                 prevMatchingOptions = {},
 
-                // Use jQuery events to subscribe and trigger events internal to search
+            // Use jQuery events to subscribe and trigger events internal to search
                 $event = $({}),
 
-                // A function that is executed whenever the filter UI is dismissed.
-                // This is used to apply the selected filters.
+            // A function that is executed whenever the filter UI is dismissed.
+            // This is used to apply the selected filters.
                 onFilterDismissFunction,
 
-                // A collection of search results and corresponding DOM objects that need to be resorted
-                // when the page text is available for the page of the search result.
+            // A collection of search results and corresponding DOM objects that need to be resorted
+            // when the page text is available for the page of the search result.
                 searchResultsToResort = [],
 
-                // Track whether or not we are searching the document text. This is used to improve search result display
-                // for highlights.
+            // Track whether or not we are searching the document text. This is used to improve search result display
+            // for highlights.
                 searchingInDocument = false,
 
-                // Check if advanced search is on. The default is off
+            // Check if advanced search is on. The default is off
                 advancedSearchIsOn = false,
 
                 redactionMarks = [],
 
-                // Fragment containing all sorted search results, only a subset of these results are ever added to the DOM
+            // Fragment containing all sorted search results, only a subset of these results are ever added to the DOM
                 allResultsFragment = document.createDocumentFragment(),
                 currentResultPageStartIndex = 0,
                 activeResultPageStartIndex;
@@ -5900,7 +5516,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 var searchTerms = viewer.viewerNodes.$searchQuickActionsSearchTerms.find('.pcc-quick-action-search-term');
 
-                if (checkedTerms.length === 0 || !searchRequest.getIsComplete || !searchRequest.getIsComplete() || !searchResultsCount) {
+                if ( checkedTerms.length === 0 || !searchRequest.getIsComplete || !searchRequest.getIsComplete() || !searchResultsCount) {
                     viewer.viewerNodes.$searchQuickActionRedact.attr('disabled', true);
                 }
                 else if (checkedTerms.length < searchTerms.length) {
@@ -5915,7 +5531,7 @@ var PCCViewer = window.PCCViewer || {};
                     // clear the quick action terms list
                     viewer.viewerNodes.$searchQuickActionsContainer
                         .find('[data-pcc-section=quickActionSearchTerms] .pcc-section-content').empty()
-                        .append(document.createTextNode(PCCViewer.Language.data.searchFilters.noTerms));
+                        .append( document.createTextNode(PCCViewer.Language.data.searchFilters.noTerms) );
                 }
 
             }
@@ -5923,7 +5539,7 @@ var PCCViewer = window.PCCViewer || {};
             function resetFilterTermsList() {
                 viewer.viewerNodes.$searchFilterContainer
                     .find('[data-pcc-section=searchTerms] .pcc-section-content').empty()
-                    .append(document.createTextNode(PCCViewer.Language.data.searchFilters.noTerms));
+                    .append( document.createTextNode(PCCViewer.Language.data.searchFilters.noTerms) );
             }
 
             var getMarksHashMap = function(markType) {
@@ -5966,7 +5582,7 @@ var PCCViewer = window.PCCViewer || {};
                 });
 
                 // Show and hide quick action sections when the titles are clicked on
-                viewer.viewerNodes.$searchQuickActionsContainer.on('click', '.pcc-section-title', function() {
+                viewer.viewerNodes.$searchQuickActionsContainer.on('click', '.pcc-section-title', function(){
                     var $section = $(this).parent('.pcc-section');
                     $section.toggleClass('pcc-expand');
                 });
@@ -6000,15 +5616,15 @@ var PCCViewer = window.PCCViewer || {};
                     viewer.viewerNodes.$searchQuickActions.find('.pcc-redaction-processing').show();
 
                     // Get the search term strings
-                    searchTerms = _.map(checkedTerms, function(el) {
+                    searchTerms = _.map(checkedTerms, function(el){
                         return el.getAttribute('data-pcc-quick-action-term');
                     });
 
                     // Loop through the search results, find ones that match the selected search results, and then
                     // redact the document.
-                    var redactionTasks = _.chain(searchResults).filter(function(result) {
+                    var redactionTasks = _.chain(searchResults).filter(function (result) {
                         return result instanceof PCCViewer.SearchResult && _.includes(searchTerms, result.getSearchTerm().searchTerm);
-                    }).reduce(function(memo, result) {
+                    }).reduce(function (memo, result) {
                         var pageNum = result.getPageNumber();
 
                         if (memo[pageNum]) {
@@ -6019,12 +5635,12 @@ var PCCViewer = window.PCCViewer || {};
 
                         return memo;
                     }, {}).map(function(resultGroup, pageNum) {
-                        return function(next) {
-                            setTimeout(function() {
-                                _.each(resultGroup, function(result) {
+                        return function (next) {
+                            setTimeout(function(){
+                                _.each(resultGroup, function (result) {
                                     // If a pre-existing text selection redaction mark exists in exactly the same position,
                                     // then replace it
-                                    var hash = 'T' + PCCViewer.Mark.Type.TextSelectionRedaction + 'P' + result.getPageNumber() + 'I' + result.getStartIndexInPage() + 'L' + result.getText().length;
+                                    var hash = 'T' + PCCViewer.Mark.Type.TextSelectionRedaction + 'P' + result.getPageNumber() + 'I' + result.getStartIndexInPage() + 'L' +  result.getText().length;
 
                                     if (typeof textSelectionRedactionMarks[hash] !== 'undefined') {
                                         replacedMarks = replacedMarks.concat(textSelectionRedactionMarks[hash]);
@@ -6106,7 +5722,7 @@ var PCCViewer = window.PCCViewer || {};
                             $div.toggleClass('pcc-checked');
                             var $checkedReasons = $parent.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked');
                             reason = [];
-                            $checkedReasons.each(function(index) {
+                            $checkedReasons.each(function(index){
                                 reason.push($(this).find('.pcc-select-multiple-redaction-reason').text());
                             });
                             if (reason.length) {
@@ -6137,7 +5753,7 @@ var PCCViewer = window.PCCViewer || {};
                     }
 
                     _.each(redactionMarks, function(redactionMark) {
-                        if (redactionMark) {
+                        if(redactionMark) {
                             if (options.enableMultipleRedactionReasons) {
                                 redactionMark.setReasons(reason);
                             } else {
@@ -6177,7 +5793,7 @@ var PCCViewer = window.PCCViewer || {};
                     var $clearItem = viewer.viewerNodes.$searchQuickActionRedactionDropdown.find('[data-clear-item]');
 
                     var reason = $(this).val();
-                    if (ev.type === 'blur' ||
+                    if(ev.type === 'blur' ||
                         (ev.type === 'keypress' && ev.keyCode === 13)) {
                         _.each(redactionMarks, function(redactionMark) {
                             if (options.enableMultipleRedactionReasons) {
@@ -6200,8 +5816,8 @@ var PCCViewer = window.PCCViewer || {};
 
             // Initialize the module by attaching UI event handlers and building data structures to
             // hold predefined search terms.
-            var init = function() {
-                viewer.$dom.find('.pcc-search-header').on('click', '[data-pcc-search=msg]', function() {
+            var init = function () {
+                viewer.$dom.find('.pcc-search-header').on('click', '[data-pcc-search=msg]', function () {
                     viewer.notify({
                         message: this.getAttribute('data-msg')
                     });
@@ -6219,7 +5835,7 @@ var PCCViewer = window.PCCViewer || {};
                     buildPresetTerms();
                     buildPresetUI();
 
-                    viewer.viewerNodes.$searchPresetsContainer.on('click', 'label', function(ev) {
+                    viewer.viewerNodes.$searchPresetsContainer.on('click', 'label', function (ev) {
                         // stop this from closing the dropdown
                         ev.stopPropagation();
                     });
@@ -6230,7 +5846,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 setUIElementsSearch();
 
-                viewer.viewerNodes.$searchCloser.on('click', function() {
+                viewer.viewerNodes.$searchCloser.on('click', function () {
                     viewer.$dom.find('[data-pcc-toggle="dialog-search"]').trigger('click');
                 });
 
@@ -6246,12 +5862,12 @@ var PCCViewer = window.PCCViewer || {};
                     }
                     // Add the case where no reason was defined
                     reasons = reasons.concat([{
-                        reason: PCCViewer.Language.data.searchFilters.reasonUndefined,
-                        _reasonUndefined: true
+                      reason: PCCViewer.Language.data.searchFilters.reasonUndefined,
+                      _reasonUndefined: true
                     }]);
 
                     // Display all reasons in the filter UI
-                    _.forEach(reasons, function(obj) {
+                    _.forEach(reasons, function(obj){
                         var div = resultView.elem('div', { className: 'pcc-search-filter pcc-filter-marks' }),
                             checkbox = resultView.elem('div', { className: 'pcc-checkbox pcc-checked' }),
                             icon = resultView.elem('span', { className: 'pcc-icon pcc-icon-check' });
@@ -6263,23 +5879,23 @@ var PCCViewer = window.PCCViewer || {};
                         div.appendChild(checkbox);
 
                         if (obj._reasonUndefined) {
-                            var textNode = document.createTextNode(obj.reason);
-                            div.appendChild(textNode);
+                          var textNode = document.createTextNode(obj.reason);
+                          div.appendChild(textNode);
                         } else {
-                            var reasonSpan = resultView.elem('span'),
-                                reasonEm = resultView.elem('em', { text: obj.reason });
-                            reasonSpan.appendChild(reasonEm);
-                            div.appendChild(reasonSpan);
+                          var reasonSpan= resultView.elem('span'),
+                              reasonEm = resultView.elem('em', { text: obj.reason });
+                          reasonSpan.appendChild(reasonEm);
+                          div.appendChild(reasonSpan);
 
-                            if (obj.description) {
-                                var separatorNote = document.createTextNode(': '),
-                                    descriptionSpan = resultView.elem('span', {
-                                        class: 'pcc-select-multiple-redaction-description',
-                                        text: obj.description
-                                    });
-                                div.appendChild(separatorNote);
-                                div.appendChild(descriptionSpan);
-                            }
+                          if (obj.description) {
+                            var separatorNote = document.createTextNode(': '),
+                                descriptionSpan = resultView.elem('span', {
+                                  class: 'pcc-select-multiple-redaction-description',
+                                  text: obj.description
+                                });
+                            div.appendChild(separatorNote);
+                            div.appendChild(descriptionSpan);
+                          }
                         }
 
                         var tooltip = obj.description
@@ -6299,7 +5915,7 @@ var PCCViewer = window.PCCViewer || {};
                 bindQuickActionDOM();
             };
 
-            $event.on('selectResult', function(ev, data) {
+            $event.on('selectResult', function(ev, data){
                 // set the active search result node
                 var $activeSearchResult = $(data.node);
 
@@ -6343,8 +5959,8 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.viewerNodes.$searchResultsContainer.addClass('pcc-hide');
                 // collapse the expanded panel
                 viewer.viewerNodes.$searchDialog.removeClass('pcc-expand')
-                    // switch the active results button to off state
-                    .find('[data-pcc-search-container-toggle="results"]').removeClass('pcc-active');
+                      // switch the active results button to off state
+                      .find('[data-pcc-search-container-toggle="results"]').removeClass('pcc-active');
             });
 
             // Generates HTML Elements for various results that can exist in the search bar.
@@ -6367,34 +5983,34 @@ var PCCViewer = window.PCCViewer || {};
                 // append the text nodes
                 // avoid adding blank text nodes
                 if (textBefore) {
-                    contextElem.appendChild(document.createTextNode('...' + textBefore));
+                    contextElem.appendChild( document.createTextNode('...' + textBefore) );
                 }
-                contextElem.appendChild(emphasis);
+                contextElem.appendChild( emphasis );
                 if (textAfter) {
-                    contextElem.appendChild(document.createTextNode(textAfter + '...'));
+                    contextElem.appendChild( document.createTextNode(textAfter + '...') );
                 }
 
                 return contextElem;
             };
 
-            resultView.searchResult = function(result) {
+            resultView.searchResult = function(result){
                 var searchResult, searchResultPageNumber, searchResultContext;
                 var resultId = resultView.selectId(result);
 
                 searchResult = resultView.elem('div', { className: 'pcc-row' });
                 searchResult.setAttribute('data-pcc-search-result-id', resultId);
 
-                searchResultPageNumber = resultView.pageNumber(result.getPageNumber());
+                searchResultPageNumber = resultView.pageNumber( result.getPageNumber() );
 
                 searchResultContext = resultView.textContext(result);
 
                 searchResult.appendChild(searchResultPageNumber);
                 searchResult.appendChild(searchResultContext);
-                searchResult.appendChild(resultView.typeIcon('page'));
+                searchResult.appendChild( resultView.typeIcon('page') );
 
                 parseIcons($(searchResult));
 
-                $(searchResult).on('click', function(ev, maintainScrollPosition) {
+                $(searchResult).on('click', function (ev, maintainScrollPosition) {
                     $event.trigger('selectResult', {
                         type: 'search',
                         result: result,
@@ -6407,14 +6023,14 @@ var PCCViewer = window.PCCViewer || {};
                 return searchResult;
             };
 
-            resultView.mark = function(result) {
+            resultView.mark = function(result){
                 var mark = result.source,
                     text = PCCViewer.Language.data.markType[mark.getType()],
                     type = getSearchResultType(result),
                     markResultId = resultView.selectId(result);
 
                 // check if a line annotation is actually an arrow
-                if (mark.getType() === PCCViewer.Mark.Type.LineAnnotation && mark.getEndHeadType() === PCCViewer.Mark.LineHeadType.FilledTriangle) {
+                if (mark.getType() === PCCViewer.Mark.Type.LineAnnotation && mark.getEndHeadType() === PCCViewer.Mark.LineHeadType.FilledTriangle){
                     text = PCCViewer.Language.data.markType["ArrowAnnotation"];
                 }
 
@@ -6429,7 +6045,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
 
                 var resultElem = resultView.elem('div', { className: 'pcc-row' }),
-                    resultPageNumber = resultView.pageNumber(mark.getPageNumber()),
+                    resultPageNumber = resultView.pageNumber( mark.getPageNumber() ),
                     resultContext, icon;
 
                 if (type === 'redaction') {
@@ -6454,11 +6070,11 @@ var PCCViewer = window.PCCViewer || {};
 
                 resultElem.appendChild(resultPageNumber);
                 resultElem.appendChild(resultContext);
-                resultElem.appendChild(resultView.typeIcon(icon));
+                resultElem.appendChild( resultView.typeIcon(icon) );
 
                 parseIcons($(resultElem));
 
-                $(resultElem).on('click', function(ev, maintainScrollPosition) {
+                $(resultElem).on('click', function(ev, maintainScrollPosition){
                     $event.trigger('selectResult', {
                         type: 'mark',
                         result: result,
@@ -6478,7 +6094,7 @@ var PCCViewer = window.PCCViewer || {};
 
                     // register an event to deselect the selectedResult when another result is selected
                     // this will execute only once, on the first result select
-                    $event.one('deselectPreviousResult', function() {
+                    $event.one('deselectPreviousResult', function () {
                         // check that this mark still exists
                         if (viewer.viewerControl.getMarkById(mark.getId())) {
                             highlightMatchingTextInMark(mark);
@@ -6489,21 +6105,21 @@ var PCCViewer = window.PCCViewer || {};
                 return resultElem;
             };
 
-            resultView.comment = function(result) {
+            resultView.comment = function(result){
                 var comment = result.source,
                     resultElem = resultView.elem('div', { className: 'pcc-row' }),
-                    resultPageNumber = resultView.pageNumber(result.getPageNumber()),
+                    resultPageNumber = resultView.pageNumber( result.getPageNumber() ),
                     resultContext = resultView.textContext(result),
                     commentResultId = resultView.selectId(result);
 
                 resultElem.appendChild(resultPageNumber);
                 resultElem.appendChild(resultContext);
-                resultElem.appendChild(resultView.typeIcon('comment'));
+                resultElem.appendChild( resultView.typeIcon('comment') );
                 resultElem.setAttribute('data-pcc-search-result-id', commentResultId);
 
                 parseIcons($(resultElem));
 
-                $(resultElem).on('click', function(ev, maintainScrollPosition) {
+                $(resultElem).on('click', function(ev, maintainScrollPosition){
                     $event.trigger('selectResult', {
                         type: 'comment',
                         result: result,
@@ -6511,7 +6127,7 @@ var PCCViewer = window.PCCViewer || {};
                     });
 
                     // find all search results for this comment
-                    var thisCommentResults = _.filter(searchResults, function(el) {
+                    var thisCommentResults = _.filter(searchResults, function(el){
                         return el.source && el.source === result.source;
                     });
 
@@ -6524,22 +6140,22 @@ var PCCViewer = window.PCCViewer || {};
 
                         // scroll to the comment
                         if (maintainScrollPosition !== true) {
-                            // select the related mark conversation
-                            viewer.viewerControl.selectMarks([comment.getConversation().getMark()]);
+                        // select the related mark conversation
+                        viewer.viewerControl.selectMarks([ comment.getConversation().getMark() ]);
 
-                            if (viewer.viewerControl.getIsCommentsPanelOpen() === false) {
-                                viewer.viewerControl.openCommentsPanel();
-                            }
-                            viewer.viewerControl.scrollTo(comment.getConversation());
+                        if (viewer.viewerControl.getIsCommentsPanelOpen() === false) {
+                            viewer.viewerControl.openCommentsPanel();
+                        }
+                        viewer.viewerControl.scrollTo(comment.getConversation());
                         }
 
                         // register an event to deselect this comment when another result is selected
                         // this will execute only once, on the first result select
-                        $event.one('deselectPreviousResult', function() {
+                        $event.one('deselectPreviousResult', function(){
                             comment.setSessionData('Accusoft-highlight', buildCommentSelectionString(thisCommentResults));
 
                             // check that this mark still exists
-                            if (viewer.viewerControl.getMarkById(comment.getConversation().getMark().getId())) {
+                            if (viewer.viewerControl.getMarkById( comment.getConversation().getMark().getId()) ){
                                 viewer.viewerControl.refreshConversations(comment.getConversation());
                             }
                         });
@@ -6554,7 +6170,7 @@ var PCCViewer = window.PCCViewer || {};
                 return resultElem;
             };
 
-            resultView.select = function(result) {
+            resultView.select = function(result){
                 if (result instanceof PCCViewer.SearchResult) {
                     return resultView.searchResult(result);
                 } else if (result instanceof PCCViewer.SearchTaskResult && result.source instanceof PCCViewer.Comment) {
@@ -6564,7 +6180,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
-            resultView.selectId = function(result) {
+            resultView.selectId = function(result){
                 if (result instanceof PCCViewer.SearchResult) {
                     return result.getId();
                 } else if (result instanceof PCCViewer.SearchTaskResult && result.source) {
@@ -6580,7 +6196,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
-            resultView.typeIcon = function(icon) {
+            resultView.typeIcon = function(icon){
                 var result = null;
                 if (options.uiElements && options.uiElements.advancedSearch) {
                     result = genericView.elem('div', { className: 'pcc-icon pcc-icon-' + icon });
@@ -6592,25 +6208,25 @@ var PCCViewer = window.PCCViewer || {};
 
             // Builds a selection string from a list of comment search results.
             // If a selected result is present, that result will be highlighted differently.
-            var buildCommentSelectionString = function(thisCommentResults, selectedResult) {
+            var buildCommentSelectionString = function (thisCommentResults, selectedResult) {
                 return _.reduce(thisCommentResults, function(seed, el) {
                     seed.push(['startIndex=' + el.getStartIndexInInput(),
-                    'length=' + el.getText().length,
-                    'color=' + el.getHighlightColor(),
-                    'opacity=' + ((el === selectedResult) ? 200 : 100)].join('&'));
+                               'length=' + el.getText().length,
+                               'color=' + el.getHighlightColor(),
+                               'opacity=' + ((el === selectedResult) ? 200 : 100)].join('&'));
                     return seed;
                 }, []).join('|');
             };
 
             // Performs a highlight on all of the comment search results in a given collection
-            var showAllCommentResults = function(collection) {
-                var conversations = _.chain(collection).filter(function(el) {
+            var showAllCommentResults = function(collection){
+                var conversations = _.chain(collection).filter(function(el){
                     // find all results in the collection that belong to comments
                     return (el.source && el.source instanceof PCCViewer.Comment);
-                }).reduce(function(seed, el) {
+                }).reduce(function(seed, el){
                     // create collections of each unique comment and all of its selections
                     // one comment can have multiple selections in it
-                    var thisCollection = _.find(seed, function(val) {
+                    var thisCollection = _.find(seed, function(val){
                         return val.source === el.source;
                     });
 
@@ -6625,7 +6241,7 @@ var PCCViewer = window.PCCViewer || {};
                     }
 
                     return seed;
-                }, []).map(function(el) {
+                }, []).map(function(el){
                     // build selection strings for each unique comment
                     el.selectionString = buildCommentSelectionString(el.selections);
                     // assign the selection string to be rendered
@@ -6649,7 +6265,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
 
                 // find all text search results for this mark
-                var thisMarkResults = _.filter(searchResults, function(el) {
+                var thisMarkResults = _.filter(searchResults, function(el){
                     return (el.source && el.source === mark) &&
                         (el instanceof PCCViewer.SearchTaskResult);
                 });
@@ -6691,14 +6307,14 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Clear the selection of all comment results in a given collection
-            var clearAllCommentResults = function(collection) {
+            var clearAllCommentResults = function(collection){
                 var uniqueConversations = [];
 
-                var conversations = _.chain(collection).filter(function(el) {
+                var conversations = _.chain(collection).filter(function(el){
                     // find all results in the collection that belong to comments
                     return (el.source && el.source instanceof PCCViewer.Comment &&
                         el.source.getSessionData('Accusoft-highlight'));
-                }).map(function(el) {
+                }).map(function(el){
                     // push conversations to the unique array if they are not already in there
                     if (!_.contains(uniqueConversations, el.source.getConversation())) {
                         uniqueConversations.push(el.source.getConversation());
@@ -6709,7 +6325,7 @@ var PCCViewer = window.PCCViewer || {};
                 });
 
                 // check in case some marks were deleted before clearing the results
-                var conversationStillAvailable = _.filter(uniqueConversations, function(conv) {
+                var conversationStillAvailable = _.filter(uniqueConversations, function(conv){
                     return !!viewer.viewerControl.getMarkById(conv.getMark().getId());
                 });
 
@@ -6720,8 +6336,8 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Clear the selection of all mark results in a given collection
-            var clearAllMarkResults = function(collection) {
-                _.forEach(viewer.viewerControl.getAllMarks(), function(mark) {
+            var clearAllMarkResults = function(collection){
+                _.forEach(viewer.viewerControl.getAllMarks(), function(mark){
                     if (mark.clearHighlights) {
                         mark.clearHighlights();
                     }
@@ -6730,7 +6346,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // Takes the JSON data from predefinedSearch.json and uses it to create normalized search terms. Those are
             // then added to presetSearchTerms.
-            var buildPresetTerms = function() {
+            var buildPresetTerms = function () {
                 var globalOptions = {},
                     term,
                     normalizedTerm,
@@ -6750,12 +6366,12 @@ var PCCViewer = window.PCCViewer || {};
                     fixed = viewer.presetSearch.fixed;
                 }
 
-                _.each(viewer.presetSearch.terms, function(term) {
+                _.each(viewer.presetSearch.terms, function(term){
                     normalizedTerm = normalizePresetSearchTerm(term, globalOptions, highlightColor, fixed);
                     var termType = term.type ? $.trim(term.type).toLowerCase() : '';
-                    switch (termType) {
+                    switch(termType){
                         case "proximity":
-                            normalizedTerm.terms = _.map(term.terms, function(proximityTerm) {
+                            normalizedTerm.terms = _.map(term.terms, function(proximityTerm){
                                 return normalizePresetSearchTerm(proximityTerm, globalOptions, highlightColor, fixed);
                             });
                             break;
@@ -6780,7 +6396,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
-            var normalizePresetSearchTerm = function(term, globalOptions, highlightColor, fixed) {
+            var normalizePresetSearchTerm = function(term, globalOptions, highlightColor, fixed){
                 term.matchingOptions = typeof term.options === 'undefined' ? {} : term.options;
                 var normalizedTerm = {
                     description: term.searchTerm,
@@ -6814,13 +6430,13 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Adds the search items from predefinedSearch.json to the UI in the form of a dropdown selectable list.
-            var buildPresetUI = function() {
+            var buildPresetUI = function () {
                 var domElems = [],
                     searchPresetsFragment = document.createDocumentFragment(),
                     searchFixedPresetsFragment = document.createDocumentFragment(),
                     checked;
 
-                function generatePresetDOM(description, id, checked) {
+                function generatePresetDOM(description, id, checked){
                     var label = document.createElement('label'),
                         input = document.createElement('input'),
                         textNode = document.createTextNode(description);
@@ -6837,7 +6453,7 @@ var PCCViewer = window.PCCViewer || {};
                     return label;
                 }
 
-                function generateFixedPresetDOM(description) {
+                function generateFixedPresetDOM(description){
                     var label = document.createElement('label'),
                         input = document.createElement('input'),
                         textNode = document.createTextNode(description);
@@ -6847,13 +6463,13 @@ var PCCViewer = window.PCCViewer || {};
                     return label;
                 }
 
-                $.each(presetFixedSearchTerms, function(i, term) {
-                    searchFixedPresetsFragment.appendChild(generateFixedPresetDOM(term.description));
+                $.each(presetFixedSearchTerms, function(i, term){
+                    searchFixedPresetsFragment.appendChild( generateFixedPresetDOM(term.description) );
                 });
 
-                $.each(presetSearchTerms, function(i, term) {
+                $.each(presetSearchTerms, function(i, term){
                     checked = (term.selected === true) ? 'checked="checked"' : '';
-                    searchPresetsFragment.appendChild(generatePresetDOM(term.description, i, checked));
+                    searchPresetsFragment.appendChild( generatePresetDOM(term.description, i, checked) );
                 });
 
                 viewer.viewerNodes.$searchPresetsContainer.append(searchPresetsFragment);
@@ -6869,7 +6485,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // When getting ready to execute a search, this functions pulls together all the user selectable
             // search options in to a single search options object.
-            var getSearchQuery = function(triggeredFromFilter, excludePresetTerms) {
+            var getSearchQuery = function (triggeredFromFilter, excludePresetTerms) {
                 var originalQueryString = getQueryString();
                 var queryString = originalQueryString,
                     i = 0,
@@ -6923,11 +6539,11 @@ var PCCViewer = window.PCCViewer || {};
 
                     // reset all term options to not be used
                     // also add new UI matching options to user-search terms
-                    _.forEach(globalFixedSearchTerms, function(termOption) {
+                    _.forEach(globalFixedSearchTerms, function(termOption){
                         termOption.isInUse = false;
                     });
 
-                    _.forEach(globalUnfixedSearchTerms, function(termOption) {
+                    _.forEach(globalUnfixedSearchTerms, function(termOption){
                         termOption.isInUse = false;
 
                         if (!sameMatchingOptions && termOption.isUserSearch) {
@@ -6940,7 +6556,7 @@ var PCCViewer = window.PCCViewer || {};
                         prevMatchingOptions = _.clone(matchingOptions);
                     }
 
-                    var setSearchTermInUse = function(el, searchTerms) {
+                    var setSearchTermInUse = function (el, searchTerms) {
                         var term = el.parentElement.getAttribute('data-pcc-filter-term'),
                             searchTerm = searchTerms[term];
 
@@ -6952,11 +6568,11 @@ var PCCViewer = window.PCCViewer || {};
                         }
                     };
 
-                    var tempUnfixedTermsArray = _.map(checkedUnfixedTerms, function(el) {
+                    var tempUnfixedTermsArray = _.map(checkedUnfixedTerms, function(el){
                         return setSearchTermInUse(el, globalUnfixedSearchTerms);
                     });
 
-                    var tempFixedTermsArray = _.map(checkedFixedTerms, function(el) {
+                    var tempFixedTermsArray = _.map(checkedFixedTerms, function(el){
                         return setSearchTermInUse(el, globalFixedSearchTerms);
                     });
 
@@ -6989,7 +6605,7 @@ var PCCViewer = window.PCCViewer || {};
                         // Split up multiple words in the string into separate search term objects
                         var queryArr = queryString.split(' ');
                         queryArr = _.unique(queryArr);
-                        _.forEach(queryArr, function(query) {
+                        _.forEach(queryArr, function(query){
                             if (query.length) {
                                 searchTerms.push({
                                     searchTerm: query,
@@ -7003,7 +6619,7 @@ var PCCViewer = window.PCCViewer || {};
                     }
 
                     // mark search terms as UI-triggered
-                    _.forEach(searchTerms, function(term) {
+                    _.forEach(searchTerms, function(term){
                         term.isUserSearch = true;
                     });
 
@@ -7023,7 +6639,7 @@ var PCCViewer = window.PCCViewer || {};
                     if (!excludePresetTerms) {
                         // add preset searches to the terms list
                         if (presetSearchTerms.length) {
-                            viewer.$dom.find('input:checked').each(function(i, el) {
+                            viewer.$dom.find('input:checked').each(function(i, el){
                                 privateSimpleSearch = false;
                                 presetId = $(el).data('pccSearchPresetId');
                                 searchTerms.push(presetSearchTerms[presetId]);
@@ -7046,7 +6662,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             var fillGlobalSearchTerms = function(searchTerms) {
-                _.forEach(searchTerms, function(term) {
+                _.forEach(searchTerms, function(term){
                     var searchTerm = term.searchTerm;
                     var saveObject = {
                         searchOption: term,
@@ -7067,30 +6683,30 @@ var PCCViewer = window.PCCViewer || {};
                 });
             };
 
-            var getQueryString = function() {
+            var getQueryString = function(){
                 // remove leading and trailing spaces, and replace multiple spaces with a single space
                 var queryString = getInputValueNotPlaceholder(viewer.viewerNodes.$searchInput);
                 return queryString.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
             };
 
-            var extractProximityDistance = function(searchString) {
+            var extractProximityDistance = function(searchString){
                 var proximityDistanceMatches = getProximityDistanceMatches(searchString);
-                if (proximityDistanceMatches) {
-                    return +proximityDistanceMatches[proximityDistanceMatches.length - 1].replace('~', '');
+                if(proximityDistanceMatches){
+                    return +proximityDistanceMatches[proximityDistanceMatches.length -1].replace('~', '');
                 }
             };
 
-            var removeProximityDistance = function(searchString) {
+            var removeProximityDistance = function(searchString){
                 var proximityDistanceMatches = getProximityDistanceMatches(searchString);
-                if (proximityDistanceMatches) {
-                    _.each(proximityDistanceMatches, function(match) {
+                if(proximityDistanceMatches){
+                    _.each(proximityDistanceMatches, function(match){
                         searchString = searchString.replace(match, '');
                     });
                 }
                 return searchString;
             };
 
-            var getProximityDistanceMatches = function(searchString) {
+            var getProximityDistanceMatches = function(searchString){
                 var proximityDistanceRegex = /(~)(\s+)*(\d+)/gi;
                 var proximityDistance;
                 return searchString.match(proximityDistanceRegex);
@@ -7098,7 +6714,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // This function adds a search query to a UI list of previously executed search terms. Selecting an item
             // from the list will cause it to be re-executed.
-            var addPreviousSearch = function(searchTerm) {
+            var addPreviousSearch = function (searchTerm) {
                 var previousNode,
                     $elPrevSearchDrop = viewer.viewerNodes.$searchPreviousContainer;
 
@@ -7126,12 +6742,12 @@ var PCCViewer = window.PCCViewer || {};
                 root.appendChild(text);
                 root.appendChild(button);
 
-                $(text).on('click', function() {
+                $(text).on('click', function () {
                     previousSelectionHandler(this);
                 });
 
                 // execute this only once
-                $(button).one('click', function(ev) {
+                $(button).one('click', function (ev) {
                     ev.stopPropagation();
                     deletePreviousSearch(this);
                 });
@@ -7140,7 +6756,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // When a user selects a previous search query from a list, this function will cause the search to be re-executed.
-            var previousSelectionHandler = function(searchNode) {
+            var previousSelectionHandler = function (searchNode) {
                 var searchTerm,
                     index = searchNode.getAttribute('data-pcc-search-previous-id');
 
@@ -7155,7 +6771,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // This function sets the toggle state of the various search option buttons. The state is determined by the
             // btnStates object.
-            var setSearchButtons = function(btnStates) {
+            var setSearchButtons = function (btnStates) {
 
                 // proximity search needs to be first as it disables all other button options.
                 if ((btnStates.proximity === true && !viewer.viewerNodes.$searchProximity.hasClass('pcc-active')) ||
@@ -7203,7 +6819,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // When the user selects the delete icon next to a previous search query, this function will remove
             // it from the displayed list.
-            var deletePreviousSearch = function(el) {
+            var deletePreviousSearch = function (el) {
                 var $parent = $(el).parent(),
                     previousId = $(el).attr("data-pcc-search-previous-id");
 
@@ -7218,7 +6834,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // This function causes the search bar to be displayed.
-            var showSearchBar = function() {
+            var showSearchBar = function () {
                 viewer.$dom.find('.pcc-row-results-status').removeClass('pcc-done');
 
                 viewer.viewerNodes.$searchResultCount.html(PCCViewer.Language.data.searching);
@@ -7228,7 +6844,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // As search results are returned to the viewer, this functions can update the progress bar as well as
             // display a text message reflecting the status of the search.
-            var updateStatusUi = function(msg, showLoader, barWidth) {
+            var updateStatusUi = function (msg, showLoader, barWidth) {
                 if (msg.length) {
                     viewer.viewerNodes.$searchResultCount.html(msg);
                     parseIcons(viewer.viewerNodes.$searchResultCount);
@@ -7256,7 +6872,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // Sorts an array of live DOM elements (already in the DOM)
             // It will also work with a jQuery-wrapped array
-            var sortDOM = (function() {
+            var sortDOM = (function(){
                 var sort = [].sort;
 
                 return function(elems, comparator) {
@@ -7304,18 +6920,18 @@ var PCCViewer = window.PCCViewer || {};
 
             // This function will sort the search results DOM elements, and fir the even/odd classnames.
             // It can be a bit slow for large result sets, so it should be throttled when executing in a loop.
-            var sortAndColorCorrectResultsView = function() {
+            var sortAndColorCorrectResultsView = function(){
                 var allResultsChildren = allResultsFragment.childNodes;
 
                 // Sort the live DOM elements
-                sortDOM(allResultsChildren, function(a, b) {
+                sortDOM(allResultsChildren, function(a, b){
                     function getDataFromAttributes($e) {
                         return {
-                            pccPageNumber: $e.attr("data-pcc-page-number"),
-                            pccSortIndex: $e.attr("data-pcc-sort-index"),
-                            pccRectY: $e.attr("data-pcc-rect-y"),
-                            pccRectX: $e.attr("data-pcc-rect-x"),
-                            pccAdtlIndex: $e.attr("data-pcc-adtl-index")
+                            pccPageNumber : $e.attr("data-pcc-page-number"),
+                            pccSortIndex : $e.attr("data-pcc-sort-index"),
+                            pccRectY : $e.attr("data-pcc-rect-y"),
+                            pccRectX : $e.attr("data-pcc-rect-x"),
+                            pccAdtlIndex : $e.attr("data-pcc-adtl-index")
                         };
                     }
 
@@ -7325,10 +6941,10 @@ var PCCViewer = window.PCCViewer || {};
 
                     // sort based on the sorting attributes
                     return (aData.pccPageNumber !== bData.pccPageNumber) ? aData.pccPageNumber - bData.pccPageNumber :
-                        (aData.pccSortIndex !== bData.pccSortIndex) ? aData.pccSortIndex - bData.pccSortIndex :
-                            (aData.pccRectY !== bData.pccRectY) ? aData.pccRectY - bData.pccRectY :
-                                (aData.pccRectX !== bData.pccRectX) ? aData.pccRectX - bData.pccRectX :
-                                    (aData.pccAdtlIndex !== bData.pccAdtlIndex) ? aData.pccAdtlIndex - bData.pccAdtlIndex : 0;
+                           (aData.pccSortIndex !== bData.pccSortIndex) ? aData.pccSortIndex - bData.pccSortIndex :
+                           (aData.pccRectY !== bData.pccRectY) ? aData.pccRectY - bData.pccRectY :
+                           (aData.pccRectX !== bData.pccRectX) ? aData.pccRectX - bData.pccRectX :
+                           (aData.pccAdtlIndex !== bData.pccAdtlIndex) ? aData.pccAdtlIndex - bData.pccAdtlIndex : 0;
                 });
 
                 // Update the currently displayed search results.
@@ -7346,7 +6962,7 @@ var PCCViewer = window.PCCViewer || {};
                     searchResult, resultsVerbiage, searchResultId;
 
                 var searchTasks = _.chain(partialSearchResults)
-                    .reduce(function(memo, result) {
+                    .reduce(function (memo, result) {
                         var pageNum = result.getPageNumber();
                         if (memo[pageNum]) {
                             memo[pageNum].push(result);
@@ -7355,7 +6971,7 @@ var PCCViewer = window.PCCViewer || {};
                         }
                         return memo;
                     }, {})
-                    .map(function(resultGroup, pageNum) {
+                    .map(function (resultGroup, pageNum) {
                         var requestText = false;
 
                         _.each(resultGroup, function(result) {
@@ -7395,7 +7011,7 @@ var PCCViewer = window.PCCViewer || {};
 
                             // Add an additional sorting parameter to use for multiple hits in one object
                             var additionalIndex = (result instanceof PCCViewer.SearchResult) ? result.getStartIndexInPage() :
-                                (result instanceof PCCViewer.SearchTaskResult) ? result.getStartIndexInInput() : 0;
+                                                  (result instanceof PCCViewer.SearchTaskResult) ? result.getStartIndexInInput() : 0;
                             searchResult.setAttribute('data-pcc-adtl-index', additionalIndex);
 
                             rectangle = result.getBoundingRectangle();
@@ -7410,7 +7026,7 @@ var PCCViewer = window.PCCViewer || {};
 
                             updateStatusUi(searchResultsCount + resultsVerbiage, true, 100 * (result.getPageNumber() / viewer.pageCount));
                         });
-                        return function(next) {
+                        return function (next) {
                             if (requestText) {
                                 ensurePageTextIsRequested(Number(pageNum), next);
                             } else {
@@ -7451,7 +7067,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
-            var showResultsSubset = function(startIndex) {
+            var showResultsSubset = function (startIndex) {
                 var subsetFragment = document.createDocumentFragment();
 
                 currentResultPageStartIndex = startIndex;
@@ -7499,16 +7115,16 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.viewerNodes.$searchResults.find('.pcc-row:odd').addClass('pcc-odd');
             };
 
-            viewer.viewerNodes.$searchPrevResultsPage.on('click', function(ev) {
+            viewer.viewerNodes.$searchPrevResultsPage.on('click', function (ev) {
                 ev.preventDefault();
                 showResultsSubset(currentResultPageStartIndex - resultsPageLength);
             });
-            viewer.viewerNodes.$searchNextResultsPage.on('click', function(ev) {
+            viewer.viewerNodes.$searchNextResultsPage.on('click', function (ev) {
                 ev.preventDefault();
                 showResultsSubset(currentResultPageStartIndex + resultsPageLength);
             });
 
-            var searchTermFilterClickAction = function() {
+            var searchTermFilterClickAction = function(){
                 $(this).find('[data-pcc-checkbox]').toggleClass('pcc-checked');
 
                 // some GC cleanup magic
@@ -7519,13 +7135,13 @@ var PCCViewer = window.PCCViewer || {};
                 };
             };
 
-            var searchTermQuickActionClickAction = function() {
+            var searchTermQuickActionClickAction = function(){
                 $(this).find('[data-pcc-checkbox]').toggleClass('pcc-checked');
                 var searchTerms = viewer.viewerNodes.$searchQuickActionsSearchTerms.find('.pcc-quick-action-search-term');
 
                 var checkedTerms = viewer.viewerNodes.$searchQuickActionsSearchTerms.find('.pcc-checked');
 
-                if (checkedTerms.length === 0 || !searchRequest.getIsComplete || !searchRequest.getIsComplete() || !searchResultsCount) {
+                if ( checkedTerms.length === 0 || !searchRequest.getIsComplete || !searchRequest.getIsComplete() || !searchResultsCount) {
                     viewer.viewerNodes.$searchQuickActionRedact.attr('disabled', true);
                 }
                 else if (checkedTerms.length < searchTerms.length) {
@@ -7539,7 +7155,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // Triggered when a partial set of search results is available. This triggers one final time before the
             // search completes. Properties appended to the event object: .partialSearchResults
-            var partialSearchResultHandler = function(ev) {
+            var partialSearchResultHandler = function (ev) {
 
                 // append the partial results to the results collection
                 searchResults.push.apply(searchResults, ev.partialSearchResults);
@@ -7553,7 +7169,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Triggered when search has completed due to failure, abort, or when the full set of search results is available.
-            var searchCompletedHandler = function(ev) {
+            var searchCompletedHandler = function (ev) {
                 unHookSearchResultEvents();
 
                 var resultsVerbiage = (searchResultsCount === 0) ? PCCViewer.Language.data.nothingFound : '',
@@ -7596,7 +7212,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Triggered when the search has completed due to failure.
-            var searchFailedHandler = function(ev) {
+            var searchFailedHandler = function (ev) {
                 var msg = PCCViewer.Language.data.searchError + searchRequest.getErrorMessage();
 
                 unHookSearchResultEvents();
@@ -7615,7 +7231,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Triggered when the search has completed due to a call to cancel.
-            var searchCancelledHandler = function(ev) {
+            var searchCancelledHandler = function (ev) {
                 unHookSearchResultEvents();
                 updateStatusUi(PCCViewer.Language.data.searchCancelled, false, 100);
 
@@ -7624,12 +7240,12 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Triggered when the search has completed because the full set of search results is available.
-            var searchResultsAvailableHandler = function() {
+            var searchResultsAvailableHandler = function () {
                 updateStatusUi('', false, 100);
             };
 
             // Detaches all event associated with executing a search.
-            var unHookSearchResultEvents = function() {
+            var unHookSearchResultEvents = function () {
                 if (searchRequest instanceof PCCViewer.SearchRequest) {
                     searchRequest.off('PartialSearchResultsAvailable', partialSearchResultHandler);
                     searchRequest.off('SearchCompleted', searchCompletedHandler);
@@ -7640,7 +7256,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Resets the module's properties used to track search results.
-            var resetSearchParams = function() {
+            var resetSearchParams = function () {
                 searchResultsCount = 0;
                 activeSearchResultId = undefined;
                 $(allResultsFragment).children().off();
@@ -7651,10 +7267,10 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // If the viewer's searchOnInit options is set to true, then this function will cause a search to be executed.
-            var initialSearchHandler = function() {
+            var initialSearchHandler = function () {
                 if (viewer.presetSearch.searchOnInit === true) {
                     viewer.presetSearch.searchOnInit = false; // only fire once
-                    setTimeout(function() {
+                    setTimeout(function () {
                         viewer.viewerNodes.$searchSubmit.click();
                     }, 1200);
                 }
@@ -7670,7 +7286,7 @@ var PCCViewer = window.PCCViewer || {};
                 $container.empty();
 
                 // get count of results by term
-                var resultsByTerm = _.reduce(results, function(seed, res) {
+                var resultsByTerm = _.reduce(results, function(seed, res){
                     // filter out marks search from filters view
                     if (res.getSearchTerm) {
                         var termOptions = res.getSearchTerm(),
@@ -7749,8 +7365,8 @@ var PCCViewer = window.PCCViewer || {};
                     }
 
                     var checkboxClassName = globalResultElem.isInUse ?
-                        'pcc-checkbox pcc-checked' :
-                        'pcc-checkbox',
+                            'pcc-checkbox pcc-checked' :
+                            'pcc-checkbox',
                         div = resultView.elem('div', { className: 'pcc-search-' + classFragment + ' pcc-' + classFragment + '-term pcc-row' }),
                         count = resultView.elem('span', { className: 'pcc-term-count pcc-col-1', text: localCount }),
                         checkbox = resultView.elem('div', { className: checkboxClassName }),
@@ -7780,7 +7396,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 // Sort the hit filters based on count
                 // Highest count will appear toward the top
-                sortDOM($container.children(), function(a, b) {
+                sortDOM($container.children(), function(a, b){
                     var aData = $(a).data('pcc-' + classFragment + '-count'),
                         bData = $(b).data('pcc-' + classFragment + '-count');
 
@@ -7789,7 +7405,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Causes a user initiated search to be executed.
-            var executeSearch = function(isRerun, retainUI, excludePresetTerms) {
+            var executeSearch = function (isRerun, retainUI, excludePresetTerms) {
                 if (isRerun !== true) {
                     // this is a new search, so we should not preserve anything
                     // previously selected
@@ -7853,7 +7469,7 @@ var PCCViewer = window.PCCViewer || {};
                 currentResultPageStartIndex = 0;
 
                 // get areas to search in from the UI buttons
-                var searchIn = _.reduce($('[data-pcc-search-in].pcc-active'), function(seed, el) {
+                var searchIn = _.reduce( $('[data-pcc-search-in].pcc-active'), function(seed, el){
                     var location = el.getAttribute('data-pcc-search-in');
                     seed[location] = true;
                     seed.filterCount += 1;
@@ -7896,7 +7512,7 @@ var PCCViewer = window.PCCViewer || {};
                 if (searchQuery.searchTerms.length === 0) {
                     // Open results panel and update state
                     if (retainUI !== true) {
-                        showSearchBar();
+                    showSearchBar();
                     }
 
                     // Attempt to only show marks.
@@ -7911,11 +7527,11 @@ var PCCViewer = window.PCCViewer || {};
                 }
 
                 // Validate proximity search
-                var proximityTerm = _.find(searchQuery.searchTerms, function(searchTerm) {
+                var proximityTerm = _.find(searchQuery.searchTerms, function(searchTerm){
                     return searchTerm.type === 'proximity';
                 });
-                if (proximityTerm) {
-                    if (!proximityTerm.distance) {
+                if(proximityTerm){
+                    if(!proximityTerm.distance){
                         viewer.notify({
                             message: PCCViewer.Language.data.proximitySearchMissingDistanceError || 'Incorrect syntax. Use ~n format to specify the distance of the proximity search. \n\n Example: term1 term2 ~3',
                             sticky: true
@@ -7924,10 +7540,10 @@ var PCCViewer = window.PCCViewer || {};
                         return;
                     }
 
-                    if (proximityTerm.terms.length !== 2) {
+                    if(proximityTerm.terms.length !== 2) {
                         viewer.notify({
                             message: proximityTerm.terms.length > 2 ?
-                                PCCViewer.Language.data.proximitySearchTooManyTermsError || 'You can only specify two search terms in a proximity search' :
+                                PCCViewer.Language.data.proximitySearchTooManyTermsError || 'You can only specify two search terms in a proximity search':
                                 PCCViewer.Language.data.proximitySearchNotEnoughTermsError || 'You must specify at least two search terms in a proximity search',
                             sticky: true
                         });
@@ -8004,9 +7620,9 @@ var PCCViewer = window.PCCViewer || {};
                 resetQuickActionMenu();
             };
 
-            var executeMarksSearch = function(searchQuery, searchIn) {
+            var executeMarksSearch = function(searchQuery, searchIn){
                 // augment searchIn object with mark specific options
-                searchIn = _.reduce($('[data-pcc-search-in-marks]'), function(seed, el) {
+                searchIn = _.reduce( $('[data-pcc-search-in-marks]'), function(seed, el) {
 
                     // Ignore this filter if it's not checked
                     if (!$(el).find('.pcc-checked')[0]) {
@@ -8031,9 +7647,9 @@ var PCCViewer = window.PCCViewer || {};
                     results = [];
 
                 // Filter all marks into local collections based on type and whether the user requested them.
-                _.forEach(viewer.viewerControl.getAllMarks(), function(mark) {
+                _.forEach(viewer.viewerControl.getAllMarks(), function(mark){
                     var category = (mark.getType().match(/redaction/i)) ? 'redactions' :
-                        (mark.getType().match(/signature/i)) ? 'signatures' : 'annotations';
+                                   (mark.getType().match(/signature/i)) ? 'signatures' : 'annotations';
 
                     if (!searchIn[category]) {
                         // this mark was not requested
@@ -8054,12 +7670,12 @@ var PCCViewer = window.PCCViewer || {};
                 });
 
                 // normalize all marks results
-                function pushResults(mark, resultArray) {
-                    results.push.apply(results, _.map(resultArray, function(res) {
+                function pushResults(mark, resultArray){
+                    results.push.apply(results, _.map(resultArray, function(res){
                         res.source = mark;
                         res.index = viewer.viewerControl.getCharacterIndex(mark);
-                        res.getPageNumber = function() { return mark.getPageNumber(); };
-                        res.getBoundingRectangle = function() { return mark.getBoundingRectangle(); };
+                        res.getPageNumber = function(){ return mark.getPageNumber(); };
+                        res.getBoundingRectangle = function(){ return mark.getBoundingRectangle(); };
 
                         return res;
                     }));
@@ -8069,7 +7685,7 @@ var PCCViewer = window.PCCViewer || {};
                 if (allTextMarks.length && searchIn.markText) {
                     var searchTask = new PCCViewer.SearchTask(searchQuery);
 
-                    _.forEach(allTextMarks, function(mark) {
+                    _.forEach(allTextMarks, function(mark){
                         var res = searchTask.search(mark.getText());
                         pushResults(mark, res);
                     });
@@ -8079,14 +7695,14 @@ var PCCViewer = window.PCCViewer || {};
                 if (redactionReasons.length) {
                     // find all reasons that the user requested to see
                     var reasonsToShow = [];
-                    _.chain(searchIn).keys().forEach(function(name) {
+                    _.chain(searchIn).keys().forEach(function(name){
                         if (name.match('reason:')) {
-                            reasonsToShow.push(name.replace('reason:', ''));
+                            reasonsToShow.push( name.replace('reason:', '') );
                         }
                     });
 
                     // check if each redaction has a requested reason
-                    _.forEach(redactionReasons, function(mark) {
+                    _.forEach(redactionReasons, function(mark){
                         var thisReasons;
                         if (options.enableMultipleRedactionReasons) {
                             var thisReasons = mark.getReasons();
@@ -8099,12 +7715,12 @@ var PCCViewer = window.PCCViewer || {};
                         if (_.intersection(reasonsToShow, thisReasons).length > 0) {
                             pushResults(mark, [{}]);
                         }
-                    });
+                });
                 }
 
                 // Display all drawing-based marks added to local collections
                 if (allDrawingMarks.length) {
-                    _.forEach(allDrawingMarks, function(mark) {
+                    _.forEach(allDrawingMarks, function(mark){
                         // It's okay to add an empty object as the result, since the normalizer will add
                         // all of the required data from a plain drawing mark.
                         pushResults(mark, [{}]);
@@ -8119,7 +7735,7 @@ var PCCViewer = window.PCCViewer || {};
                 highlightMatchingTextInMarkResults(results);
             };
 
-            var executeCommentsSearch = function(searchQuery) {
+            var executeCommentsSearch = function(searchQuery){
                 var searchTask = new PCCViewer.SearchTask(searchQuery),
                     results = [],
                     commentIndex = 0;
@@ -8131,26 +7747,26 @@ var PCCViewer = window.PCCViewer || {};
 
                         if (resultsInComment.length) {
 
-                            _.forEach(resultsInComment, function(result) {
+                            _.forEach(resultsInComment, function(result){
                                 // augment the properties of the result object
                                 result.source = c;
                                 result.index = markIndex;
                                 result.commentIndex = commentIndex;
-                                result.getPageNumber = function() { return c.getConversation().getMark().getPageNumber(); };
-                                result.getBoundingRectangle = function() { return c.getConversation().getMark().getBoundingRectangle(); };
+                                result.getPageNumber = function(){ return c.getConversation().getMark().getPageNumber(); };
+                                result.getBoundingRectangle = function(){ return c.getConversation().getMark().getBoundingRectangle(); };
 
                             });
 
-                            results = results.concat(resultsInComment);
+                            results = results.concat( resultsInComment );
                             commentIndex++;
                         }
                     });
                 }
 
-                var allCoversationsWithComments = _.chain(viewer.viewerControl.getAllMarks()).filter(function(mark) {
+                var allCoversationsWithComments = _.chain(viewer.viewerControl.getAllMarks()).filter(function(mark){
                     return mark.getConversation().getComments().length;
-                }).each(function(mark) {
-                    searchComments(mark.getConversation().getComments());
+                }).each(function(mark){
+                    searchComments( mark.getConversation().getComments() );
                 });
 
                 partialSearchResultHandler({ partialSearchResults: results });
@@ -8160,7 +7776,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // When a the 'wild card' button is selected, this function will manage the toggle state of other buttons
             // that are logically affected by the change in this button's toggle state.
-            var wildcardClickHandler = function(wildcard) {
+            var wildcardClickHandler = function (wildcard) {
                 if (checkDisabled($(wildcard))) {
                     return false;
                 }
@@ -8183,7 +7799,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // When beginsWith is selected endsWith should not be
-            var beginsWithClickHandler = function(beginsWith) {
+            var beginsWithClickHandler = function (beginsWith) {
                 if (checkDisabled($(beginsWith))) {
                     return false;
                 }
@@ -8198,7 +7814,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // When endsWith is selected beginsWith should not be
-            var endsWithClickHandler = function(endsWith) {
+            var endsWithClickHandler = function (endsWith) {
                 if (checkDisabled($(endsWith))) {
                     return false;
                 }
@@ -8216,21 +7832,21 @@ var PCCViewer = window.PCCViewer || {};
             // if additional buttons should be affected than the button needs its own click handler
             var genericSearchButtonClickHandler = function(btnElement) {
                 var $btnElement = $(btnElement);
-                if (checkDisabled($btnElement)) {
+                if(checkDisabled($btnElement)) {
                     return false;
                 }
                 $btnElement.toggleClass('pcc-active');
                 return true;
             };
 
-            var checkDisabled = function($btnElement) {
+            var checkDisabled = function ($btnElement) {
                 return $btnElement.hasClass('pcc-disabled');
             };
 
             // When the 'proximity' button is selected, this function will manage the toggle state of other buttons
             // that are logically affected by the change in this button's toggle state.
             var proximityClickHandler = function(proximitySearchButton) {
-                if (checkDisabled($(proximitySearchButton))) {
+                if(checkDisabled($(proximitySearchButton))) {
                     return false;
                 }
                 $(proximitySearchButton).toggleClass('pcc-active');
@@ -8243,14 +7859,14 @@ var PCCViewer = window.PCCViewer || {};
                     viewer.viewerNodes.$searchBeginsWith,
                     viewer.viewerNodes.$searchEndsWith,
                     viewer.viewerNodes.$searchWildcard
-                ], function(element) {
+                ], function(element){
                     return element[0];
                 });
 
                 if ($(proximitySearchButton).hasClass('pcc-active')) {
                     viewer.viewerNodes.$searchInput.attr('placeholder', PCCViewer.Language.data.proximitySearchPlaceholder);
                     $(affectedButtons).removeClass('pcc-active').addClass('pcc-disabled');
-                } else {
+                } else{
                     viewer.viewerNodes.$searchInput.attr('placeholder', PCCViewer.Language.data.searchDocument);
                     $(affectedButtons).removeClass('pcc-disabled');
                 }
@@ -8260,7 +7876,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // Selecting the Next button in the search result list causes the following search result to be selected and
             // displayed.
-            var nextResultClickHandler = function(nextResultBtn) {
+            var nextResultClickHandler = function (nextResultBtn) {
                 if (searchResultsCount === 0 || $(nextResultBtn).attr('disabled')) {
                     return false;
                 }
@@ -8297,7 +7913,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // Selecting the Previous button in the search result list causes the previous search result to be selected and
             // displayed.
-            var previousResultClickHandler = function(previousResultBtn) {
+            var previousResultClickHandler = function (previousResultBtn) {
                 if (searchResultsCount === 0 || $(previousResultBtn).attr('disabled')) {
                     return false;
                 }
@@ -8334,7 +7950,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // This function manages the state of the Previous and Next navigation buttons in the search results list.
-            var updatePrevNextButtons = function() {
+            var updatePrevNextButtons = function () {
                 var $activeSearchResult = viewer.viewerNodes.$searchResults.find('[data-pcc-active-toggle="active"]');
                 var hasNextResult = $activeSearchResult.next().length > 0 || allResultsFragment.childNodes.length > activeResultPageStartIndex + resultsPageLength;
                 var hasPrevResult = $activeSearchResult.prev().length > 0 || activeResultPageStartIndex > 0;
@@ -8407,7 +8023,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // When the user chooses to clear the current search, this function cleans up the UI and associated data
             // structures.
-            var clearSearch = function(ev) {
+            var clearSearch = function (ev) {
                 var elDialog = viewer.$dom.find('.pcc-dialog-search');
 
                 searchRequest = {};
@@ -8464,7 +8080,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // When user cancels a running search, this function updates the UI and also informs the API of
             // cancellation.
-            var cancelSearch = function() {
+            var cancelSearch = function () {
                 viewer.viewerNodes.$searchSubmit.removeClass('pcc-hide');
                 viewer.viewerNodes.$searchCancel.addClass('pcc-hide');
                 viewer.viewerNodes.$searchInput.removeAttr('disabled');
@@ -8475,8 +8091,8 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
-            var setUIElementsSearch = function() {
-                if (advancedSearchIsOn) {
+            var setUIElementsSearch = function(){
+                if(advancedSearchIsOn){
                     // show the advanced search elements
                     $searchContainerToggles.removeClass('pcc-hide');
                     $searchContainerToggles.addClass('pcc-show');
@@ -8490,7 +8106,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
-            $searchContainerToggles.on('click', function(ev) {
+            $searchContainerToggles.on('click', function(ev){
                 var $this = $(this),
                     which = $this.data('pccSearchContainerToggle'),
                     wasActive = $this.hasClass('pcc-active'),
@@ -8579,7 +8195,7 @@ var PCCViewer = window.PCCViewer || {};
                         // Remove results that we are re-sorting from the list of results to re-sort
                         searchResultsToResort = _.difference(searchResultsToResort, resultsForPage);
 
-                        _.each(resultsForPage, function(result) {
+                        _.each(resultsForPage, function (result) {
                             var newSortIndex = -2;
                             if (result.searchResult.source instanceof PCCViewer.Comment) {
                                 newSortIndex = viewer.viewerControl.getCharacterIndex(result.searchResult.source.getConversation().getMark());
@@ -8616,7 +8232,7 @@ var PCCViewer = window.PCCViewer || {};
                             ev.mark.getType() === PCCViewer.Mark.Type.TextHyperlinkAnnotation) {
                             viewer.viewerControl.clearMouseSelectedText(textSelection);
                             textSelection = null;
-                        }
+                    }
                 });
             };
 
@@ -8624,13 +8240,13 @@ var PCCViewer = window.PCCViewer || {};
             init();
 
             // Show and hide filter sections when the titles are clicked on
-            $searchFilterSections.on('click', '.pcc-section-title', function() {
+            $searchFilterSections.on('click', '.pcc-section-title', function(){
                 var $section = $(this).parent('.pcc-section');
 
                 $section.toggleClass('pcc-expand');
             });
 
-            $('[data-pcc-search-in]').on('click', function(ev) {
+            $('[data-pcc-search-in]').on('click', function(ev){
                 // change the state of this toggle
                 $(this).toggleClass('pcc-active');
 
@@ -8643,7 +8259,7 @@ var PCCViewer = window.PCCViewer || {};
             });
 
             // Rerun search whenever one of the search areas is turned on or off
-            $('[data-pcc-search-in-marks]').on('click', function(ev) {
+            $('[data-pcc-search-in-marks]').on('click', function(ev){
                 var checkedClass = 'pcc-checked',
                     $this = $(this),
                     which = $this.attr('data-pcc-search-in-marks');
@@ -8687,27 +8303,27 @@ var PCCViewer = window.PCCViewer || {};
 
         // The annotationIo module manages the loading and saving of annotations between the
         // viewer and the web tier.
-        this.annotationIo = (function() {
+        this.annotationIo = (function () {
 
             // Contains the current state of annotations in regards to whether they are saved or not to the web tier.
             var annotationDirty = false,
 
-                // Clone the generic view generator to allow us to make results in annotations
+            // Clone the generic view generator to allow us to make results in annotations
                 resultView = _.clone(genericView),
 
                 // The name of the currently loaded annotation record.
                 currentlyLoadedAnnotation,
 
-                // The jQuery selector for the dialog window warning of an existing annotation record with the same name.
+            // The jQuery selector for the dialog window warning of an existing annotation record with the same name.
                 $overwriteOverlay,
 
-                // The jQuery selector for the dialog window warning of unsaved annotation changes.
+            // The jQuery selector for the dialog window warning of unsaved annotation changes.
                 $unSavedChangesOverlay,
 
-                // The jQuery selector for the generic overlay background.
+            // The jQuery selector for the generic overlay background.
                 $overlayFade,
 
-                // This is a container object that maps annotation record ids (as keys) to annotation record objects (as values)
+            // This is a container object that maps annotation record ids (as keys) to annotation record objects (as values)
                 markupRecords = {},
 
                 modes = {
@@ -8751,7 +8367,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // Initialize the module by attaching UI event handlers and by attaching listeners for events that
             // modify annotations.
-            var init = function() {
+            var init = function () {
 
                 loadedEditMarkupLayer = viewer.viewerControl.getActiveMarkupLayer();
 
@@ -8765,10 +8381,10 @@ var PCCViewer = window.PCCViewer || {};
                         $recordEl = viewer.viewerNodes.$annotationLayersList.find('[data-pcc-annotation-xml-record-id="' + recordId + '"]');
                     }
 
-                    if ((operation === 'loadReviewXmlRecord' || operation === 'loadReviewLayerRecord') && operationSuccessful) {
+                    if ( (operation === 'loadReviewXmlRecord' || operation === 'loadReviewLayerRecord') && operationSuccessful) {
                         $recordEl.addClass('pcc-checked');
                         recordsLoadPending--;
-                    } else if ((operation === 'loadReviewXmlRecord' || operation === 'loadReviewLayerRecord') && !operationSuccessful) {
+                    } else if ( (operation === 'loadReviewXmlRecord' || operation === 'loadReviewLayerRecord') && !operationSuccessful) {
                         $recordEl.removeClass('pcc-checked');
                         recordsLoadPending--;
                     } else {
@@ -8800,24 +8416,24 @@ var PCCViewer = window.PCCViewer || {};
 
                 annotationModificationListeners();
 
-                viewer.viewerNodes.$annotateSaveDialog.find('input').on('keydown', function(event) {
+                viewer.viewerNodes.$annotateSaveDialog.find('input').on('keydown', function (event) {
                     return handleFilenameInput(this, event);
                 });
 
-                viewer.viewerNodes.$annotateSaveDialog.find('button').on('click', function() {
+                viewer.viewerNodes.$annotateSaveDialog.find('button').on('click', function () {
 
                     var fieldVal = viewer.viewerNodes.$annotateSaveDialog.find('input').val();
                     safeSave(fieldVal);
                 });
 
-                viewer.viewerNodes.$annotationList.on('click', '.pcc-row', function() {
+                viewer.viewerNodes.$annotationList.on('click', '.pcc-row', function () {
 
                     handleLoadSelection(this);
 
                 });
 
                 // Handle selection of layer record in the 'for editing' dropdown
-                viewer.viewerNodes.$annotationLayersDropdown.on('click', '.pcc-annotation-layer-record', function(ev) {
+                viewer.viewerNodes.$annotationLayersDropdown.on('click', '.pcc-annotation-layer-record', function (ev) {
 
                     var recordId = $(this).attr('data-pcc-annotation-layer-record-id');
 
@@ -8826,7 +8442,7 @@ var PCCViewer = window.PCCViewer || {};
                     if (recordId === undefined) {
 
                         // If the record is already loaded, notify the user and do not load again
-                        if (loadedReviewMarkupXml[viewer.viewerControl.getActiveMarkupLayer().getOriginalXmlName()]) {
+                        if (loadedReviewMarkupXml[viewer.viewerControl.getActiveMarkupLayer().getOriginalXmlName()] ) {
                             viewer.notify({
                                 message: PCCViewer.Language.data.annotationLayerAlreadyLoaded
                             });
@@ -8836,7 +8452,7 @@ var PCCViewer = window.PCCViewer || {};
 
                         // If an editable layer is previously loaded, then clear it away first
                         if (viewer.viewerControl.getActiveMarkupLayer()) {
-                            unloadLayerRecord(viewer.viewerControl.getActiveMarkupLayer().getRecordId(), function() { });
+                            unloadLayerRecord(viewer.viewerControl.getActiveMarkupLayer().getRecordId(), function(){});
                         }
 
                         loadEditXmlRecord($(this).attr('data-pcc-annotation-xml-record-id'));
@@ -8844,7 +8460,7 @@ var PCCViewer = window.PCCViewer || {};
                     }
 
                     // If the record is already loaded, notify the user and do not load again
-                    if (loadedReviewMarkupLayers[recordId]) {
+                    if (loadedReviewMarkupLayers[recordId] ) {
                         viewer.notify({
                             message: PCCViewer.Language.data.annotationLayerAlreadyLoaded
                         });
@@ -8854,7 +8470,7 @@ var PCCViewer = window.PCCViewer || {};
 
                     // If an editable layer is previously loaded, then clear it away first
                     if (viewer.viewerControl.getActiveMarkupLayer()) {
-                        unloadLayerRecord(viewer.viewerControl.getActiveMarkupLayer().getRecordId(), function() { });
+                        unloadLayerRecord(viewer.viewerControl.getActiveMarkupLayer().getRecordId(), function(){});
                     }
 
                     // Load the record and track it as the layer loaded for editing
@@ -8863,9 +8479,9 @@ var PCCViewer = window.PCCViewer || {};
                 });
 
                 // Handle selection of layer record in the 'for review' list
-                viewer.viewerNodes.$annotationLayersList.on('click', '.pcc-annotation-layer-record', function(ev) {
+                viewer.viewerNodes.$annotationLayersList.on('click', '.pcc-annotation-layer-record', function (ev) {
 
-                    if ($(this).data('pcc-loading') === 'true') {
+                    if ($(this).data('pcc-loading') === 'true' ) {
                         return;
                     }
 
@@ -8928,11 +8544,11 @@ var PCCViewer = window.PCCViewer || {};
                     options.autoLoadAnnotation === true &&
                     typeof options.annotationID === 'string') {
 
-                    loadMarkupRecord({ name: options.annotationID });
+                    loadMarkupRecord({name: options.annotationID});
                     viewer.viewerControl.setPageNumber(1);
                 }
 
-                viewer.viewerNodes.$annotationLayersDone.on('click', function(ev) {
+                viewer.viewerNodes.$annotationLayersDone.on('click', function(ev){
                     var otherMarkupLayers = $.map($.extend({}, loadedReviewMarkupLayers, loadedReviewMarkupXml), function(value) {
 
                         if (value.getSessionData('Accusoft-state') !== 'merged') {
@@ -8971,7 +8587,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
-            var loadReviewXmlRecord = function(xmlRecordName, done) {
+            var loadReviewXmlRecord = function (xmlRecordName, done) {
 
                 viewer.viewerNodes.$annotationLayersDone.html(PCCViewer.Language.data.annotationLayerLoading);
                 viewer.viewerNodes.$annotationLayersDone.prop('disabled', true);
@@ -8989,7 +8605,7 @@ var PCCViewer = window.PCCViewer || {};
                     markupLayer: xmlLayer
                 }).then(
 
-                    function onResolve() {
+                    function onResolve(){
                         loadedReviewMarkupXml[xmlRecordName] = xmlLayer;
 
                         disableAllLayerMarks(xmlLayer);
@@ -9002,14 +8618,14 @@ var PCCViewer = window.PCCViewer || {};
 
                     function onReject(reason) {
                         xmlLayer.destroy();
-                        viewer.notify({ message: PCCViewer.Language.data.annotationLayerLoadFailed });
+                        viewer.notify({message: PCCViewer.Language.data.annotationLayerLoadFailed});
                         done(xmlRecordName, 'loadReviewXmlRecord', false);
                     }
 
                 );
             };
 
-            var loadReviewLayerRecord = function(layerRecordId, done) {
+            var loadReviewLayerRecord = function (layerRecordId, done) {
 
                 viewer.viewerNodes.$annotationLayersDone.html(PCCViewer.Language.data.annotationLayerLoading);
                 viewer.viewerNodes.$annotationLayersDone.prop('disabled', true);
@@ -9030,14 +8646,14 @@ var PCCViewer = window.PCCViewer || {};
 
                     function onReject(reason) {
                         viewer.viewerNodes.$annotationLayersDone.html(PCCViewer.Language.data.doneButton);
-                        viewer.notify({ message: PCCViewer.Language.data.annotationLayerLoadFailed });
+                        viewer.notify({message: PCCViewer.Language.data.annotationLayerLoadFailed});
                         done(layerRecordId, 'loadReviewLayerRecord', false);
                     }
 
                 );
             };
 
-            var loadEditXmlRecord = function(xmlRecordName) {
+            var loadEditXmlRecord = function (xmlRecordName) {
 
                 viewer.viewerNodes.$annotationLayersDone.html(PCCViewer.Language.data.annotationLayerLoading);
                 viewer.viewerNodes.$annotationLayersDone.prop('disabled', true);
@@ -9072,13 +8688,13 @@ var PCCViewer = window.PCCViewer || {};
                         viewer.viewerControl.setActiveMarkupLayer(previousActiveMarkupLayer);
                         xmlLayer.destroy();
                         viewer.viewerNodes.$annotationLayersDone.html(PCCViewer.Language.data.doneButton);
-                        viewer.notify({ message: PCCViewer.Language.data.annotationLayerLoadFailed });
+                        viewer.notify({message: PCCViewer.Language.data.annotationLayerLoadFailed});
                     }
 
                 );
             };
 
-            var loadEditLayerRecord = function(layerRecordId) {
+            var loadEditLayerRecord = function (layerRecordId) {
 
                 viewer.viewerNodes.$annotationLayersDone.html(PCCViewer.Language.data.annotationLayerLoading);
                 viewer.viewerNodes.$annotationLayersDone.prop('disabled', true);
@@ -9087,7 +8703,7 @@ var PCCViewer = window.PCCViewer || {};
                 var markupLayerCollection = viewer.viewerControl.getMarkupLayerCollection();
                 var previousActiveMarkupLayer = viewer.viewerControl.getActiveMarkupLayer();
 
-                var onMarkupLayerAdded = function(ev) {
+                var onMarkupLayerAdded = function (ev) {
                     var addedMarkupLayer = markupLayerCollection.getItem(ev.layerId);
                     viewer.viewerControl.setActiveMarkupLayer(addedMarkupLayer);
                 };
@@ -9112,13 +8728,13 @@ var PCCViewer = window.PCCViewer || {};
                         viewer.viewerControl.setActiveMarkupLayer(previousActiveMarkupLayer);
                         markupLayerCollection.off(PCCViewer.MarkupLayerCollection.EventType.MarkupLayerAdded, onMarkupLayerAdded);
                         viewer.viewerNodes.$annotationLayersDone.html(PCCViewer.Language.data.doneButton);
-                        viewer.notify({ message: PCCViewer.Language.data.annotationLayerLoadFailed });
+                        viewer.notify({message: PCCViewer.Language.data.annotationLayerLoadFailed});
                     }
 
                 );
             };
 
-            var unloadLayerRecord = function(layerRecordId, done) {
+            var unloadLayerRecord = function (layerRecordId, done) {
 
                 var layer;
 
@@ -9148,7 +8764,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Determines what needs to happen when either the annotation save or load dialogs are displayed.
-            var onOpenDialog = function(newIoMode, dialogMode) {
+            var onOpenDialog = function (newIoMode, dialogMode) {
 
                 removeAllOverlays();
 
@@ -9171,10 +8787,10 @@ var PCCViewer = window.PCCViewer || {};
 
             // Attaches listeners for events that cause the displayed annotations to differ from the saved annotation
             // record.
-            var annotationModificationListeners = function() {
+            var annotationModificationListeners = function () {
 
                 var i = 0, modifyingEvents = ['MarkCreated', 'MarkRemoved', 'MarkChanged', 'MarkReordered', 'CommentCreated', 'CommentChanged', 'CommentRemoved'],
-                    modHandler = function() {
+                    modHandler = function () {
                         annotationDirty = true;
 
                         if (saveDialogIsOpen()) {
@@ -9190,7 +8806,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // After the user inputted file name is validated, the API is called with a request to save the
             // displayed annotations.
-            var safeSave = function(filename) {
+            var safeSave = function (filename) {
 
                 filename = filename.replace(/^\s+|\s+$/g, '');
 
@@ -9220,7 +8836,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 viewer.viewerControl.getSavedMarkupNames().then(
                     // success:
-                    function(markupRecords) {
+                    function (markupRecords) {
 
                         var duplicate = false, i = 0;
 
@@ -9239,7 +8855,7 @@ var PCCViewer = window.PCCViewer || {};
                         }
                     },
                     // failure:
-                    function(reason) {
+                    function (reason) {
                         viewer.notify({
                             message: PCCViewer.Language.data.annotations.save.failure
                         });
@@ -9249,7 +8865,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // With no validation of the file name, the API is called with a request to save the
             // displayed annotations.
-            var save = function(filename) {
+            var save = function (filename) {
 
                 viewer.viewerControl.saveMarkup(filename).then(onSuccessfulSave, onFailedSave);
 
@@ -9261,7 +8877,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // This function is called when an annotation is successfully saved to the web tier. It displays a
             // message to the user and also cleans up the UI and resets the annotationDirty flag.
-            var onSuccessfulSave = function(filename) {
+            var onSuccessfulSave = function (filename) {
 
                 viewer.notify({
                     message: PCCViewer.Language.data.annotations.save.success + filename,
@@ -9280,7 +8896,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // If an annotation fails to save to the web tier, this function will display a message to the user with
             // associated details.
-            var onFailedSave = function(reason) {
+            var onFailedSave = function (reason) {
                 updateSaveMsg(PCCViewer.Language.data.annotations.save.current);
                 enableSaveForm();
 
@@ -9292,7 +8908,7 @@ var PCCViewer = window.PCCViewer || {};
             // This function will display a dialog to the user warning that a annotation record already exists
             // with the same name as the one being saved. The user will be presented with options and will need
             // to select one to proceed.
-            var showOverwriteOverlay = function() {
+            var showOverwriteOverlay = function () {
 
                 if (typeof $overwriteOverlay === 'undefined') {
 
@@ -9301,17 +8917,17 @@ var PCCViewer = window.PCCViewer || {};
                     $overwriteOverlay = viewer.$dom.find('.pcc-annotation-overwrite-dlg');
                     $overlayFade = viewer.$dom.find('.pcc-overlay-fade');
 
-                    $overwriteOverlay.find('.pcc-overlay-closer').on('click', function() {
+                    $overwriteOverlay.find('.pcc-overlay-closer').on('click', function () {
                         $overwriteOverlay.close();
                         closeSaveDialog();
                     });
 
-                    $overwriteOverlay.close = function() {
+                    $overwriteOverlay.close = function () {
                         $overwriteOverlay.hide();
                         $overlayFade.hide();
                     };
 
-                    $overwriteOverlay.mask = function(msg) {
+                    $overwriteOverlay.mask = function (msg) {
 
                         if (typeof msg === 'undefined') {
                             $overwriteOverlay.find('.pcc-overlay-mask').show();
@@ -9320,11 +8936,11 @@ var PCCViewer = window.PCCViewer || {};
                         }
                     };
 
-                    $overwriteOverlay.unmask = function(msg) {
+                    $overwriteOverlay.unmask = function (msg) {
                         $overwriteOverlay.find('.pcc-overlay-mask').hide();
                     };
 
-                    $overwriteOverlay.on('click', 'li', function(event) {
+                    $overwriteOverlay.on('click', 'li', function (event) {
 
                         var action = $(this).attr('data-action');
 
@@ -9341,7 +8957,7 @@ var PCCViewer = window.PCCViewer || {};
             // The overwrite overlay is a dialog warning that an annotation record already exists
             // with the same name as the one being saved. Once the user selects an action from the dialog,
             // this function will execute the action.
-            var overwriteDialogActionsHandler = function(action) {
+            var overwriteDialogActionsHandler = function (action) {
 
                 switch (action) {
 
@@ -9374,7 +8990,7 @@ var PCCViewer = window.PCCViewer || {};
             // This function will display a dialog to the user warning that the changes to the displayed annotations
             // have not been saved and might be lost. The user will be presented with options and will need
             // to select one to proceed.
-            var showUnsavedChangesOverlay = function() {
+            var showUnsavedChangesOverlay = function () {
 
                 if (typeof $unSavedChangesOverlay === 'undefined') {
 
@@ -9384,17 +9000,17 @@ var PCCViewer = window.PCCViewer || {};
 
                     $overlayFade = viewer.$dom.find('.pcc-overlay-fade');
 
-                    $unSavedChangesOverlay.find('.pcc-overlay-closer').on('click', function() {
+                    $unSavedChangesOverlay.find('.pcc-overlay-closer').on('click', function () {
                         $unSavedChangesOverlay.close();
                         closeSaveDialog();
                     });
 
-                    $unSavedChangesOverlay.close = function() {
+                    $unSavedChangesOverlay.close = function () {
                         $unSavedChangesOverlay.hide();
                         $overlayFade.hide();
                     };
 
-                    $unSavedChangesOverlay.mask = function(msg) {
+                    $unSavedChangesOverlay.mask = function (msg) {
 
                         if (typeof msg === 'undefined') {
                             $unSavedChangesOverlay.find('.pcc-overlay-mask').show();
@@ -9403,11 +9019,11 @@ var PCCViewer = window.PCCViewer || {};
                         }
                     };
 
-                    $unSavedChangesOverlay.unmask = function(msg) {
+                    $unSavedChangesOverlay.unmask = function (msg) {
                         $unSavedChangesOverlay.find('.pcc-overlay-mask').hide();
                     };
 
-                    $unSavedChangesOverlay.on('click', 'li', function(ev) {
+                    $unSavedChangesOverlay.on('click', 'li', function (ev) {
 
                         var action = $(this).attr('data-action');
 
@@ -9425,7 +9041,7 @@ var PCCViewer = window.PCCViewer || {};
             // The unsaved changes overlay is a dialog warning that the changes to the displayed annotations
             // have not been saved and might be lost. Once the user selects an action from the dialog,
             // this function will execute the action.
-            var unsavedChangesActionsHandler = function(action) {
+            var unsavedChangesActionsHandler = function (action) {
                 if (typeof currentlyLoadedAnnotation === 'undefined' && action === 'save') {
                     action = 'saveAs';
                 }
@@ -9456,7 +9072,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // The annotation save dialog's message can be updated using this function.
-            var updateSaveMsg = function(msg) {
+            var updateSaveMsg = function (msg) {
 
                 if (typeof msg === 'undefined') {
                     if (annotationDirty) {
@@ -9477,12 +9093,12 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // A function to determine if the annotation save dialog is open or not.
-            var saveDialogIsOpen = function() {
+            var saveDialogIsOpen = function () {
                 return viewer.$dom.find('.pcc-icon-save').hasClass('pcc-active');
             };
 
             // A function that causes the annotation save dialog to open.
-            var openSaveDialog = function() {
+            var openSaveDialog = function () {
                 if (!saveDialogIsOpen()) {
                     viewer.$dom.find('.pcc-icon-save').first().trigger('click');
                 }
@@ -9491,18 +9107,18 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Resolve save dialog asynchronously so that any events they depend on are executed first
-            var onOpenSaveDialog = function() {
+            var onOpenSaveDialog = function () {
                 setTimeout(onOpenSaveDialogAsync, 0);
             };
 
             // Updates the save dialog when it's first opened.
-            var onOpenSaveDialogAsync = function() {
+            var onOpenSaveDialogAsync = function () {
                 if (!annotationDirty) {
                     viewer.notify({
                         message: PCCViewer.Language.data.annotations.save.nomods
                     });
                 } else {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         viewer.viewerNodes.$annotateSaveDialog.find('input').focus();
                     }, 100);
 
@@ -9513,7 +9129,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // A function that causes the annotation save dialog to close.
-            var closeSaveDialog = function() {
+            var closeSaveDialog = function () {
 
                 viewer.viewerNodes.$annotateSaveDialog.find('input').val('');
 
@@ -9526,24 +9142,24 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // The annotation load dialog's message can be updated using this function.
-            var updateLoadMsg = function(msg) {
+            var updateLoadMsg = function (msg) {
 
                 viewer.viewerNodes.$annotateLoadDialog.find('.pcc-annotation-load-msg').html(msg).show();
             };
 
             // The annotation save dialog's status message can be updated using this function.
-            var updateLoadStatusMsg = function(msg) {
+            var updateLoadStatusMsg = function (msg) {
 
                 viewer.viewerNodes.$annotateLoadDialog.find('.pcc-annotation-load-status-msg').html(msg).show();
             };
 
             // A function to determine if the annotation load dialog is open or not.
-            var loadDialogIsOpen = function() {
+            var loadDialogIsOpen = function () {
                 return viewer.$dom.find('.pcc-icon-load').hasClass('pcc-active');
             };
 
             // Causes all annotation related overlays to be removed.
-            var removeAllOverlays = function() {
+            var removeAllOverlays = function () {
                 if (typeof $overwriteOverlay !== 'undefined' && $overwriteOverlay.is(":visible")) {
                     $overwriteOverlay.unmask();
                     $overwriteOverlay.close();
@@ -9557,17 +9173,17 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // This function disables the annotation save form so the user can't input anything in to it.
-            var disableSaveForm = function() {
+            var disableSaveForm = function () {
                 viewer.viewerNodes.$annotateSaveDialog.find('input, textarea, button, select').attr('disabled', 'disabled');
             };
 
             // This function enables the annotation save form so the user can use it.
-            var enableSaveForm = function() {
+            var enableSaveForm = function () {
                 viewer.viewerNodes.$annotateSaveDialog.find('input, textarea, button, select').removeAttr('disabled');
             };
 
             // A function that causes the annotation load dialog to close.
-            var closeLoadDialog = function() {
+            var closeLoadDialog = function () {
 
                 if (loadDialogIsOpen()) {
                     viewer.$dom.find('.pcc-icon-load.pcc-active').first().trigger('click');
@@ -9576,12 +9192,12 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // This function causes the annotation list for loading to be unmasked and user selectable.
-            var enableLoadSelect = function() {
+            var enableLoadSelect = function () {
                 unmaskEl(viewer.viewerNodes.$annotateLoadDropdown);
             };
 
             // This function causes the annotation list for loading to be masked and unselectable.
-            var disableLoadSelect = function(msg) {
+            var disableLoadSelect = function (msg) {
 
                 unmaskEl(viewer.viewerNodes.$annotateLoadDropdown);
 
@@ -9593,7 +9209,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Causes an HTML element to be covered with a mask thus disabling it's functionality for the user.
-            var maskEl = function(el, msg) {
+            var maskEl = function (el, msg) {
                 var $parent = $(el).parent();
                 var mask = document.createElement('div');
                 mask.innerHTML = msg || '';
@@ -9603,17 +9219,17 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Causes an HTML element to have it's mask removed thus re-enabling it's functionality for the user.
-            var unmaskEl = function(el) {
+            var unmaskEl = function (el) {
                 var $parent = $(el).parent();
                 $parent.find('.pcc-overlay-mask').remove();
             };
 
             // This function validates user input to the annotation save file name field.
-            var handleFilenameInput = function(field, event) {
+            var handleFilenameInput = function (field, event) {
                 var keycode = (event.keyCode ? event.keyCode : event.which),
                     retval = true;
 
-                if (event.shiftKey === true && (keycode === 189 || keycode === 188 || keycode === 190)) {
+                if (event.shiftKey === true && ( keycode === 189 || keycode === 188 || keycode === 190)) {
                     // don't allow _, <, >
                     retval = false;
                 } else if (keycode === 13 || keycode === 9) {
@@ -9650,19 +9266,19 @@ var PCCViewer = window.PCCViewer || {};
                 $container.removeClass('pcc-loading-container pcc-icon pcc-icon-loader');
             }
 
-            var loadAllRecords = function(dialogMode) {
+            var loadAllRecords = function (dialogMode) {
                 if (dialogMode === 'review') {
                     viewer.viewerNodes.$annotationLayersDropdown.closest('.pcc-annotation-layer-load-section').addClass('pcc-hide');
                     viewer.viewerNodes.$annotationLayersList.closest('.pcc-annotation-layer-load-section').removeClass('pcc-hide');
                     viewer.viewerNodes.$annotationLayersDone.removeClass('pcc-hide');
 
-                    showRecordLoading(viewer.viewerNodes.$annotationLayersList);
+                    showRecordLoading( viewer.viewerNodes.$annotationLayersList );
                 } else {
                     viewer.viewerNodes.$annotationLayersDropdown.closest('.pcc-annotation-layer-load-section').removeClass('pcc-hide');
                     viewer.viewerNodes.$annotationLayersList.closest('.pcc-annotation-layer-load-section').addClass('pcc-hide');
                     viewer.viewerNodes.$annotationLayersDone.addClass('pcc-hide');
 
-                    showRecordLoading(viewer.viewerNodes.$annotationLayersDropdown);
+                    showRecordLoading( viewer.viewerNodes.$annotationLayersDropdown );
 
                     if (loadedEditMarkupLayer) {
                         $('.pcc-select-load-annotation-layers .pcc-label').text(loadedEditMarkupLayer.getName());
@@ -9672,11 +9288,11 @@ var PCCViewer = window.PCCViewer || {};
                 // Request the XML markup names and then request the markup layer names.
                 viewer.viewerControl.getSavedMarkupNames().then(
                     // success:
-                    function(markups) {
+                    function (markups) {
                         loadMarkupLayerRecords(dialogMode, markups);
                     },
                     // failure:
-                    function(reason) {
+                    function (reason) {
                         if (dialogMode === 'review') {
                             hideRecordLoading(viewer.viewerNodes.$annotationLayersList);
                         } else {
@@ -9696,7 +9312,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // This function executes an API request to fetch the list of annotation records associated with the
             // loaded document.
-            var loadMarkupList = function() {
+            var loadMarkupList = function () {
                 updateLoadMsg(PCCViewer.Language.data.annotations.load.waiting);
                 disableLoadSelect('');
 
@@ -9704,7 +9320,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 viewer.viewerControl.getSavedMarkupNames().then(
                     // success:
-                    function(markups) {
+                    function (markups) {
 
                         var markupRecordTpl, markupRecord, record, domStrings = [], i = 0;
 
@@ -9742,7 +9358,7 @@ var PCCViewer = window.PCCViewer || {};
 
                     },
                     // failure:
-                    function(reason) {
+                    function (reason) {
                         closeLoadDialog();
                         viewer.notify({
                             message: PCCViewer.Language.data.annotations.load.listFailure
@@ -9750,10 +9366,10 @@ var PCCViewer = window.PCCViewer || {};
                     });
             };
 
-            var loadMarkupLayerRecords = function(dialogMode, xmlRecords) {
+            var loadMarkupLayerRecords = function (dialogMode, xmlRecords) {
                 viewer.viewerControl.requestMarkupLayerNames().then(
 
-                    function onResolve(annotationLayerRecords) {
+                    function onResolve(annotationLayerRecords){
 
                         var $loadMsg = viewer.viewerNodes.$annotationLayersLoadDialog.find('.pcc-annotation-layers-load-msg');
 
@@ -9761,7 +9377,7 @@ var PCCViewer = window.PCCViewer || {};
                             $loadMsg.html('');
 
                         } else {
-                            viewer.notify({ message: PCCViewer.Language.data.annotationLayersEmptyList });
+                            viewer.notify({message: PCCViewer.Language.data.annotationLayersEmptyList});
                             $loadMsg.html(PCCViewer.Language.data.annotationLayersEmptyList);
                         }
 
@@ -9781,12 +9397,12 @@ var PCCViewer = window.PCCViewer || {};
                             hideRecordLoading(viewer.viewerNodes.$annotationLayersDropdown);
                         }
 
-                        viewer.notify({ message: PCCViewer.Language.data.annotationLayersListLoadFailed });
+                        viewer.notify({message: PCCViewer.Language.data.annotationLayersListLoadFailed});
                     }
                 );
             };
 
-            var populateLayerRecordsList = function(annotationLayerRecords, $container, xmlRecords) {
+            var populateLayerRecordsList = function (annotationLayerRecords, $container, xmlRecords) {
                 var fragment = document.createDocumentFragment();
 
                 $container.empty();
@@ -9824,7 +9440,7 @@ var PCCViewer = window.PCCViewer || {};
 
                     parseIcons($(div));
 
-                    allRecordDivs.push({ name: annotationLayerRecord.name, div: div });
+                    allRecordDivs.push({name: annotationLayerRecord.name, div: div});
                 });
 
                 _.forEach(xmlRecords, function(xmlRecord, index) {
@@ -9852,7 +9468,7 @@ var PCCViewer = window.PCCViewer || {};
                 });
 
                 // Sort the layers by name.
-                allRecordDivs = allRecordDivs.sort(function(a, b) {
+                allRecordDivs = allRecordDivs.sort(function (a, b) {
                     var aName = a.name.toLowerCase();
                     var bName = b.name.toLowerCase();
                     return aName === bName ? 0 : aName > bName ? 1 : -1;
@@ -9864,21 +9480,21 @@ var PCCViewer = window.PCCViewer || {};
 
                 if (allRecordDivs.length) {
                     // only add a "toggle all" option if there are layers
-                    toggleAllReviewLayers = ToggleAllControl('pcc-toggle-all pcc-row', function(state) {
+                    toggleAllReviewLayers = ToggleAllControl('pcc-toggle-all pcc-row', function(state){
 
                         if ($(toggleAllReviewLayers).data('pcc-loading') === 'true') {
                             return;
                         }
 
                         var $node;
-                        $container.find('.pcc-annotation-layer-record').each(function(idx, node) {
+                        $container.find('.pcc-annotation-layer-record').each(function(idx, node){
 
                             $node = $(node);
 
                             if (state === 'checked' && !$node.hasClass('pcc-checked')) {
                                 $(toggleAllReviewLayers).data('pcc-loading', 'true');
 
-                                var $loader = $(toggleAllReviewLayers).find('.pcc-load');
+                                var $loader =  $(toggleAllReviewLayers).find('.pcc-load');
 
                                 if (!$loader.length) {
                                     var loaderEl = document.createElement('span');
@@ -9890,7 +9506,7 @@ var PCCViewer = window.PCCViewer || {};
                                 $loader.show();
 
                                 $node.click();
-                            } else if (state === 'unchecked' && $node.hasClass('pcc-checked')) {
+                            } else if (state === 'unchecked' && $node.hasClass('pcc-checked')){
 
 
                                 $node.click();
@@ -9907,7 +9523,7 @@ var PCCViewer = window.PCCViewer || {};
                 $container.append(fragment);
             };
 
-            var populateLayerRecordsDropdown = function(annotationLayerRecords, $container, xmlRecords) {
+            var populateLayerRecordsDropdown = function (annotationLayerRecords, $container, xmlRecords) {
                 var fragment = document.createDocumentFragment(),
                     allRecordDivs = [];
 
@@ -9932,7 +9548,7 @@ var PCCViewer = window.PCCViewer || {};
                     div.appendChild(text);
                     $(div).attr('data-pcc-annotation-layer-record-id', annotationLayerRecord.layerRecordId).find('.pcc-row:odd').addClass('pcc-odd');
 
-                    allRecordDivs.push({ name: annotationLayerRecord.name, div: div });
+                    allRecordDivs.push({name: annotationLayerRecord.name, div: div});
                 });
 
                 // Include XML markup records in the dropdown
@@ -9949,11 +9565,11 @@ var PCCViewer = window.PCCViewer || {};
                     div.appendChild(text);
                     $(div).attr('data-pcc-annotation-xml-record-id', xmlRecord.name).find('.pcc-row:odd').addClass('pcc-odd');
 
-                    allRecordDivs.push({ name: xmlRecord.name, div: div });
+                    allRecordDivs.push({name: xmlRecord.name, div: div});
                 });
 
                 // Sort the layers by name.
-                allRecordDivs = allRecordDivs.sort(function(a, b) {
+                allRecordDivs = allRecordDivs.sort(function (a, b) {
                     var aName = a.name.toLowerCase();
                     var bName = b.name.toLowerCase();
                     return aName === bName ? 0 : aName > bName ? 1 : -1;
@@ -9968,14 +9584,14 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // This function executes an API request to load a specific annotation record.
-            var loadMarkupRecord = function(record) {
+            var loadMarkupRecord = function (record) {
 
                 updateLoadMsg(PCCViewer.Language.data.annotations.load.waiting);
                 disableLoadSelect('');
 
                 viewer.viewerControl.loadMarkup(record.name).then(
                     // success:
-                    function(markupRecord) {
+                    function (markupRecord) {
                         closeLoadDialog();
                         viewer.setMouseTool({ mouseToolName: 'AccusoftPanAndEdit' });
                         currentlyLoadedAnnotation = markupRecord;
@@ -9987,7 +9603,7 @@ var PCCViewer = window.PCCViewer || {};
                         }
                     },
                     // failure:
-                    function(reason) {
+                    function (reason) {
                         closeLoadDialog();
                         viewer.notify({
                             message: PCCViewer.Language.data.annotations.load.recordFailure
@@ -9998,7 +9614,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // This function listens for user selection of an annotation record from a displayed list. It then attempts
             // to load that record.
-            var handleLoadSelection = function(resultRow) {
+            var handleLoadSelection = function (resultRow) {
 
                 var record = markupRecords[resultRow.getAttribute('data-pcc-markup-record-id')];
 
@@ -10006,12 +9622,12 @@ var PCCViewer = window.PCCViewer || {};
 
                     showUnsavedChangesOverlay();
 
-                    $unSavedChangesOverlay.one('noSaveSelected', function() {
+                    $unSavedChangesOverlay.one('noSaveSelected', function () {
                         loadMarkupRecord(record);
                     });
 
                     if (currentlyLoadedAnnotation) {
-                        $unSavedChangesOverlay.one('saveSelected', function() {
+                        $unSavedChangesOverlay.one('saveSelected', function () {
                             closeLoadDialog();
                         });
                     }
@@ -10059,7 +9675,7 @@ var PCCViewer = window.PCCViewer || {};
                     var layerLoadPromises = [];
 
                     // find all layerRecordIds that we need to load
-                    var layerIds = _.map(layerNames, function(layer) {
+                    var layerIds = _.map(layerNames, function(layer){
                         return layer.layerRecordId;
                     });
 
@@ -10068,10 +9684,10 @@ var PCCViewer = window.PCCViewer || {};
                         var jsonLayerPromise = viewerControl.loadMarkupLayers(layerIds, {
                             loadAsHidden: true
                         });
-                        layerLoadPromises.push(jsonLayerPromise);
+                        layerLoadPromises.push( jsonLayerPromise );
 
                         // when loaded, keep track of them
-                        jsonLayerPromise.then(function(loadedLayers) {
+                        jsonLayerPromise.then(function(loadedLayers){
                             _.forEach(loadedLayers, function(loadedLayer) {
                                 // If the editable layer source is XML, check the original XML name of the layer.
                                 var loadOriginalXmlLayerFromJson = typeof viewer.viewerControlOptions.editableMarkupLayerSource === 'string' && viewer.viewerControlOptions.editableMarkupLayerSource.toLowerCase() === 'xmlname' && typeof viewer.viewerControlOptions.editableMarkupLayerValue === 'string' && viewer.viewerControlOptions.editableMarkupLayerValue === loadedLayer.getOriginalXmlName();
@@ -10100,16 +9716,16 @@ var PCCViewer = window.PCCViewer || {};
                     }
 
                     // get all of the XML layer names that we need to load
-                    var filteredXmlNames = _.chain(xmlNames).map(function(xml) {
+                    var filteredXmlNames = _.chain(xmlNames).map(function(xml){
                         return xml.name;
-                    }).filter(function(xmlName) {
+                    }).filter(function(xmlName){
                         // remove XML names that already exist as JSON layers
                         return !_.find(layerNames, function(layer) {
                             return layer.originalXmlName === xmlName;
                         });
                     }).value();
 
-                    _.forEach(filteredXmlNames, function(xmlName) {
+                    _.forEach(filteredXmlNames, function(xmlName){
                         // create a layer to store each XML record
                         var xmlLayer = new PCCViewer.MarkupLayer(viewerControl);
                         viewerControl.getMarkupLayerCollection().addItem(xmlLayer);
@@ -10156,11 +9772,11 @@ var PCCViewer = window.PCCViewer || {};
                         });
 
                         // add the parent promise to the group of promises to resolve
-                        layerLoadPromises.push(promise);
+                        layerLoadPromises.push( promise );
                     });
 
                     // resolve all promises together, so we know when we are done loading
-                    PCCViewer.Promise.all(layerLoadPromises).then(function() {
+                    PCCViewer.Promise.all(layerLoadPromises).then(function(){
 
                         // check if we need to set a layer as editable
                         var editableLayerSource = viewer.viewerControlOptions.editableMarkupLayerSource.toString().toLowerCase();
@@ -10202,7 +9818,7 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             function autoLoadEditableLayer(layerRecordId, done) {
-                done = (typeof done === 'function') ? done : function noop() { };
+                done = (typeof done === 'function') ? done : function noop() {};
 
                 // Load the JSON markup layer
                 viewer.viewerControl.loadMarkupLayers(layerRecordId).then(function onResolve(annotationLayers) {
@@ -10219,13 +9835,13 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             function autoLoadEditableXml(xmlName, done) {
-                done = (typeof done === 'function') ? done : function noop() { };
+                done = (typeof done === 'function') ? done : function noop() {};
 
                 // Check the original XML name of the layer
                 var loadFromXml = true;
 
                 viewer.viewerControl.requestMarkupLayerNames().then(function(layerNames) {
-                    _.forEach(layerNames, function(layerName) {
+                    _.forEach(layerNames, function (layerName) {
                         if (xmlName === layerName.originalXmlName) {
                             // Load this layer as the editable layer
                             viewer.viewerControl.loadMarkupLayers(layerName.layerRecordId).then(function onResolve(annotationLayers) {
@@ -10279,18 +9895,18 @@ var PCCViewer = window.PCCViewer || {};
 
         // The annotationLayerReview module manages the annotation layers in the viewer, such as setting which
         // layers are visible or merging layers.
-        this.annotationLayerReview = (function() {
+        this.annotationLayerReview = (function () {
 
             // The editable layer for the current user.
             var currentLayer;
 
             // Initialize the module by attaching UI event handlers and by attaching listeners for events that
             // modify annotation layers.
-            var init = function() {
+            var init = function () {
                 bindAnnotationLayerReviewDOM();
             };
 
-            var mergeMode = function(mode) {
+            var mergeMode = function (mode) {
                 var $reviewLayers = $('[data-pcc-annotation-layer-review-section=other] .pcc-annotation-layer-review-section-content .pcc-row');
 
                 $reviewLayers.removeClass('pcc-checked');
@@ -10325,7 +9941,7 @@ var PCCViewer = window.PCCViewer || {};
                 edgeForceRepaintWorkaround(viewer.viewerNodes.$annotationLayerMergeActions);
             };
 
-            var bindAnnotationLayerReviewDOM = function() {
+            var bindAnnotationLayerReviewDOM = function () {
 
                 // Toggle merge mode on or off
                 viewer.viewerNodes.$annotationLayerMergeMode.on('click', function() {
@@ -10343,9 +9959,9 @@ var PCCViewer = window.PCCViewer || {};
                     mergeMode('off');
 
                     var uniquePages = _.chain(markupLayers)
-                        .map(function(layer) { return layer.getMarks(); })
+                        .map(function (layer) { return layer.getMarks(); })
                         .flatten()
-                        .map(function(mark) { return mark.getPageNumber(); })
+                        .map(function (mark) { return mark.getPageNumber(); })
                         .uniq()
                         .value();
                     var pageAttributePromises = _.map(uniquePages, viewer.viewerControl.requestPageAttributes, viewer.viewerControl);
@@ -10355,7 +9971,7 @@ var PCCViewer = window.PCCViewer || {};
 
                             // Loop through the marks on the current layer and restore their interaction mode
                             // to unlock the copied marks that were originally unlocked.
-                            _.forEach(currentLayer.getMarks(), function(mark) {
+                            _.forEach(currentLayer.getMarks(), function (mark) {
                                 var originalInteractionMode = mark.getData('Accusoft-originalInteractionMode');
 
                                 if (originalInteractionMode !== undefined) {
@@ -10364,7 +9980,7 @@ var PCCViewer = window.PCCViewer || {};
                                 }
                             });
 
-                            _.forEach(markupLayers, function(markupLayer) {
+                            _.forEach(markupLayers, function (markupLayer) {
 
                                 // Remove the item from the review panel
                                 $annotationLayerElements.filter('[data-pcc-other-layer="' + markupLayer.getId() + '"]').remove();
@@ -10467,7 +10083,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Determines what needs to happen when the annotation layer controller dialog is opened.
-            var onOpenDialog = function(currentMarkupLayer, otherMarkupLayers) {
+            var onOpenDialog = function (currentMarkupLayer, otherMarkupLayers) {
                 currentLayer = currentMarkupLayer;
 
                 populateCurrentMarkupLayer(currentLayer, $('[data-pcc-annotation-layer-review-section=current] .pcc-annotation-layer-review-section-content'), 'current');
@@ -10504,7 +10120,7 @@ var PCCViewer = window.PCCViewer || {};
                 var replacement = createElem('span', 'pcc-icon pcc-icon-eye pcc-pull-right');
                 replacement.setAttribute('title', PCCViewer.Language.data.annotationLayerReview.hide);
                 $target.replaceWith(replacement);
-                $(replacement).on('click', { layerId: layerId }, hideClickAction);
+                $(replacement).on('click', {layerId: layerId}, hideClickAction);
                 updateIcon($(replacement));
                 fileDownloadManager.enableAvailableMarkOptions();
             };
@@ -10517,7 +10133,7 @@ var PCCViewer = window.PCCViewer || {};
                 var replacement = createElem('span', 'pcc-icon pcc-icon-eye-closed pcc-pull-right');
                 replacement.setAttribute('title', PCCViewer.Language.data.annotationLayerReview.show);
                 $target.replaceWith(replacement);
-                $(replacement).on('click', { layerId: layerId }, showClickAction);
+                $(replacement).on('click', {layerId: layerId}, showClickAction);
                 updateIcon($(replacement));
                 fileDownloadManager.enableAvailableMarkOptions();
             };
@@ -10595,7 +10211,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 updateIcon($(visibilityToggle));
                 visibilityToggle.setAttribute('title', visibilityTooltip);
-                $(visibilityToggle).on('click', { layerId: annotationLayer.getId() }, visibilityAction);
+                $(visibilityToggle).on('click', { layerId: annotationLayer.getId()}, visibilityAction);
                 div.appendChild(visibilityToggle);
 
                 // Activate the edit button
@@ -10605,7 +10221,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             var populateMarkupLayers = function(annotationLayers, $container, classFragment) {
-                var checkboxClickAction = function(div) {
+                var checkboxClickAction = function(div){
                     $(div).toggleClass('pcc-checked');
                     // Disable the merge button if no layers are selected.
                     var checkedMarkupLayers = $('[data-pcc-annotation-layer-review-section=other] .pcc-annotation-layer-review-section-content').find('.pcc-checked');
@@ -10616,7 +10232,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 $container.empty();
 
-                annotationLayers.sort(function(a, b) {
+                annotationLayers.sort(function (a, b) {
                     var aName = (a.getName() || '').toLowerCase();
                     var bName = (b.getName() || '').toLowerCase();
                     return aName === bName ? 0 : aName > bName ? 1 : -1;
@@ -10669,7 +10285,7 @@ var PCCViewer = window.PCCViewer || {};
                     layerDivs.push(div);
                 });
 
-                var toggler = ToggleAllControl('pcc-toggle-all pcc-row pcc-hide', function(state) {
+                var toggler = ToggleAllControl('pcc-toggle-all pcc-row pcc-hide', function(state){
                     _.forEach(layerDivs, function(layerDiv) {
                         var isChecked = $(layerDiv).hasClass('pcc-checked');
                         var needToCheck = state === 'checked' && !isChecked;
@@ -10684,7 +10300,7 @@ var PCCViewer = window.PCCViewer || {};
                 $container.append(toggler).append(fragment);
             };
 
-            var createElem = function(type, className) {
+            var createElem = function(type, className){
                 var elem = document.createElement(type || 'div');
                 if (typeof className === 'string') {
                     elem.className = className;
@@ -10700,7 +10316,7 @@ var PCCViewer = window.PCCViewer || {};
             };
         })();
 
-        this.annotationLayerSave = (function() {
+        this.annotationLayerSave = (function(){
             var control, language, $parentDom, notify;
 
             function getLayerComments(layer) {
@@ -10775,7 +10391,7 @@ var PCCViewer = window.PCCViewer || {};
                 });
 
                 $parentDom.find('input[type=text]')
-                    .on('keyup change', function() {
+                    .on('keyup change', function(){
                         if (this.value !== "") {
                             viewer.viewerNodes.$annotationLayerSave.removeClass('pcc-disabled');
                         }
@@ -10844,12 +10460,12 @@ var PCCViewer = window.PCCViewer || {};
                 var checkedClass = 'pcc-checked';
 
                 classNames = typeof classNames === 'string' ? classNames : '';
-                onToggle = typeof onToggle === 'function' ? onToggle : function() { };
+                onToggle = typeof onToggle === 'function' ? onToggle : function() {};
 
                 var dom = generateDom(classNames || '');
                 var $dom = $(dom);
 
-                $dom.click(function() {
+                $dom.click(function(){
                     if ($dom.hasClass(checkedClass)) {
                         $dom.removeClass(checkedClass);
                         onToggle('unchecked');
@@ -10866,14 +10482,14 @@ var PCCViewer = window.PCCViewer || {};
         })();
 
         // create the eSignature UI module
-        this.eSignature = (function() {
+        this.eSignature = (function () {
 
             var placeSignatureTool = PCCViewer.MouseTools.getMouseTool('AccusoftPlaceSignature');
 
             var $esignOverlay;
             var $esignPlace;
 
-            var init = function() {
+            var init = function () {
                 $esignOverlay = viewer.viewerNodes.$esignOverlay;
                 $esignPlace = viewer.viewerNodes.$esignPlace;
 
@@ -10895,14 +10511,14 @@ var PCCViewer = window.PCCViewer || {};
                 PCCViewer.MouseTools.createMouseTool("AccusoftPlaceDateSignature", PCCViewer.MouseTool.Type.PlaceSignature);
             };
 
-            var destroy = function() {
+            var destroy = function () {
                 PCCViewer.Signatures.off('ItemAdded', signatureAdded);
                 PCCViewer.Signatures.off('ItemRemoved', signatureRemoved);
 
                 placeSignatureTool = undefined;
             };
 
-            var attachListeners = function() {
+            var attachListeners = function () {
                 PCCViewer.Signatures.on('ItemAdded', signatureAdded);
                 PCCViewer.Signatures.on('ItemRemoved', signatureRemoved);
 
@@ -10911,7 +10527,7 @@ var PCCViewer = window.PCCViewer || {};
                 });
             };
 
-            var updateSignatureButtons = function() {
+            var updateSignatureButtons = function () {
                 if (PCCViewer.Signatures.toArray().length > 0) {
                     $esignPlace.removeClass('pcc-disabled');
                     $esignPlace.removeAttr('disabled');
@@ -10922,9 +10538,9 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // a signature was added to the PCCViewer.Signatures collection
-            var signatureAdded = function(ev) {
+            var signatureAdded = function (ev) {
                 if (typeof ev.item === 'undefined') {
-                    viewer.notify({ message: PCCViewer.Language.data.noSignatures });
+                    viewer.notify({message: PCCViewer.Language.data.noSignatures});
                     return;
                 }
 
@@ -10933,7 +10549,7 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // a signature was removed from the PCCViewer.Signatures collection
-            var signatureRemoved = function(ev) {
+            var signatureRemoved = function (ev) {
                 var signatureArr = PCCViewer.Signatures.toArray();
 
                 // unassociate the removed signature from the mouse tool if needed
@@ -10954,19 +10570,19 @@ var PCCViewer = window.PCCViewer || {};
                 // Find the mark type and get references to the comparable properties
                 switch (mark.getType()) {
                     case PCCViewer.Mark.Type.FreehandSignature:
-                        compareIterator = function(sig) {
+                        compareIterator = function(sig){
                             return sig.path === mark.getPath();
                         };
                         break;
                     case PCCViewer.Mark.Type.TextSignature:
-                        compareIterator = function(sig) {
+                        compareIterator = function(sig){
                             return sig.text === mark.getText() && sig.fontName === mark.getFontName();
                         };
                         break;
                 }
 
                 // Find the correct signature
-                PCCViewer.Signatures.forEach(function(el) {
+                PCCViewer.Signatures.forEach(function(el){
                     if (compareIterator(el)) {
                         signatureObj = el;
                     }
@@ -10995,7 +10611,7 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             function changeLastSelectedSignature(signature) {
-                PCCViewer.Signatures.forEach(function(el) {
+                PCCViewer.Signatures.forEach(function(el){
                     el.lastSelected = (el === signature);
                 });
             }
@@ -11041,8 +10657,8 @@ var PCCViewer = window.PCCViewer || {};
             // since the menu will already be open. If the menu is not open, a change from this
             // module is not necessary, as it will be initialized correctly when the
             // MouseToolChanged event fires.
-            function contextMenuUpdater(signature) {
-                if (signature && viewer.viewerControl.getCurrentMouseTool() === placeSignatureTool.getName()) {
+            function contextMenuUpdater(signature){
+                if (signature && viewer.viewerControl.getCurrentMouseTool() === placeSignatureTool.getName()){
                     // the context menu needs to be updated only if the mouse tool was already selected
                     updateContextMenu({
                         showContextMenu: true,
@@ -11061,7 +10677,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // generate a signature view for the manager utility
             // also generates generic view to use elsewhere
-            function insertSignatureView(signature, domElem, clickHandler, includeButtons) {
+            function insertSignatureView (signature, domElem, clickHandler, includeButtons) {
                 // create dom elements
                 var wrapper = document.createElement('div'),
                     container = document.createElement('div'),
@@ -11096,7 +10712,7 @@ var PCCViewer = window.PCCViewer || {};
                     preview.style['max-height'] = signature.height + 'px';
                 }
                 // create custom delete button
-                deleteButton.onclick = function() {
+                deleteButton.onclick = function(){
                     // remove signature from collection
                     PCCViewer.Signatures.remove(signature);
 
@@ -11129,20 +10745,20 @@ var PCCViewer = window.PCCViewer || {};
 
                     // If there are no signatures left, re-initialize the Manager UI
                     // in order to display the 'no signatures' message.
-                    if (PCCViewer.Signatures.toArray().length === 0) {
+                    if (PCCViewer.Signatures.toArray().length === 0){
                         viewer.launchESignManage();
                     }
                 };
 
                 // create custom download button
-                downloadButton.onclick = function() {
+                downloadButton.onclick = function(){
                     // trigger a JSON file download
                     // let's also pretty-print the string
                     PCCViewer.Util.save('signature.json', JSON.stringify(signature, undefined, 2));
                 };
 
                 // create custom place signature button
-                $(useButton).on('click', function(ev) {
+                $(useButton).on('click', function(ev){
                     changeMouseToolSignature(signature, false, true);
                     viewer.closeEsignModal();
 
@@ -11217,18 +10833,18 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             // puts dom elements into columns
-            function placeIntoColumns(parentElement, childrenArray) {
-                var Column = function() {
+            function placeIntoColumns (parentElement, childrenArray) {
+                var Column = function(){
                     var col = document.createElement('div');
                     // makes 2 columns
                     col.className = 'pcc-col-6';
                     return col;
                 };
 
-                var columns = [Column(), Column()];
+                var columns = [ Column(), Column() ];
                 var columnsClone = [].concat(columns);
 
-                _.forEach(childrenArray, function(child) {
+                _.forEach(childrenArray, function(child){
                     // take first column
                     var col = columnsClone.shift();
                     // place child inside it
@@ -11237,18 +10853,18 @@ var PCCViewer = window.PCCViewer || {};
                     columnsClone.push(col);
                 });
 
-                _.forEach(columns, function(col) {
+                _.forEach(columns, function(col){
                     parentElement.appendChild(col);
                 });
             }
 
             // create a new SignatureControl drawing context
-            function getFreehandContext(domElem) {
+            function getFreehandContext (domElem) {
                 return PCCViewer.SignatureControl(domElem);
             }
 
             // create a custom text signature context
-            function getTextContext($previews, $textInput) {
+            function getTextContext ($previews, $textInput) {
                 var fonts = fontLoader.names(),
                     previewsArray = [],
                     selectedFont = 'Times New Roman';
@@ -11257,7 +10873,7 @@ var PCCViewer = window.PCCViewer || {};
                     selectedFont = fonts[0];
                 }
 
-                function generatePreview(fontName, text) {
+                function generatePreview(fontName, text){
                     var div = document.createElement('div');
 
                     div.className = 'pcc-button pcc-esign-text-preview';
@@ -11290,7 +10906,7 @@ var PCCViewer = window.PCCViewer || {};
 
                         var value = $ti.val();
 
-                        previewsArray = _.map(fonts, function(fontName) {
+                        previewsArray = _.map(fonts, function(fontName){
                             return generatePreview(fontName, value);
                         });
 
@@ -11300,8 +10916,8 @@ var PCCViewer = window.PCCViewer || {};
                     return $ti;
                 })();
 
-                $previews.on('click', '.pcc-esign-text-preview', function(ev) {
-                    _.forEach(previewsArray, function(el) {
+                $previews.on('click', '.pcc-esign-text-preview', function(ev){
+                    _.forEach(previewsArray, function(el){
                         $(el).removeClass('pcc-esign-text-active');
                     });
                     $(this).addClass('pcc-esign-text-active');
@@ -11310,14 +10926,14 @@ var PCCViewer = window.PCCViewer || {};
 
                 // return an object similar to PCCViewer.SignatureControl
                 return {
-                    done: function() {
+                    done: function(){
                         return {
                             type: 'text',
                             text: $textInput.val(),
                             fontName: selectedFont
                         };
                     },
-                    clear: function() {
+                    clear: function(){
                         $textInput.val('');
                         $previews.html('');
                         $textInput.focus();
@@ -11325,7 +10941,7 @@ var PCCViewer = window.PCCViewer || {};
                 };
             }
 
-            function getManageContext(domElem) {
+            function getManageContext (domElem) {
                 // create non-blocking queue
                 var queue = new Queue();
 
@@ -11333,7 +10949,7 @@ var PCCViewer = window.PCCViewer || {};
                 PCCViewer.Signatures.forEach(function(el) {
                     // Let's place each signature rendering in its own iteration of the event loop
                     // so that the UI is not blocked for too long in older browsers and mobile.
-                    queue.push(function() {
+                    queue.push(function(){
                         insertSignatureView(el, domElem);
                     });
                 });
@@ -11358,7 +10974,7 @@ var PCCViewer = window.PCCViewer || {};
         })();
 
         // This module manages the hyperlink proximity menu and UI
-        var hyperlinkMenu = (function() {
+        var hyperlinkMenu = (function(){
             var control,
                 language,
                 template,
@@ -11394,10 +11010,10 @@ var PCCViewer = window.PCCViewer || {};
                 return div;
             }
 
-            function dismissHandler(ev) {
+            function dismissHandler(ev){
                 ev = ev || {};
 
-                if (ev.target && $.contains(globalDom, ev.target)) {
+                if (ev.target && $.contains(globalDom, ev.target)){
                     // this is a click inside the hyperlink menu, so we will not dismiss
                     // add another handler for the next click
                     return;
@@ -11411,11 +11027,11 @@ var PCCViewer = window.PCCViewer || {};
                     usingTouch = false,
                     inputIsFocused = false;
 
-                var $input = $(opts.dom).find('input').val(opts.href).on('input propertychange', function(ev) {
+                var $input = $(opts.dom).find('input').val(opts.href).on('input propertychange', function(ev){
                     // check if it is a propertychange event, and check the property
                     var event = ev.originalEvent ? ev.originalEvent : ev;
 
-                    if (event.type === 'propertychange' && event.propertyName !== 'value') {
+                    if (event.type === 'propertychange' && event.propertyName !== 'value'){
                         // this is a legacy IE event not related to the input value
                         return;
                     }
@@ -11425,12 +11041,12 @@ var PCCViewer = window.PCCViewer || {};
                     } else {
                         $done.attr('disabled', 'disabled');
                     }
-                }).on('keypress', function(ev) {
+                }).on('keypress', function(ev){
                     // submit the value with the enter key
                     if (ev.which === 13) {
                         dismissHandler();
                     }
-                }).on('touchstart click', function(ev) {
+                }).on('touchstart click', function(ev){
                     // keep any click or touch in the input field from bubbling up and causing other events
                     ev.preventDefault();
 
@@ -11445,14 +11061,14 @@ var PCCViewer = window.PCCViewer || {};
                     }
 
                     return false;
-                }).on('focus', function() {
+                }).on('focus', function(){
                     inputIsFocused = true;
 
                     // As long as the user is using touch, and the input is in focus, we should not dismiss for scroll events.
                     // The user is more likely to be dismissing the touch keyboard or trying to move the input box into a
                     // visible location.
                     useScrollDismiss = usingTouch ? false : useScrollDismiss;
-                }).on('blur', function() {
+                }).on('blur', function(){
                     inputIsFocused = false;
 
                     // The input has lost focus, so it is safe to dismiss on scroll now.
@@ -11460,7 +11076,7 @@ var PCCViewer = window.PCCViewer || {};
                 });
 
                 var dismissed = false;
-                function dismiss(isScroll) {
+                function dismiss(isScroll){
                     if (!useScrollDismiss && isScroll) {
                         // do not dismiss if this scroll is due to the touch keyboard opening
                         return;
@@ -11486,28 +11102,28 @@ var PCCViewer = window.PCCViewer || {};
                     proximityDismiss.remove();
 
                     // if the mark is already selected, use mark selection to refresh the context menu
-                    if (opts.mode === 'edit' && _.contains(control.getSelectedMarks(), opts.mark)) {
+                    if (opts.mode === 'edit' && _.contains(control.getSelectedMarks(), opts.mark)){
                         control.deselectMarks([opts.mark]);
                         control.selectMarks([opts.mark]);
                     }
                 }
 
-                var $done = $(opts.dom).find('[data-pcc-hyperlink="done"]').click(function() {
+                var $done = $(opts.dom).find('[data-pcc-hyperlink="done"]').click(function(){
                     setHref(opts.mark, $input.val());
                     dismiss();
                 });
 
-                var $delete = $(opts.dom).find('[data-pcc-hyperlink="delete"]').click(function() {
+                var $delete = $(opts.dom).find('[data-pcc-hyperlink="delete"]').click(function(){
                     control.deleteMarks([opts.mark]);
                     dismiss();
                 });
 
-                var $clear = $(opts.dom).find('[data-pcc-hyperlink="clear"]').click(function() {
+                var $clear = $(opts.dom).find('[data-pcc-hyperlink="clear"]').click(function(){
                     $input.val('').focus();
                     $done.attr('disabled', 'disabled');
                 });
 
-                var $link = $(opts.dom).find('[data-pcc-link-navigate]').on('click', function(ev) {
+                var $link = $(opts.dom).find('[data-pcc-link-navigate]').on('click', function(ev){
 
                     if (this.getAttribute('data-href-type') === 'page') {
                         ev.preventDefault();
@@ -11517,13 +11133,13 @@ var PCCViewer = window.PCCViewer || {};
                     dismiss();
                 });
 
-                var $edit = $(opts.dom).find('[data-pcc-hyperlink="edit"]').click(function() {
+                var $edit = $(opts.dom).find('[data-pcc-hyperlink="edit"]').click(function(){
                     // create a new menu in edit mode
                     dismiss();
                     createMenu(opts.mark, 'edit', opts.clientX, opts.clientY);
                 });
 
-                setTimeout(function() {
+                setTimeout(function(){
                     // delay subscription, since triggering a menu as a result of a click will also trigger this event
                     $(document.body).on('mousedown touchstart', dismissHandler);
                     // do not dismiss the menu if the user moves away when in edit mode
@@ -11548,7 +11164,7 @@ var PCCViewer = window.PCCViewer || {};
                     globalDismiss = undefined;
                 }
 
-                if (globalDom && $.contains(document.body, globalDom)) {
+                if (globalDom && $.contains(document.body, globalDom)){
                     $(globalDom).empty();
                     globalDom.parentElement.removeChild(globalDom);
                     globalDom = undefined;
@@ -11566,7 +11182,7 @@ var PCCViewer = window.PCCViewer || {};
                     windowWidth = $(window).width(),
                     top = Math.min(clientYscroll + offset, (windowHeight - height - offset)),
                     left = Math.min(clientXscroll + offset, (windowWidth - width - offset)),
-                    style = { top: top + 'px', left: left + 'px' };
+                    style = { top: top + 'px', left: left + 'px'};
 
                 if (!!opts.href) {
                     // center every menu except the creation one
@@ -11586,8 +11202,8 @@ var PCCViewer = window.PCCViewer || {};
                     style.left = 'auto';
                 }
 
-                var styleString = _.map(style, function(val, name) { return name + ':' + val; }).join(';');
-                opts.dom.setAttribute('style', styleString);
+                var styleString = _.map(style, function(val, name){ return name + ':' + val; }).join(';');
+                opts.dom.setAttribute('style',  styleString);
             }
 
             function createMenu(mark, mode, clientX, clientY) {
@@ -11619,27 +11235,27 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
-            function setHref(mark, linkText) {
+            function setHref(mark, linkText){
                 // if no protocol is specified, add the default "http://"
-                if (!linkText.match(/^([a-zA-Z]+\:)?\/\//)) {
+                if (!linkText.match(/^([a-zA-Z]+\:)?\/\//)){
                     linkText = 'http://' + linkText;
                 }
 
                 mark.setHref(linkText);
             }
 
-            function markCreatedHandler(ev) {
+            function markCreatedHandler(ev){
                 if (ev.mark.getType() === PCCViewer.Mark.Type.TextHyperlinkAnnotation && ev.clientX && ev.clientY) {
                     hyperlinkMenuHandler(ev, "edit");
                 }
             }
 
-            function init(viewerControl, languageOptions, hyperlinkMenuTemplate, getCurrentMouseToolType) {
+            function init(viewerControl, languageOptions, hyperlinkMenuTemplate, getCurrentMouseToolType){
                 control = viewerControl;
                 language = languageOptions;
                 template = hyperlinkMenuTemplate;
 
-                control.on(PCCViewer.EventType.Click, function(ev) {
+                control.on(PCCViewer.EventType.Click, function(ev){
                     var mouseToolType = getCurrentMouseToolType();
                     if (mouseToolType !== "PanAndEdit" && mouseToolType !== "EditMarks") {
                         // user is using a non-edit tool, so we should ignore the click
@@ -11673,7 +11289,7 @@ var PCCViewer = window.PCCViewer || {};
         })();
 
         // This module manages the redaction reason proximity menu and UI
-        var redactionReasonMenu = (function() {
+        var redactionReasonMenu = (function(){
             var control,
                 language,
                 template,
@@ -11689,17 +11305,17 @@ var PCCViewer = window.PCCViewer || {};
                     // On some devices, setTimeout prevents the dismissal of menu when immediate action menu closes
                     setTimeout(function() {
                         createMenu(ev.mark || ev.hyperlink, mode, ev.clientX, ev.clientY);
-                    }, 0);
+                    },0);
                 }
             }
 
             function createMenu(mark, mode, clientX, clientY) {
                 var opts = {
-                    mark: mark,
-                    mode: mode,
-                    clientX: clientX,
-                    clientY: clientY
-                },
+                        mark: mark,
+                        mode: mode,
+                        clientX: clientX,
+                        clientY: clientY
+                    },
                     dom = createDOM(opts);
 
                 parseIcons($(dom));
@@ -11712,7 +11328,7 @@ var PCCViewer = window.PCCViewer || {};
                 globalDom = dom;
             }
 
-            function createDOM(opts) {
+            function createDOM (opts) {
                 var div = document.createElement('div');
                 div.className = 'pcc-redaction-reason-menu';
 
@@ -11737,11 +11353,11 @@ var PCCViewer = window.PCCViewer || {};
                     usingTouch = false,
                     inputIsFocused = false;
 
-                var $input = $(opts.dom).find('input').on('input propertychange', function(ev) {
+                var $input = $(opts.dom).find('input').on('input propertychange', function(ev){
                     // check if it is a propertychange event, and check the property
                     var event = ev.originalEvent ? ev.originalEvent : ev;
 
-                    if (event.type === 'propertychange' && event.propertyName !== 'value') {
+                    if (event.type === 'propertychange' && event.propertyName !== 'value'){
                         // this is a legacy IE event not related to the input value
                         return;
                     }
@@ -11751,7 +11367,7 @@ var PCCViewer = window.PCCViewer || {};
                     } else {
                         $done.attr('disabled', 'disabled');
                     }
-                }).on('touchstart click', function(ev) {
+                }).on('touchstart click', function(ev){
                     // keep any click or touch in the input field from bubbling up and causing other events
                     ev.preventDefault();
 
@@ -11766,22 +11382,22 @@ var PCCViewer = window.PCCViewer || {};
                     }
 
                     return false;
-                }).on('focus', function() {
+                }).on('focus', function(){
                     inputIsFocused = true;
 
                     // As long as the user is using touch, and the input is in focus, we should not dismiss for scroll events.
                     // The user is more likely to be dismissing the touch keyboard or trying to move the input box into a
                     // visible location.
                     useScrollDismiss = usingTouch ? false : useScrollDismiss;
-                }).on('blur', function() {
+                }).on('blur', function(){
                     inputIsFocused = false;
 
                     // The input has lost focus, so it is safe to dismiss on scroll now.
                     useScrollDismiss = true;
                 }).on('input', function(ev) {
                     var val = $(this).val();
-                    if (viewer.redactionReasons.maxLengthFreeformRedactionReasons && val.length > viewer.redactionReasons.maxLengthFreeformRedactionReasons) {
-                        viewer.notify({ message: PCCViewer.Language.data.redactionReasonFreeforMaxLengthOver });
+                    if (viewer.redactionReasons.maxLengthFreeformRedactionReasons && val.length > viewer.redactionReasons.maxLengthFreeformRedactionReasons){
+                        viewer.notify({message: PCCViewer.Language.data.redactionReasonFreeforMaxLengthOver});
                         $(this).val(val.substring(0, viewer.redactionReasons.maxLengthFreeformRedactionReasons));
                     }
                     if (options.enableMultipleRedactionReasons) {
@@ -11792,7 +11408,7 @@ var PCCViewer = window.PCCViewer || {};
                 });
 
                 var dismissed = false;
-                function dismiss() {
+                function dismiss(){
                     // make sure the menu is dismissed only once
                     if (dismissed) {
                         return;
@@ -11804,7 +11420,7 @@ var PCCViewer = window.PCCViewer || {};
                     $(document.body).off('mousedown touchstart', dismissHandler);
 
                     // if the mark is already selected, use mark selection to refresh the context menu
-                    if (_.contains(control.getSelectedMarks(), opts.mark)) {
+                    if (_.contains(control.getSelectedMarks(), opts.mark)){
                         control.deselectMarks([opts.mark]);
                         control.selectMarks([opts.mark]);
                     }
@@ -11812,7 +11428,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 var $done = $(opts.dom).find('[data-pcc-redaction-reason="done"]').click(dismiss);
 
-                var $clear = $(opts.dom).find('[data-pcc-redaction-reason="clear"]').click(function() {
+                var $clear = $(opts.dom).find('[data-pcc-redaction-reason="clear"]').click(function(){
                     $input.val('').focus();
                     if (options.enableMultipleRedactionReasons) {
                         opts.mark.setReasons([]);
@@ -11822,10 +11438,10 @@ var PCCViewer = window.PCCViewer || {};
                     $done.attr('disabled', 'disabled');
                 });
 
-                function dismissHandler(ev) {
+                function dismissHandler(ev){
                     ev = ev || {};
 
-                    if (ev.target && $.contains(opts.dom, ev.target)) {
+                    if (ev.target && $.contains(opts.dom, ev.target)){
                         // this is a click inside the hyperlink menu, so we will not dismiss
                         // add another handler for the next click
                         return;
@@ -11839,7 +11455,7 @@ var PCCViewer = window.PCCViewer || {};
                     dismiss();
                 }
 
-                setTimeout(function() {
+                setTimeout(function(){
                     // delay subscription, since triggering a menu as a result of a click will also trigger this event
                     $(document.body).on('mousedown touchstart', dismissHandler);
                     // do not dismiss the menu if the user moves away when in edit mode
@@ -11869,7 +11485,7 @@ var PCCViewer = window.PCCViewer || {};
                     windowWidth = $(window).width(),
                     top = Math.min(clientYscroll + offset, (windowHeight - height - offset)),
                     left = Math.min(clientXscroll + offset, (windowWidth - width - offset)),
-                    style = { top: top + 'px', left: left + 'px' };
+                    style = { top: top + 'px', left: left + 'px'};
 
                 if (clientYscroll + height + offset > windowHeight) {
                     // menu will display past the bottom edge
@@ -11883,8 +11499,8 @@ var PCCViewer = window.PCCViewer || {};
                     style.left = 'auto';
                 }
 
-                var styleString = _.map(style, function(val, name) { return name + ':' + val; }).join(';');
-                opts.dom.setAttribute('style', styleString);
+                var styleString = _.map(style, function(val, name){ return name + ':' + val; }).join(';');
+                opts.dom.setAttribute('style',  styleString);
             }
 
             function clearDOM() {
@@ -11893,26 +11509,26 @@ var PCCViewer = window.PCCViewer || {};
                     globalDismiss = undefined;
                 }
 
-                if (globalDom && $.contains(document.body, globalDom)) {
+                if (globalDom && $.contains(document.body, globalDom)){
                     globalDom.parentElement.removeChild(globalDom);
                     globalDom = undefined;
                 }
             }
 
             function isPreloadedRedactionReason(reason) {
-                if (Array.isArray(reason)) {
-                    for (var i = 0; i < reason.length; i++) {
+                if(Array.isArray(reason)){
+                    for (var i=0;i<reason.length;i++) {
                         if (preloadedRedactionReasons[reason[i]] !== true) {
                             return false;
                         }
                     }
                     return true;
                 } else {
-                    return (preloadedRedactionReasons[reason] === true);
+                    return ( preloadedRedactionReasons[reason] === true);
                 }
             }
 
-            function init(viewerControl, languageOptions, redactionReasonMenuTemplate, redactionReasons, maxLength) {
+            function init(viewerControl, languageOptions, redactionReasonMenuTemplate, redactionReasons, maxLength){
                 control = viewerControl;
                 language = languageOptions;
                 template = redactionReasonMenuTemplate;
@@ -11932,7 +11548,7 @@ var PCCViewer = window.PCCViewer || {};
         })();
 
         // This module manages the menu that appears when a user creates an annotation.
-        var immediateActionMenu = (function() {
+        var immediateActionMenu = (function(){
             // All of the available immediate actions
             // Each object includes the following properties:
             // - name {string} : The name shown in the menu.
@@ -11945,37 +11561,37 @@ var PCCViewer = window.PCCViewer || {};
                 action: function(ev, mark) {
                     commentUIManager.addComment(mark.getConversation());
                 },
-                valid: function(event, type, elem) {
+                valid: function(event, type, elem){
                     // add this for annotations and redactions only
                     return !!actionsFilter.comment && type && !!type.match(/(annotation|redaction)/i);
                 }
-            }, {
+            },{
                 name: "Select",
                 languageKey: "select",
-                action: function(ev, mark) {
+                action: function(ev, mark){
                     // deselect all marks
                     control.deselectAllMarks();
                     // select only this one
                     control.selectMarks([mark]);
                 },
-                valid: function(event, type, elem) {
+                valid: function(event, type, elem){
                     // add this for annotations and redactions only
                     return !!actionsFilter.select && type && !!type.match(/(annotation|redaction)/i) && event.toLowerCase() !== PCCViewer.EventType.Click.toLowerCase();
                 }
-            }, {
+            },{
                 name: "Copy...",
                 languageKey: "copyMenu",
                 action: function(ev) {
                     initCopy(ev.selectedText);
                 },
-                valid: function(event, type, elem) {
+                valid: function(event, type, elem){
                     // add this for text selection only
                     return !!actionsFilter.copy && event.toLowerCase() === PCCViewer.EventType.TextSelected.toLowerCase();
                 }
-            }, {
+            },{
                 name: "Highlight",
                 languageKey: "highlight",
-                action: function(ev) {
+                action: function(ev){
                     // Create a highlight mark from the textSelection in the event
                     var mark = control.addMark(ev.textSelection.pageNumber, PCCViewer.Mark.Type.HighlightAnnotation);
                     mark.setPosition(ev.textSelection);
@@ -11988,19 +11604,19 @@ var PCCViewer = window.PCCViewer || {};
                         mark: mark,
                         clientX: ev.clientX,
                         clientY: ev.clientY,
-                        getType: function() { return "MarkCreated"; }
+                        getType: function(){ return "MarkCreated"; }
                     });
 
                     return false;
                 },
-                valid: function(event, type, elem) {
+                valid: function(event, type, elem){
                     // add this for text selection only
                     return !!actionsFilter.highlight && event.toLowerCase() === PCCViewer.EventType.TextSelected.toLowerCase();
                 }
-            }, {
+            },{
                 name: "Redact",
                 languageKey: "redact",
-                action: function(ev) {
+                action: function(ev){
                     // Create a highlight mark from the textSelection in the event
                     var mark = control.addMark(ev.textSelection.pageNumber, PCCViewer.Mark.Type.TextSelectionRedaction);
                     mark.setPosition(ev.textSelection);
@@ -12013,19 +11629,19 @@ var PCCViewer = window.PCCViewer || {};
                         mark: mark,
                         clientX: ev.clientX,
                         clientY: ev.clientY,
-                        getType: function() { return "MarkCreated"; }
+                        getType: function(){ return "MarkCreated"; }
                     });
 
                     return false;
                 },
-                valid: function(event, type, elem) {
+                valid: function(event, type, elem){
                     // add this for text selection only
                     return !!actionsFilter.redact && event.toLowerCase() === PCCViewer.EventType.TextSelected.toLowerCase();
                 }
-            }, {
+            },{
                 name: "Hyperlink",
                 languageKey: "hyperlink",
-                action: function(ev) {
+                action: function(ev){
                     var mark = control.addMark(ev.textSelection.pageNumber, PCCViewer.Mark.Type.TextHyperlinkAnnotation);
                     mark.setPosition(ev.textSelection);
 
@@ -12039,14 +11655,14 @@ var PCCViewer = window.PCCViewer || {};
                         clientY: ev.clientY
                     });
                 },
-                valid: function(event, type, elem) {
+                valid: function(event, type, elem){
                     // add this for text selection only
                     return !!actionsFilter.hyperlink && event.toLowerCase() === PCCViewer.EventType.TextSelected.toLowerCase();
                 }
-            }, {
+            },{
                 name: "Strikethrough",
                 languageKey: "strikethrough",
-                action: function(ev) {
+                action: function(ev){
                     // Create a highlight mark from the textSelection in the event
                     var mark = control.addMark(ev.textSelection.pageNumber, PCCViewer.Mark.Type.StrikethroughAnnotation);
                     mark.setPosition(ev.textSelection);
@@ -12059,32 +11675,32 @@ var PCCViewer = window.PCCViewer || {};
                         mark: mark,
                         clientX: ev.clientX,
                         clientY: ev.clientY,
-                        getType: function() { return "MarkCreated"; }
+                        getType: function(){ return "MarkCreated"; }
                     });
 
                     return false;
                 },
-                valid: function(event, type, elem) {
+                valid: function(event, type, elem){
                     // add this for text selection only
                     return !!actionsFilter.strikethrough && event.toLowerCase() === PCCViewer.EventType.TextSelected.toLowerCase();
                 }
-            }, {
+            },{
                 name: "Delete",
                 languageKey: "delete",
-                action: function(ev, mark) {
+                action: function(ev, mark){
                     viewer.viewerControl.deleteMarks(mark);
                 },
-                valid: function(event, type, elem) {
+                valid: function(event, type, elem){
                     // add this for text selection only
                     return !!actionsFilter["delete"] && type === 'RectangleRedaction';
                 }
-            }, {
+            },{
                 name: "Cancel",
                 languageKey: "cancelButton",
-                action: function() {
+                action: function(){
                     // no need to do anything here
                 },
-                valid: function(event, type, elem) {
+                valid: function(event, type, elem){
                     // add this for all types
                     return !!actionsFilter.cancel && elem.children.length;
                 }
@@ -12096,17 +11712,17 @@ var PCCViewer = window.PCCViewer || {};
                 dom, // only one instance of the menu is supported
                 touchstart,
                 touchstartHandler,
-                destroyFunction = function(ev) {
+                destroyFunction = function(ev){
                     ev = ev || { manualDismiss: true };
 
                     var $target = $(ev.target);
 
                     if (dom && dom.parentElement && (
-                        ($target.length && !$target.hasClass(menuClass) && !$target.parents().hasClass(menuClass)) ||
-                        ev.type === 'move' ||
-                        ev.type === 'scroll' ||
-                        ev.manualDismiss)
-                    ) {
+                            ($target.length && !$target.hasClass(menuClass) && !$target.parents().hasClass(menuClass)) ||
+                             ev.type === 'move' ||
+                             ev.type === 'scroll' ||
+                             ev.manualDismiss)
+                       ){
                         $(dom).off(touchstart, touchstartHandler);
                         // remove dom
                         $(dom).empty();
@@ -12206,7 +11822,7 @@ var PCCViewer = window.PCCViewer || {};
                                     // collect all checked reasons
                                     var $checkedReasons = $parent.find('[data-pcc-checkbox="redaction-reasons"].pcc-checked');
                                     var reasons = [];
-                                    $checkedReasons.each(function() {
+                                    $checkedReasons.each(function(){
                                         reasons.push($(this).find('.pcc-select-multiple-redaction-reason').text());
                                     });
                                     mark.setReasons(reasons);
@@ -12235,7 +11851,7 @@ var PCCViewer = window.PCCViewer || {};
 
                     elem.className = newClassName;
 
-                    _.forEach(actions, function(item) {
+                    _.forEach(actions, function (item) {
                         if (item.valid(eventType, mark && mark.getType(), elem)) {
                             var li = document.createElement('li');
                             // escape any possible unsafe characters in the name
@@ -12249,7 +11865,7 @@ var PCCViewer = window.PCCViewer || {};
                             // it cancels further mouse events, but will still fire the click. If we
                             // use a click event here, the menu will not usable on a Windows Touch device.
                             // Instead, we will use 'mouseup touchend' to detect a click.
-                            $(li).on('mouseup touchend', function($ev) {
+                            $(li).on('mouseup touchend', function ($ev) {
                                 if ($ev.cancelable) {
                                     $ev.preventDefault();
                                 }
@@ -12302,7 +11918,7 @@ var PCCViewer = window.PCCViewer || {};
                     triggerDomBB = domBB,
                     triggerHeight = height,
                     triggerWidth = width,
-                    style = { top: top + 'px', left: left + 'px' };
+                    style = { top: top + 'px', left: left + 'px'};
 
                 if (useHoverEnter) {
                     // apply the hover trigger class here if requested
@@ -12345,8 +11961,8 @@ var PCCViewer = window.PCCViewer || {};
                     style.left = 'auto';
                 }
 
-                var styleString = _.map(style, function(val, name) { return name + ':' + val; }).join(';');
-                dom.setAttribute('style', styleString);
+                var styleString = _.map(style, function(val, name){ return name + ':' + val; }).join(';');
+                dom.setAttribute('style',  styleString);
             }
 
             function replaceMenu(ev) {
@@ -12463,15 +12079,15 @@ var PCCViewer = window.PCCViewer || {};
                     $(document.body).on('mousedown touchstart', destroyFunction);
 
                     // expand the menu if it is hovered
-                    $(dom).on('mouseenter touchstart', function() {
+                    $(dom).on('mouseenter touchstart', function(){
                         $(this).addClass('pcc-expanded');
                         var rect = dom.getBoundingClientRect();
-                        if (rect.top < 0) {
+                        if(rect.top < 0){
                             $dom.css({
                                 top: dom.offsetTop - rect.top,
                                 bottom: 'auto'
                             });
-                        } else if (rect.bottom > window.innerHeight) {
+                        } else if(rect.bottom > window.innerHeight) {
                             $(dom).css({
                                 top: dom.offsetTop - (rect.bottom - window.innerHeight),
                                 bottom: 'auto',
@@ -12502,7 +12118,7 @@ var PCCViewer = window.PCCViewer || {};
                 opts.dom.style.opacity = opacity;
             }
 
-            function initCopy(text) {
+            function initCopy(text){
                 var templateOptions = {
                     language: language
                 };
@@ -12551,7 +12167,7 @@ var PCCViewer = window.PCCViewer || {};
                 return $overlay;
             }
 
-            function closeCopyOverlayOnInteraction(ev) {
+            function closeCopyOverlayOnInteraction(ev){
                 if ($overlay.is(ev.target)) {
                     $overlay.on('click', closeCopyOverlayOnInteraction);
                     closeCopyOverlay();
@@ -12565,7 +12181,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
-            function closeCopyOverlay() {
+            function closeCopyOverlay(){
                 $overlay.off('click', closeCopyOverlayOnInteraction);
                 $overlay.removeClass('pcc-open');
 
@@ -12607,7 +12223,7 @@ var PCCViewer = window.PCCViewer || {};
         })();
 
         // This module manages the comments interface and interacting with the comments.
-        var commentUIManager = (function() {
+        var commentUIManager = (function(){
             var editModeKey = 'Accusoft-isInEditMode',
                 prevTextKey = 'Accusoft-previousText',
                 selectedStateKey = 'Accusoft-selectedState',
@@ -12659,8 +12275,8 @@ var PCCViewer = window.PCCViewer || {};
 
             function parseHighlightString(str) {
                 var parts = str.split('|');
-                var selections = _.map(parts, function(part) {
-                    return (function() {
+                var selections = _.map(parts, function(part){
+                    return (function(){
                         var query = {},
                             temp = part.split('&');
                         for (var i = temp.length; i--;) {
@@ -12679,7 +12295,7 @@ var PCCViewer = window.PCCViewer || {};
                 return PCCViewer.Util.calculateNonOverlappingSelections(selections, '#ffffff');
             }
 
-            function cleanupConversationEvents(markId, existingDom) {
+            function cleanupConversationEvents(markId, existingDom){
                 // Clean up events on the old DOM
                 if (existingDom) {
                     $(existingDom).off().find('*').off();
@@ -12697,7 +12313,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
-            function conversationDOMFactory(conversation, state, existingDOM) {
+            function conversationDOMFactory(conversation, state, existingDOM){
                 var comments = conversation.getComments();
                 if (comments.length === 0) {
                     return;
@@ -12757,7 +12373,7 @@ var PCCViewer = window.PCCViewer || {};
                 dom.appendChild(trigger);
                 dom.appendChild(container);
 
-                _.forEach(comments, function(el, i, arr) {
+                _.forEach(comments, function(el, i, arr){
                     var fragment = document.createElement('div'),
                         editMode = el.getData(editModeKey),
                         highlight = el.getSessionData(highlightKey),
@@ -12794,12 +12410,12 @@ var PCCViewer = window.PCCViewer || {};
                             textPart = '',
                             span;
 
-                        _.forEach(highlightValues, function(val, i, arr) {
+                        _.forEach(highlightValues, function(val, i, arr){
                             if (i === 0) {
                                 // this is text before any selections begin
                                 // get the string from 0 to the start index
                                 textPart = text.substring(0, val.startIndex);
-                                textFragment.appendChild(document.createTextNode(textPart));
+                                textFragment.appendChild( document.createTextNode(textPart) );
                             }
 
                             span = null;
@@ -12808,20 +12424,20 @@ var PCCViewer = window.PCCViewer || {};
                             textPart = text.substr(val.startIndex, val.length);
                             span.style.background = val.color;
 
-                            span.appendChild(document.createTextNode(textPart));
+                            span.appendChild( document.createTextNode(textPart) );
                             textFragment.appendChild(span);
 
                             if (arr[i + 1] && val.endIndex + 1 < arr[i + 1].startIndex) {
                                 // there is text between this selection and the next
                                 textPart = text.substring(val.endIndex + 1, arr[i + 1].startIndex);
-                                textFragment.appendChild(document.createTextNode(textPart));
+                                textFragment.appendChild( document.createTextNode(textPart) );
                             }
 
                             if (i === arr.length - 1) {
                                 // this is text after all the selections
                                 // get the string from the end of the last selection to the end of the string
                                 textPart = text.substr(val.startIndex + val.length);
-                                textFragment.appendChild(document.createTextNode(textPart));
+                                textFragment.appendChild( document.createTextNode(textPart) );
                             }
                         });
 
@@ -12833,7 +12449,7 @@ var PCCViewer = window.PCCViewer || {};
 
                     // Create a dismiss function to use to dismiss this comment.
                     // All dismiss processes should call this function, so cleanup is performed.
-                    function dismissFunction() {
+                    function dismissFunction(){
                         // Remove comment dismiss and body dismiss event listeers.
                         $event.off(dismissEvent, dismissFunction);
                         $(document.body).off('click', bodyClickDismiss);
@@ -12848,14 +12464,14 @@ var PCCViewer = window.PCCViewer || {};
                     }
 
                     function bodyClickDismiss(ev) {
-                        // Check for a .pcc-comment parent
+                         // Check for a .pcc-comment parent
                         var $parent = $(ev.target).hasClass('pcc-comment') ? $(ev.target) : $(ev.target).parent('.pcc-comment');
 
                         // Check if the move context menu or context menu options is clicked
                         // Do not dismiss if one of these options are clicked
-                        var contextMenuClick = $(ev.target).data();
+                        var contextMenuClick =  $(ev.target).data();
                         if (contextMenuClick.pccMoveContextMenu !== undefined || contextMenuClick.pccToggle === "context-menu-options") {
-                            return;
+                          return;
                         }
 
                         // Check if the textarea for this comment is inside the clicked parent.
@@ -12883,7 +12499,7 @@ var PCCViewer = window.PCCViewer || {};
 
                     if (editMode) {
                         // Store only one dismiss function for each comment.
-                        $event.store[commentId + 'dismiss'] = function dismissComment() {
+                        $event.store[commentId + 'dismiss'] = function dismissComment(){
                             // Remove self when executing
                             delete $event.store[commentId + 'dismiss'];
 
@@ -12901,21 +12517,21 @@ var PCCViewer = window.PCCViewer || {};
                     // Add click handlers
                     $(fragment).children()
                         // listen to clicks on the Done button for comment editing
-                        .on('click', '[data-pcc-comment="done"]', function() {
+                        .on('click', '[data-pcc-comment="done"]', function(){
                             dismissOpts.save = true;
                             dismissFunction();
                         })
                         // listen to clicks on the Cancel button for comment editing
-                        .on('click', '[data-pcc-comment="cancel"]', function() {
+                        .on('click', '[data-pcc-comment="cancel"]', function(){
                             dismissOpts.cancel = true;
                             dismissFunction();
                         })
                         // listen to overflow menu trigger on touch screens
-                        .on('touchend', '.pcc-comment-menu-trigger', function(ev) {
+                        .on('touchend', '.pcc-comment-menu-trigger', function(ev){
                             ev.preventDefault();
                             $(this).parent('[data-pcc-comment-menu]').toggleClass('pcc-expanded');
                         })
-                        .on('click', '[data-pcc-comment-delete]', function(ev) {
+                        .on('click', '[data-pcc-comment-delete]', function(ev){
                             // Keep this event from registering on the bodyClickDismiss handler
                             ev.stopPropagation();
 
@@ -12925,7 +12541,7 @@ var PCCViewer = window.PCCViewer || {};
 
                             conversation.deleteComments(el);
                         })
-                        .on('click', '[data-pcc-comment-edit]', function(ev) {
+                        .on('click', '[data-pcc-comment-edit]', function(ev){
                             // Keep this event from registering on the bodyClickDismiss handler.
                             ev.stopPropagation();
 
@@ -12949,26 +12565,26 @@ var PCCViewer = window.PCCViewer || {};
 
                         var $doneButton = $dom.find('[data-pcc-comment="done"]');
 
-                        var disableDone = function() {
+                        var disableDone = function(){
                             if ($doneButton.attr('disabled') !== 'disabled') {
                                 $doneButton.attr('disabled', 'disabled');
                             }
                         };
 
-                        var enableDone = function() {
+                        var enableDone = function(){
                             if ($doneButton.attr('disabled')) {
                                 $doneButton.removeAttr('disabled');
                             }
                         };
 
                         // Listen to key events on the textarea
-                        $textarea.on('keyup', function() {
+                        $textarea.on('keyup', function(){
                             if (this.value === "") {
                                 disableDone();
                             } else {
                                 enableDone();
                             }
-                        }).on('touchstart click', function(ev) {
+                        }).on('touchstart click', function(ev){
                             // keep any click or touch in the input field from bubbling up and causing other events
                             ev.preventDefault();
                             $textarea.focus();
@@ -12979,7 +12595,7 @@ var PCCViewer = window.PCCViewer || {};
 
                         // Focus the textarea so that the user can start typing.
                         // Do this on the next event loop.
-                        _.defer(function() {
+                        _.defer(function(){
                             $textarea.focus();
                         });
                     }
@@ -12996,7 +12612,7 @@ var PCCViewer = window.PCCViewer || {};
                 selectedConversationInputWrapper.appendChild(selectedConversationInput);
                 $container.append(selectedConversationInputWrapper);
 
-                $(selectedConversationInputWrapper).on('click', function(ev) {
+                $(selectedConversationInputWrapper).on('click', function(ev){
                     // Keep this event from registering on the bodyClickDismiss handler.
                     ev.stopPropagation();
 
@@ -13063,7 +12679,7 @@ var PCCViewer = window.PCCViewer || {};
                             // Prevent the body click handler from being called
                             ev.stopPropagation();
 
-                            var bodyClickDismissSelection = function(ev) {
+                            var bodyClickDismissSelection = function (ev) {
                                 // Check for a .pcc-comment parent
                                 var $parent = $(ev.target).hasClass('pcc-comment') ? $(ev.target) : $(ev.target).parent('.pcc-comment');
 
@@ -13114,10 +12730,10 @@ var PCCViewer = window.PCCViewer || {};
                 // add JS hover handlers for legacy IE, which will not handle CSS hovers
                 if (dom.attachEvent) {
                     var $hoverMenu = $dom.find('[data-pcc-comment-menu]')
-                        .on('mouseenter', function(ev) {
+                        .on('mouseenter', function(ev){
                             $(this).parent('[data-pcc-comment-menu]').addClass('pcc-expanded');
                         })
-                        .on('mouseleave', function(ev) {
+                        .on('mouseleave', function(ev){
                             $(this).parent('[data-pcc-comment-menu]').removeClass('pcc-expanded');
                         });
                 }
@@ -13158,7 +12774,7 @@ var PCCViewer = window.PCCViewer || {};
                 if (selectedMarks.length === 0) {
                     singleMark = false;
                 } else if (selectedMarks.length > 1) {
-                    _.forEach(selectedMarks, function(mark, key) {
+                    _.forEach(selectedMarks, function(mark, key){
                         if (previousMarkId) {
                             singleMark = (previousMarkId === mark.id) && singleMark;
                         }
@@ -13181,7 +12797,7 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             function onReviewLayerClick(ev) {
-                if (ev.targetType === 'mark' && ev.mark.getInteractionMode() === PCCViewer.Mark.InteractionMode.SelectionDisabled) {
+                if (ev.targetType === 'mark' && ev.mark.getInteractionMode() === PCCViewer.Mark.InteractionMode.SelectionDisabled ) {
                     onSingleMarkSelected(ev.mark);
                 } else if (ev.targetType !== 'mark') {
                     var prevSelected = control.getSelectedConversation();
@@ -13202,7 +12818,7 @@ var PCCViewer = window.PCCViewer || {};
                 // its size and determine whether to apply the skinny class.
                 if (size < 600 && !$commentsPanel.hasClass(skinnyClass)) {
                     $commentsPanel.addClass(skinnyClass);
-                } else if (size >= 600 && $commentsPanel.hasClass(skinnyClass)) {
+                } else if (size >= 600 && $commentsPanel.hasClass(skinnyClass)){
                     $commentsPanel.removeClass(skinnyClass);
                 }
             }
@@ -13233,7 +12849,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
-            function initPanelMode(mode) {
+            function initPanelMode(mode){
                 if (mode === 'auto') {
                     updatePanel({ size: $pageList.width() });
                 } else if (mode === 'skinny') {
@@ -13241,7 +12857,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
-            function init(opts, commentsPanelViewerNode) {
+            function init(opts, commentsPanelViewerNode){
                 control = opts.viewerControl;
                 language = opts.language;
                 template = opts.template;
@@ -13293,11 +12909,11 @@ var PCCViewer = window.PCCViewer || {};
                 };
             }
 
-            function addComment(conversation) {
+            function addComment(conversation){
                 // Dismiss all comments that are currently in edit mode
                 $event.trigger(dismissEvent);
 
-                if (!control.getIsCommentsPanelOpen()) {
+                if (!control.getIsCommentsPanelOpen()){
                     $toggleButton.addClass('pcc-active');
                     control.openCommentsPanel();
                     if (viewer.isFitTypeActive === true) { viewer.viewerControl.fitContent(viewer.currentFitType); }
@@ -13335,7 +12951,7 @@ var PCCViewer = window.PCCViewer || {};
 
             function init() {
                 viewer.viewerControl.getClientRestrictions().then(restrictions => {
-                    viewer.viewerNodes.$imageTools.one('click', function() {
+                    viewer.viewerNodes.$imageTools.one('click', function () {
                         var disabledTools = {
                             sharpening: restrictions.sharpening === "disabled",
                             gamma: restrictions.gamma === "disabled",
@@ -13373,7 +12989,7 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.viewerNodes.$imageTools.addClass('pcc-active');
                 var $imageToolsPanel = viewer.$dom.find('[data-pcc-image-tools-panel]');
                 if ($imageToolsPanel.length > 0) {
-                    $imageToolsPanel.css("display", "block");
+                    $imageToolsPanel.css("display","block");
                     $(document).mouseup(hidePanel);
                 }
             }
@@ -13383,7 +12999,7 @@ var PCCViewer = window.PCCViewer || {};
                 // if the target of the click isn't the image tools panel nor a descendant of the image tools panel
                 if (!$imageToolsPanel.is(e.target) && $imageToolsPanel.has(e.target).length === 0) {
                     viewer.viewerNodes.$imageTools.removeClass('pcc-active');
-                    $imageToolsPanel.css("display", "none");
+                    $imageToolsPanel.css("display","none");
                     $(document).unbind('mouseup', hidePanel);
                 }
             }
@@ -13414,7 +13030,7 @@ var PCCViewer = window.PCCViewer || {};
                 gammaSlider.on('update', function(e, v) {
                     var value = v.value * 100;
                     if (value <= 50) {
-                        value = (value / 10) * 2;
+                        value = (value/10) * 2;
                     } else {
                         value = 2 * value - 90;
                     }
@@ -13459,10 +13075,10 @@ var PCCViewer = window.PCCViewer || {};
                 init: init,
                 refresh: refresh,
                 destroy: destroy,
-                on: function(name, func) {
+                on: function(name, func){
                     $event.on(name, func);
                 },
-                off: function(name, func) {
+                off: function(name, func){
                     $event.off(name, func);
                 }
             };
@@ -13470,7 +13086,7 @@ var PCCViewer = window.PCCViewer || {};
         })();
 
         // This module manages downloading the original file, as well as burning in redactions and signatures.
-        var fileDownloadManager = (function() {
+        var fileDownloadManager = (function(){
             var control, template, language,
                 documentDisplayName = options.documentDisplayName || '',
                 inPreviewMode = false,
@@ -13480,7 +13096,7 @@ var PCCViewer = window.PCCViewer || {};
                 // Retrieve the document name from the viewer initialization parameter
                 originalName = options.documentDisplayName ? options.documentDisplayName.replace(/\..+$/, '') : 'file';
 
-            function onTextSelected(ev) {
+            function onTextSelected (ev) {
                 textSelection = ev.textSelection;
             }
 
@@ -13502,7 +13118,7 @@ var PCCViewer = window.PCCViewer || {};
                     enableOptionsTimeout = undefined;
                 }
 
-                enableOptionsTimeout = setTimeout(function() {
+                enableOptionsTimeout = setTimeout(function () {
                     // Disable the dropdowns if no marks of the type exist.
                     var downloadOptions = getOptions(viewer.viewerNodes.$downloadDialog);
                     var availableMarkTypes = getAvailableMarkTypes();
@@ -13538,38 +13154,38 @@ var PCCViewer = window.PCCViewer || {};
 
             function onSuccessDownloadURL(url, $overlay, $overlayFade) {
                 showOverlay($overlay, $overlayFade, { mode: 'complete' })
-                    .on('click', '.pcc-overlay-download', function() {
-                        window.open(url);
-                        hideOverlay($overlay, $overlayFade);
-                    })
-                    .on('click', '.pcc-overlay-cancel', function(ev) {
-                        hideOverlay($overlay, $overlayFade);
-                    });
+                .on('click', '.pcc-overlay-download', function(){
+                    window.open(url);
+                    hideOverlay($overlay, $overlayFade);
+                })
+                .on('click', '.pcc-overlay-cancel', function(ev) {
+                    hideOverlay($overlay, $overlayFade);
+                });
             }
 
             function onFailure(reason, originalOptions, $overlay, $overlayFade, retryFunction) {
                 showOverlay($overlay, $overlayFade, { mode: 'error' })
-                    .on('click', '.pcc-overlay-retry', function() {
-                        retryFunction(originalOptions, $overlay, $overlayFade);
-                    });
+                .on('click', '.pcc-overlay-retry', function(){
+                    retryFunction(originalOptions, $overlay, $overlayFade);
+                });
             }
 
             function burnMarkup(options, $overlay, $overlayFade) {
                 var burnRequest, complete = false;
 
                 showOverlay($overlay, $overlayFade, { mode: 'pending' })
-                    .on('click', '.pcc-overlay-cancel', function(ev) {
-                        hideOverlay($overlay, $overlayFade);
-                        if (burnRequest && burnRequest.cancel && !complete) {
-                            burnRequest.cancel();
-                        }
-                    });
+                .on('click', '.pcc-overlay-cancel', function(ev) {
+                    hideOverlay($overlay, $overlayFade);
+                    if (burnRequest && burnRequest.cancel && !complete) {
+                        burnRequest.cancel();
+                    }
+                });
 
                 burnRequest = control.burnMarkup(options);
-                burnRequest.then(function success(url) {
+                burnRequest.then(function success(url){
                     complete = true;
                     onSuccessDownloadURL(url, $overlay, $overlayFade);
-                }, function failure(reason) {
+                }, function failure(reason){
                     complete = true;
                     // Check if the Promise was rejected due to a user cancel
                     if (reason.code !== "UserCancelled") {
@@ -13583,7 +13199,7 @@ var PCCViewer = window.PCCViewer || {};
                     availableTypes = {},
                     type;
 
-                _.forEach(allMarks, function(mark) {
+                _.forEach(allMarks, function(mark){
                     type = mark.getType();
 
                     if (type.match(/annotation/i) && mark.getVisible()) {
@@ -13639,7 +13255,7 @@ var PCCViewer = window.PCCViewer || {};
                 $overlay.off();
             }
 
-            function showOverlay($overlay, $overlayFade, templateOptions) {
+            function showOverlay($overlay, $overlayFade, templateOptions){
                 templateOptions = templateOptions || {};
                 templateOptions.mode = templateOptions.mode || 'select';
                 templateOptions.language = language;
@@ -13648,9 +13264,9 @@ var PCCViewer = window.PCCViewer || {};
                 $overlay.html(renderTemplate(template, {
                     options: templateOptions
                 })).addClass('pcc-open')
-                    .on('click', '.pcc-overlay-closer', function(ev) {
-                        hideOverlay($overlay, $overlayFade);
-                    });
+                .on('click', '.pcc-overlay-closer', function(ev) {
+                    hideOverlay($overlay, $overlayFade);
+                });
 
                 return $overlay;
             }
@@ -13702,7 +13318,7 @@ var PCCViewer = window.PCCViewer || {};
                         updateUIStateAndPreview();
                     });
 
-                viewer.viewerNodes.$downloadDocumentPreview.on('click', function(ev) {
+                viewer.viewerNodes.$downloadDocumentPreview.on('click', function (ev) {
                     // Toggle preview mode.
                     var $this = $(this);
 
@@ -13738,7 +13354,7 @@ var PCCViewer = window.PCCViewer || {};
                     }
                 });
 
-                viewer.viewerNodes.$downloadDocument.on('click', function(ev) {
+                viewer.viewerNodes.$downloadDocument.on('click', function (ev) {
                     var options = getOptions(viewer.viewerNodes.$downloadDialog),
                         originalIsPdf = documentDisplayName.match(/.pdf$/i) !== null,
                         downloadOptions = {
@@ -13788,7 +13404,7 @@ var PCCViewer = window.PCCViewer || {};
                 });
             }
 
-            var updateUIState = function(options) {
+            var updateUIState = function (options) {
                 if (options.burnAnnotations !== PCCViewer.Language.data.fileDownloadAnnotationsNone ||
                     options.burnRedactions !== PCCViewer.Language.data.fileDownloadRedactionsNone ||
                     options.burnSignatures !== PCCViewer.Language.data.fileDownloadESignaturesNone) {
@@ -13798,8 +13414,8 @@ var PCCViewer = window.PCCViewer || {};
                     options.downloadFormat = PCCViewer.Language.fileDownloadPdfFormat;
                 } else if (
                     !(options.burnAnnotations !== PCCViewer.Language.data.fileDownloadAnnotationsNone ||
-                        options.burnRedactions !== PCCViewer.Language.data.fileDownloadRedactionsNone ||
-                        options.burnSignatures !== PCCViewer.Language.data.fileDownloadESignaturesNone)) {
+                    options.burnRedactions !== PCCViewer.Language.data.fileDownloadRedactionsNone ||
+                    options.burnSignatures !== PCCViewer.Language.data.fileDownloadESignaturesNone)) {
 
                     viewer.viewerNodes.$downloadAsDropdown.removeClass('pcc-disabled');
                 }
@@ -13819,7 +13435,7 @@ var PCCViewer = window.PCCViewer || {};
                     redactionOptions: undefined
                 };
 
-                if (currentRedactionDownloadMode && currentRedactionDownloadMode === PCCViewer.Language.data.fileDownloadRedactionsDraft) {
+                if (currentRedactionDownloadMode && currentRedactionDownloadMode === PCCViewer.Language.data.fileDownloadRedactionsDraft ) {
                     options.redactionOptions = { mode: 'draft' };
                 }
                 return options;
@@ -13841,13 +13457,13 @@ var PCCViewer = window.PCCViewer || {};
 
                 conversionRequest.then(
 
-                    function onResolve(urls) {
+                    function onResolve(urls){
                         complete = true;
                         // The options are set so that only a single file is output during the conversion, so request the first URL when saving the converted file.
                         onSuccessDownloadURL(urls[0], $overlay, $overlayFade);
                     },
 
-                    function onReject(reason) {
+                    function onReject(reason){
                         complete = true;
                         if (reason.code !== "UserCancelled") {
                             onFailure(PCCViewer.Language.getValue("error." + reason.code), options, $overlay, $overlayFade, convert);
@@ -13859,8 +13475,8 @@ var PCCViewer = window.PCCViewer || {};
             function endPreview() {
                 var redactionViewMode = viewer.viewerControl.getRedactionViewMode();
                 if (redactionViewMode === PCCViewer.RedactionViewMode.Draft) {
-                    viewer.viewerControl.setRedactionViewMode(PCCViewer.RedactionViewMode.Normal);
-                    viewer.viewerNodes.$redactionViewMode.removeClass('pcc-active');
+                  viewer.viewerControl.setRedactionViewMode(PCCViewer.RedactionViewMode.Normal);
+                  viewer.viewerNodes.$redactionViewMode.removeClass('pcc-active');
                 }
 
                 viewer.viewerNodes.$downloadDialog.removeClass('pcc-download-preview');
@@ -13917,7 +13533,7 @@ var PCCViewer = window.PCCViewer || {};
                     mark.setInteractionMode(PCCViewer.Mark.InteractionMode.SelectionDisabled);
 
                     var category = (mark.getType().match(/redaction/i)) ? 'redactions' :
-                        (mark.getType().match(/signature/i)) ? 'signatures' : 'annotations';
+                                   (mark.getType().match(/signature/i)) ? 'signatures' : 'annotations';
                     switch (category) {
                         case 'redactions':
                             if (burnRedactions === PCCViewer.Language.data.fileDownloadRedactionsNone) {
@@ -13996,7 +13612,7 @@ var PCCViewer = window.PCCViewer || {};
                 var allMarks = control.getAllMarks();
                 _.each(allMarks, function(mark) {
                     var category = (mark.getType().match(/redaction/i)) ? 'redactions' :
-                        (mark.getType().match(/signature/i)) ? 'signatures' : 'annotations';
+                                   (mark.getType().match(/signature/i)) ? 'signatures' : 'annotations';
                     switch (category) {
                         case 'redactions':
                             if (burnRedactions === PCCViewer.Language.data.fileDownloadRedactionsNone) {
@@ -14047,7 +13663,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 // Restore mark interaction mode and visibility.
                 var marksState = currentViewerState['marksState'];
-                _.each(marksState, function(markState, markId) {
+                _.each(marksState, function(markState, markId){
                     var mark = control.getMarkById(markId);
                     mark.setInteractionMode(markState.interactionMode);
                     mark.setVisible(markState.visible);
@@ -14075,7 +13691,7 @@ var PCCViewer = window.PCCViewer || {};
         })();
 
         // This module manages displaying and navigating attachments.
-        var attachmentManager = (function() {
+        var attachmentManager = (function(){
             var control, language, initialized;
             var $attachmentsPanel, $currentDocument, $returnToPrevDocument, $attachmentList, $attachmentsBadge;
             var emailsStack = [];
@@ -14110,10 +13726,10 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // This function executes an API request to fetch the list of attachments of the current document.
-            var loadAttachmentList = function() {
+            var loadAttachmentList = function () {
                 viewer.viewerControl.loadAttachments().then(
                     // success:
-                    function(attachments) {
+                    function (attachments) {
                         if (!initialized) {
                             initialized = true;
                             changeCurrentDocument(currentDocument);
@@ -14126,7 +13742,7 @@ var PCCViewer = window.PCCViewer || {};
                         }
                     },
                     // failure:
-                    function(reason) {
+                    function (reason) {
                         viewer.notify({
                             message: language.attachments.failedToLoad
                         });
@@ -14138,7 +13754,7 @@ var PCCViewer = window.PCCViewer || {};
                 var attachmentsListTitle = viewer.$dom.find('[data-pcc-attachments-panel-list-title]');
                 attachmentsListTitle.text(language.attachments.title + ' (' + attachments.length + ')');
                 $attachmentList.empty();
-                if (attachments.length) {
+                if(attachments.length) {
 
                     $attachmentsBadge.text(attachments.length);
                     if (attachments.length > 9) {
@@ -14157,7 +13773,7 @@ var PCCViewer = window.PCCViewer || {};
                         markupRecordTpl = '<div class="pcc-row" data-pcc-attachment-id="{{ID}}"><a class="pcc-attachments-attachment-name" href="?viewingSessionId={{VIEWINGSESSIONID}}" target="_blank" rel="noreferrer noopener">{{DISPLAYNAME}}</a></div>';
                     }
 
-                    _.each(attachments, function(attachment, index) {
+                    _.each(attachments, function(attachment, index){
                         markupRecord = markupRecordTpl.replace('{{ID}}', index)
                             .replace('{{VIEWINGSESSIONID}}', attachment.viewingSessionId)
                             .replace('{{DISPLAYNAME}}', attachment.displayName);
@@ -14245,7 +13861,7 @@ var PCCViewer = window.PCCViewer || {};
             function showPanel() {
                 viewer.viewerNodes.$attachments.addClass('pcc-active');
                 if ($attachmentsPanel.length > 0) {
-                    $attachmentsPanel.css("display", "block");
+                    $attachmentsPanel.css("display","block");
                     const desirableLeftOffset = 185;
                     const overflow = $(window).width() - (desirableLeftOffset + $attachmentsPanel[0].offsetWidth);
                     if (overflow < 0) {
@@ -14261,7 +13877,7 @@ var PCCViewer = window.PCCViewer || {};
                 // if the target of the click isn't the attachments panel nor a descendant of the attachments panel
                 if (!e || (!$attachmentsPanel.is(e.target) && $attachmentsPanel.has(e.target).length === 0)) {
                     viewer.viewerNodes.$attachments.removeClass('pcc-active');
-                    $attachmentsPanel.css("display", "none");
+                    $attachmentsPanel.css("display","none");
                     $(document).unbind('mouseup', hidePanel);
                 }
             }
@@ -14272,7 +13888,7 @@ var PCCViewer = window.PCCViewer || {};
         })();
 
         // Image Stamp module
-        this.imageStamp = (function() {
+        this.imageStamp = (function () {
             var stampApi,
                 imageStampList,
                 imageStampListTimestamp = 0,
@@ -14284,13 +13900,13 @@ var PCCViewer = window.PCCViewer || {};
                 sortOrder = 'desc',
                 annotationTool,
                 redactionTool,
-                noop = function() { },
+                noop = function(){},
                 imageStampDataMap = {},
                 $event = $({}),
                 $overlay,
                 $toolButtons;
 
-            var init = function(viewerNodes) {
+            var init = function (viewerNodes) {
                 stampApi = new PCCViewer.ImageStamps(options);
 
                 annotationTool = PCCViewer.MouseTools.getMouseTool('AccusoftImageStampAnnotation');
@@ -14305,19 +13921,19 @@ var PCCViewer = window.PCCViewer || {};
                 initImageStampMouseTools();
             };
 
-            var refresh = function() {
+            var refresh = function () {
                 annotationTool = PCCViewer.MouseTools.getMouseTool('AccusoftImageStampAnnotation');
                 redactionTool = PCCViewer.MouseTools.getMouseTool('AccusoftImageStampRedaction');
                 initImageStampMouseTools();
             };
 
-            var initImageStampMouseTools = function() {
-                loadStampList(function(list) {
+            var initImageStampMouseTools = function(){
+                loadStampList(function(list){
                     var mostRecentImage,
                         mostRecentTime = Number.NEGATIVE_INFINITY;
 
                     // transform the stored list into a lookup object
-                    var storedList = _.reduce(storageGetImageStampList().imageStampList.imageStamps, function(seed, el) {
+                    var storedList = _.reduce(storageGetImageStampList().imageStampList.imageStamps, function(seed, el){
                         seed[el.id] = el;
                         return seed;
                     }, {});
@@ -14337,7 +13953,7 @@ var PCCViewer = window.PCCViewer || {};
                     });
 
                     if (mostRecentImage) {
-                        requestImageData(mostRecentImage, function(err, response) {
+                        requestImageData(mostRecentImage, function(err, response){
                             if (err) {
                                 $toolButtons.attr('disabled', 'disabled');
                                 return;
@@ -14358,7 +13974,7 @@ var PCCViewer = window.PCCViewer || {};
                 });
             };
 
-            var requestImageData = function(image, done) {
+            var requestImageData = function(image, done){
                 done = (typeof done === 'function') ? done : noop;
 
                 if (imageStampDataMap[image.id]) {
@@ -14368,7 +13984,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
 
                 // we did not find existing image data, so request it
-                stampApi.requestImageSourceBase64(image.id).then(function(response) {
+                stampApi.requestImageSourceBase64(image.id).then(function(response){
                     // save this image in the hash of known images
                     imageStampDataMap[image.id] = {
                         data: response,
@@ -14376,32 +13992,32 @@ var PCCViewer = window.PCCViewer || {};
                     };
 
                     done(undefined, response);
-                }, function fail(reason) {
+                }, function fail(reason){
                     done(PCCViewer.Language.getValue("error." + reason.code));
                 });
             };
 
-            var setToolsImage = function(newImage) {
+            var setToolsImage = function(newImage){
                 // set both mouse tools to use the same image
                 annotationTool.getTemplateMark().setImage(newImage);
                 redactionTool.getTemplateMark().setImage(newImage);
             };
 
-            var attachListeners = function() {
-                $overlay.on('click', '.pcc-image-stamp-list-item', function(ev) {
+            var attachListeners = function () {
+                $overlay.on('click', '.pcc-image-stamp-list-item', function (ev) {
                     ev.stopPropagation();
                     ev.preventDefault();
 
                     itemSelectionHandler(this);
                 });
 
-                $overlay.on('click', '[data-pcc-image-stamp=closer]', function(ev) {
+                $overlay.on('click', '[data-pcc-image-stamp=closer]', function (ev) {
                     ev.stopPropagation();
                     ev.preventDefault();
                     hideOverlay();
                 });
 
-                $overlay.on('click', '[data-image-stamp-sort-item]', function(ev) {
+                $overlay.on('click', '[data-image-stamp-sort-item]', function (ev) {
                     ev.stopPropagation();
                     ev.preventDefault();
                     sortSelectionHandler(this);
@@ -14409,13 +14025,13 @@ var PCCViewer = window.PCCViewer || {};
             };
 
             // Launch image stamp selection modal
-            var showOverlay = function() {
+            var showOverlay = function () {
                 // show the overlay immediately in "loading" mode
                 drawOverlay({
                     waiting: true
                 });
 
-                loadStampList(function done(list) {
+                loadStampList(function done(list){
                     sortList();
                     // update the overlay to show the new data
                     drawOverlay({
@@ -14429,7 +14045,7 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.viewerNodes.$overlayFade.show();
             };
 
-            var drawOverlay = function(params) {
+            var drawOverlay = function (params) {
                 $overlay.html(renderTemplate(options.template.imageStampOverlay, _.extend({
                     waiting: params.waiting,
                     imageStampList: imageStampList,
@@ -14440,7 +14056,7 @@ var PCCViewer = window.PCCViewer || {};
                 }, PCCViewer.Language.data)));
             };
 
-            var hideOverlay = function() {
+            var hideOverlay = function () {
                 $overlay.removeClass('pcc-open');
 
                 $event.off('imageSelect');
@@ -14449,7 +14065,7 @@ var PCCViewer = window.PCCViewer || {};
                 viewer.viewerNodes.$overlayFade.hide();
             };
 
-            var storeImageStampList = function() {
+            var storeImageStampList = function () {
                 if (localStorage && imageStampList && imageStampListTimestamp) {
                     var storageObj = {
                         imageStampList: imageStampList,
@@ -14460,19 +14076,19 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
-            var storageGetImageStampList = function() {
+            var storageGetImageStampList = function () {
                 if (localStorage) {
                     var storageObj = JSON.parse(localStorage.getItem('pccvImageStampList'));
 
                     if (storageObj) {
-                        _.each(storageObj.imageStampList.imageStamps, function(imageStamp) {
-                            if (imageStamp.recentlyUsedTime > imageStampMruTime) {
-                                imageStampMruTime = imageStamp.recentlyUsedTime;
-                            }
-                        });
+                        _.each(storageObj.imageStampList.imageStamps, function (imageStamp) {
+                        if (imageStamp.recentlyUsedTime > imageStampMruTime) {
+                            imageStampMruTime = imageStamp.recentlyUsedTime;
+                        }
+                    });
 
                         return storageObj;
-                    }
+                }
                 }
 
                 // return an empty list if nothing was found in local storage
@@ -14482,17 +14098,17 @@ var PCCViewer = window.PCCViewer || {};
                 };
             };
 
-            var itemSelectionHandler = function(itemEl) {
+            var itemSelectionHandler = function (itemEl) {
                 var stampId = $(itemEl).attr('data-image-stamp-id');
 
-                var imageObj = _.find(imageStampList.imageStamps, function(imageStamp) {
+                var imageObj = _.find(imageStampList.imageStamps, function (imageStamp) {
                     return imageStamp.id === stampId;
                 });
 
                 imageObj.recentlyUsedTime = imageStampMruTime = Math.round((new Date()).getTime() / 1000);
                 storeImageStampList();
 
-                requestImageData(imageObj, function(err, response) {
+                requestImageData(imageObj, function(err, response){
                     if (err) {
                         viewer.notify({
                             message: PCCViewer.Language.data.imageStampUnableToLoadImage
@@ -14512,7 +14128,7 @@ var PCCViewer = window.PCCViewer || {};
                 });
             };
 
-            var sortSelectionHandler = function(sortEl) {
+            var sortSelectionHandler = function (sortEl) {
                 sortName = $(sortEl).data('image-stamp-sort-item');
 
                 switch (sortName) {
@@ -14540,10 +14156,10 @@ var PCCViewer = window.PCCViewer || {};
                 });
             };
 
-            var sortList = function() {
+            var sortList = function () {
                 if ((sortKey === 'recentlyUsedTime' && imageStampMruTime === 0) ||
-                    typeof sortName === 'undefined' ||
-                    typeof sortOrder === 'undefined') {
+                        typeof sortName === 'undefined' ||
+                        typeof sortOrder === 'undefined') {
                     return;
                 }
 
@@ -14556,7 +14172,7 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
-            var loadStampList = function(done) {
+            var loadStampList = function (done) {
                 done = (typeof done === 'function') ? done : noop;
 
                 var now = Math.round((new Date()).getTime() / 1000);
@@ -14568,7 +14184,7 @@ var PCCViewer = window.PCCViewer || {};
                 } else {
                     stampApi.requestImageStampList().then(
                         //success
-                        function(listResponse) {
+                        function (listResponse) {
                             imageStampList = listResponse;
 
                             if (imageStampList.imageStamps.length === 0) {
@@ -14578,7 +14194,7 @@ var PCCViewer = window.PCCViewer || {};
 
                             imageStampListTimestamp = Math.round((new Date()).getTime() / 1000);
 
-                            _.each(imageStampList.imageStamps, function(imageStampObj, index) {
+                            _.each(imageStampList.imageStamps, function (imageStampObj, index) {
                                 imageStampList.imageStamps[index].url = stampApi.getImageSourceURL(imageStampObj.id);
                                 imageStampList.imageStamps[index].recentlyUsedTime = 0;
                             });
@@ -14587,7 +14203,7 @@ var PCCViewer = window.PCCViewer || {};
                             $toolButtons.removeAttr('disabled');
                         },
                         //failure
-                        function(reason) {
+                        function (reason) {
                             viewer.notify({
                                 message: PCCViewer.Language.data.imageStampUnableToLoad
                             });
@@ -14597,14 +14213,14 @@ var PCCViewer = window.PCCViewer || {};
                 }
             };
 
-            var getImageUrl = function(imageObject) {
+            var getImageUrl = function(imageObject){
                 return imageObject.dataUrl;
             };
 
-            var selectToolImage = function(done) {
+            var selectToolImage = function(done){
                 done = (typeof done === 'function') ? done : noop;
 
-                $event.one('imageSelect', function(ev, data) {
+                $event.one('imageSelect', function(ev, data){
                     setToolsImage(data);
                     done(data);
                 });
@@ -14612,10 +14228,10 @@ var PCCViewer = window.PCCViewer || {};
                 showOverlay();
             };
 
-            var selectMarkImage = function(done) {
+            var selectMarkImage = function(done){
                 done = (typeof done === 'function') ? done : noop;
 
-                $event.one('imageSelect', function(ev, data) {
+                $event.one('imageSelect', function(ev, data){
                     done(data);
                 });
 
@@ -14631,7 +14247,7 @@ var PCCViewer = window.PCCViewer || {};
             };
         })();
 
-        this.thumbnailManager = (function() {
+        this.thumbnailManager = (function(){
             var control, thumbControl,
                 $dom, $handle, $container, $viewer, $slider,
                 isInitialized = false,
@@ -14645,7 +14261,7 @@ var PCCViewer = window.PCCViewer || {};
                 latestKnownBreakpoint = viewer.latestBreakpoint,
                 sizeClasses = ['pcc-thumbnails-small', 'pcc-thumbnails-medium', 'pcc-thumbnails-large'];
 
-            onWindowResize(function() {
+            onWindowResize(function(){
                 if (!isEmbedded || viewer.latestBreakpoint === latestKnownBreakpoint) { return; }
 
                 // The viewport has changed states, so we need some DOM cleanup.
@@ -14685,12 +14301,12 @@ var PCCViewer = window.PCCViewer || {};
                 elem.style.width = width + 'px';
             }
 
-            function getPageToFocus() {
+            function getPageToFocus(){
                 var currentlyVisible = thumbControl.getVisiblePages(),
                     currentlySelected = thumbControl.getSelectedPages(),
                     pageToFocus;
 
-                _.forEach(currentlyVisible, function(val) {
+                _.forEach(currentlyVisible, function(val){
                     if (!pageToFocus && _.contains(currentlySelected, val)) {
                         pageToFocus = val;
                     }
@@ -14703,7 +14319,7 @@ var PCCViewer = window.PCCViewer || {};
                 return pageToFocus || undefined;
             }
 
-            function maintainVisibleState(updateFunc) {
+            function maintainVisibleState(updateFunc){
                 var pageToFocus = getPageToFocus();
 
                 updateFunc();
@@ -14722,9 +14338,9 @@ var PCCViewer = window.PCCViewer || {};
 
             function onSetSelectedPages(ev) {
                 var pageNum = ev.pageNumber,
-                    func = function() {
-                        thumbControl.setSelectedPages(pageNum);
-                    };
+                func = function () {
+                    thumbControl.setSelectedPages(pageNum);
+                };
                 if (ev.pageNumber) {
                     if (pageChangeTimeout) {
                         clearTimeout(pageChangeTimeout);
@@ -14738,10 +14354,10 @@ var PCCViewer = window.PCCViewer || {};
                 thumbControl.setSelectedPages(control.pageNumber);
             }
 
-            function calculateMinContainerSize() {
+            function calculateMinContainerSize(){
                 // Figure out the minimum size based on the first thumbnail size,
                 // and allow for extra room to handle the scroll bar nad drag handle.
-                return getDOMWidth($dom.children().first()) + marginOffset;
+                return getDOMWidth( $dom.children().first() ) + marginOffset;
             }
 
             function resizeContainerTo(width, fireEvent) {
@@ -14762,13 +14378,13 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
-            function initResizeHandler() {
+            function initResizeHandler(){
                 var containerRect,
                     viewerRect,
                     startClient = { x: 0, y: 0 },
                     pageToFocus, scrollHeight;
 
-                var onStart = function(ev, params) {
+                var onStart = function(ev, params){
                     containerRect = getDOMRect($container);
                     viewerRect = getDOMRect($viewer);
                     startClient.x = params.clientX;
@@ -14776,7 +14392,7 @@ var PCCViewer = window.PCCViewer || {};
                     pageToFocus = getPageToFocus();
                     scrollHeight = $dom.prop('scrollHeight');
                 };
-                var onMove = function(ev, params) {
+                var onMove = function(ev, params){
                     var deltaX = params.clientX - startClient.x;
                     var newWidth = Math.max(containerRect.width + deltaX, minContainerWidth),
                         newScrollHeight = $dom.prop('scrollHeight');
@@ -14795,7 +14411,7 @@ var PCCViewer = window.PCCViewer || {};
                         scrollHeight = newScrollHeight;
                     }
                 };
-                var onEnd = function(ev, params) {
+                var onEnd = function(ev, params){
                     thumbControl.reflow();
 
                     $event.trigger('resize', {
@@ -14810,20 +14426,20 @@ var PCCViewer = window.PCCViewer || {};
                     .on('end', onEnd)
                     .destroy;
 
-                $event.one('reset', function() {
+                $event.one('reset', function(){
                     destroyDrag();
                 });
             }
 
-            function resetResizeHandler() {
+            function resetResizeHandler(){
                 // remove any width that was set
                 $container.width('');
                 $event.trigger('reset');
             }
 
-            function resizeSliderChange(ev, params) {
+            function resizeSliderChange(ev, params){
                 if (!$dom.hasClass(params.value)) {
-                    maintainVisibleState(function() {
+                    maintainVisibleState(function(){
 
                         $dom.removeClass(sizeClasses.join(' ')).addClass(params.value);
                         thumbControl.reflow();
@@ -14836,12 +14452,12 @@ var PCCViewer = window.PCCViewer || {};
                 }
             }
 
-            function attachEvents() {
+            function attachEvents(){
                 thumbControl.on(PCCViewer.ThumbnailControl.EventType.PageSelectionChanged, onThumbnailSelectionChanged);
                 control.on(PCCViewer.EventType.PageChanged, onSetSelectedPages);
                 control.on(PCCViewer.EventType.ViewingSessionChanged, onViewingSessionChanged);
 
-                debouncedResize = onWindowResize(function() {
+                debouncedResize = onWindowResize(function(){
                     if (!isEmbedded) { return; }
 
                     thumbControl.reflow();
@@ -14852,7 +14468,7 @@ var PCCViewer = window.PCCViewer || {};
                 initResizeHandler();
             }
 
-            function detachEvents() {
+            function detachEvents(){
                 thumbControl.off(PCCViewer.ThumbnailControl.EventType.PageSelectionChanged, onThumbnailSelectionChanged);
                 control.off(PCCViewer.EventType.PageChanged, onSetSelectedPages);
                 control.off(PCCViewer.EventType.ViewingSessionChanged, onViewingSessionChanged);
@@ -14865,14 +14481,14 @@ var PCCViewer = window.PCCViewer || {};
                 resetResizeHandler();
             }
 
-            function embedThumbnailControl() {
+            function embedThumbnailControl(){
                 thumbControl = new PCCViewer.ThumbnailControl($dom.get(0), control, viewer.viewerControlOptions);
 
                 // attach events to interface between ViewerControl and ThumbnailControl
                 attachEvents();
             }
 
-            function destroy() {
+            function destroy(){
                 if (!isEmbedded) { return; }
 
                 isEmbedded = false;
@@ -14905,7 +14521,7 @@ var PCCViewer = window.PCCViewer || {};
                     embedThumbnailControl();
 
                     // set the selection to the current page
-                    thumbControl.setSelectedPages(control.getPageNumber());
+                    thumbControl.setSelectedPages( control.getPageNumber() );
 
                     // this first call returns the size of the first thumbnail
                     minContainerWidth = calculateMinContainerSize();
@@ -14916,10 +14532,10 @@ var PCCViewer = window.PCCViewer || {};
                     minContainerWidth = calculateMinContainerSize();
                 },
                 destroy: destroy,
-                on: function(name, func) {
+                on: function(name, func){
                     $event.on(name, func);
                 },
-                off: function(name, func) {
+                off: function(name, func){
                     $event.off(name, func);
                 }
             };
@@ -14934,7 +14550,7 @@ var PCCViewer = window.PCCViewer || {};
             viewerControl: viewer.viewerControl,
 
             // A method allowing the Viewer to be destroyed
-            destroy: function() {
+            destroy: function () {
                 viewer.search.clearSearch();
                 viewer.search = undefined;
 
@@ -14976,17 +14592,17 @@ var PCCViewer = window.PCCViewer || {};
         return publicViewer;
     }
 
-    var animation = (function() {
+    var animation = (function(){
         var list = {},
             frame,
-            raf = window.requestAnimationFrame ||
-                window.webkitRequestAnimationFrame ||
-                window.mozRequestAnimationFrame;
+            raf = window.requestAnimationFrame       ||
+                  window.webkitRequestAnimationFrame ||
+                  window.mozRequestAnimationFrame;
 
-        var onNextFrame = function() {
+        var onNextFrame = function(){
             frame = undefined;
 
-            _.forEach(list, function(func, key) {
+            _.forEach(list, function(func, key){
                 if (func && typeof func === 'function') {
                     func();
                 }
@@ -15013,7 +14629,7 @@ var PCCViewer = window.PCCViewer || {};
         };
     })();
 
-    var Drag = function(elem) {
+    var Drag = function(elem){
         var $elem = $(elem),
             $document = $(document),
             $event = $({}),
@@ -15038,7 +14654,7 @@ var PCCViewer = window.PCCViewer || {};
             endEvent += ' mouseup';
         }
 
-        function normalizeEvent(ev) {
+        function normalizeEvent(ev){
             if (ev.clientX && ev.clientY) {
                 return ev;
             }
@@ -15054,7 +14670,7 @@ var PCCViewer = window.PCCViewer || {};
             return ev;
         }
 
-        function start(ev) {
+        function start(ev){
             ev = normalizeEvent(ev);
             ev.preventDefault();
 
@@ -15063,40 +14679,40 @@ var PCCViewer = window.PCCViewer || {};
 
             $event.trigger('start', ev);
         }
-        function move(ev) {
+        function move(ev){
             ev = normalizeEvent(ev);
             ev.preventDefault();
 
-            animation.onUpdate('drag-move', function() {
+            animation.onUpdate('drag-move', function(){
                 $event.trigger('move', ev);
             });
         }
-        function end(ev) {
+        function end(ev){
             ev = normalizeEvent(ev);
             ev.preventDefault();
 
             $document.off(moveEvent, move);
             $document.off(endEvent, end);
 
-            animation.onUpdate('drag-end', function() {
+            animation.onUpdate('drag-end', function(){
                 $event.trigger('end', ev);
             });
         }
 
-        function init() {
+        function init(){
             $elem.on(startEvent, start);
             return retValue;
         }
-        function destroy() {
+        function destroy(){
             $elem.off(startEvent, start);
         }
 
         var retValue = {
-            on: function(name, func) {
+            on: function(name, func){
                 $event.on(name, func);
                 return retValue;
             },
-            off: function(name, func) {
+            off: function(name, func){
                 $event.off(name, func);
                 return retValue;
             },
@@ -15107,7 +14723,7 @@ var PCCViewer = window.PCCViewer || {};
         return retValue;
     };
 
-    var Slider = function(elem, opts) {
+    var Slider = function(elem, opts){
         opts = opts || {};
 
         function getDOMRect(elem) {
@@ -15129,12 +14745,12 @@ var PCCViewer = window.PCCViewer || {};
             value = 0, valueName,
             $document = $(document),
             moveType = 'transform' in thumb.style ? 'transform' :
-                'webkitTransform' in thumb.style ? '-webkit-transform' :
-                    'mozTransform' in thumb.style ? '-moz-transform' :
-                        'msTransform' in thumb.style ? '-ms-transform' :
-                            'oTransform' in thumb.style ? '-o-transform' : 'left',
+                       'webkitTransform' in thumb.style ? '-webkit-transform' :
+                       'mozTransform' in thumb.style ? '-moz-transform' :
+                       'msTransform' in thumb.style ? '-ms-transform' :
+                       'oTransform' in thumb.style ? '-o-transform' : 'left',
             $event = $({}),
-            destroyDrag = function() { },
+            destroyDrag = function(){},
             breaks;
 
         if (opts.breaks) {
@@ -15143,15 +14759,15 @@ var PCCViewer = window.PCCViewer || {};
                 fragment = document.createDocumentFragment(),
                 snapPercent;
 
-            breaks = _.map(opts.breaks, function(name, i) {
+            breaks = _.map(opts.breaks, function(name, i){
                 snapPercent = Math.ceil(snapInterval * i);
 
-                fragment.appendChild(generateBreakElement(snapPercent));
+                fragment.appendChild( generateBreakElement(snapPercent) );
 
                 return {
                     snapTo: snapPercent,
                     lowerBound: Math.ceil(boundInterval * i),
-                    upperBound: Math.floor(boundInterval * (i + 1)),
+                    upperBound: Math.floor(boundInterval * (i+1)),
                     name: name
                 };
             });
@@ -15159,7 +14775,7 @@ var PCCViewer = window.PCCViewer || {};
             track.appendChild(fragment);
         }
 
-        function generateBreakElement(percent) {
+        function generateBreakElement(percent){
             var span = document.createElement('span');
             span.style.left = percent + '%';
             span.className = 'pcc-slider-break';
@@ -15171,7 +14787,7 @@ var PCCViewer = window.PCCViewer || {};
 
             if (breaks) {
                 var key = parseInt(percent * 100, 10),
-                    breakObj = _.find(breaks, function(val) {
+                    breakObj = _.find(breaks, function(val){
                         return key >= val.lowerBound && key <= val.upperBound;
                     });
 
@@ -15192,11 +14808,11 @@ var PCCViewer = window.PCCViewer || {};
             return retValue;
         }
 
-        function onStart(ev, params) {
+        function onStart(ev, params){
             trackRect = getDOMRect(track);
             length = trackRect.width;
         }
-        function onMove(ev, params) {
+        function onMove(ev, params){
             var x = params.clientX,
                 percent;
 
@@ -15210,11 +14826,11 @@ var PCCViewer = window.PCCViewer || {};
                 moveTo(percent);
             }
         }
-        function onEnd(ev, params) {
+        function onEnd(ev, params){
             $event.trigger('change', { value: getValue() });
         }
 
-        function click(ev) {
+        function click(ev){
             if ($(ev.target).is(thumb)) { return; }
 
             onStart(ev, ev);
@@ -15240,10 +14856,10 @@ var PCCViewer = window.PCCViewer || {};
             }
         }
 
-        function destroy() {
+        function destroy(){
             destroyDrag();
             destroyDrag = undefined;
-            destroyDrag = function() { };
+            destroyDrag = function(){};
 
             $(elem).off('click', click);
 
@@ -15256,7 +14872,7 @@ var PCCViewer = window.PCCViewer || {};
         function setValue(val) {
             // if there are breaks, try to set based on break values
             if (breaks) {
-                var breakObj = _.find(breaks, function(obj) {
+                var breakObj = _.find(breaks, function(obj){
                     return obj.name === val;
                 });
 
@@ -15288,11 +14904,11 @@ var PCCViewer = window.PCCViewer || {};
             getValue: getValue,
             setValue: setValue,
             resize: resize,
-            on: function(name, func) {
+            on: function(name, func){
                 $event.on(name, func);
                 return retValue;
             },
-            off: function(name, func) {
+            off: function(name, func){
                 $event.off(name, func);
                 return retValue;
             },
@@ -15305,18 +14921,18 @@ var PCCViewer = window.PCCViewer || {};
         return retValue;
     };
 
-    var Queue = function() {
+    var Queue = function(){
         var deferArray = [],
             running = false;
 
         function recursiveExecute(done) {
             // maintain scope
-            (function recurse() {
+            (function recurse(){
                 if (running && deferArray.length) {
                     var func = deferArray.shift();
 
                     // continue on the next event loop iteration
-                    setTimeout(function() {
+                    setTimeout(function(){
                         func(recurse);
                     }, 0);
                 } else {
@@ -15328,36 +14944,36 @@ var PCCViewer = window.PCCViewer || {};
         }
 
         this.push = function(func) {
-            deferArray.push(function(cb) {
+            deferArray.push(function(cb){
                 func();
                 cb();
             });
         };
 
-        this.run = function(done) {
+        this.run = function(done){
             running = true;
             recursiveExecute(done);
         };
 
-        this.stop = function() {
+        this.stop = function(){
             running = false;
             return deferArray;
         };
 
-        this.isRunning = function() {
+        this.isRunning = function(){
             return running;
         };
     };
 
-    var ProximityDismiss = function(viewerDom) {
+    var ProximityDismiss = function(viewerDom){
         // generate a new instance every time this function is called
         // it needs access to the dom element in which the viewer is embedded
-        return (function() {
+        return (function (){
             var globalOpts = {},
                 onDismiss,
                 proximityEnabled = false,
                 firstMoveRecorded = false,
-                noop = function() { };
+                noop = function(){};
 
             function distance(x0, y0, x1, y1) {
                 var xs = x0 - x1,
@@ -15374,21 +14990,21 @@ var PCCViewer = window.PCCViewer || {};
                 // calc X offset
                 if (x < rect.left) {
                     distX = rect.left - x;
-                } else if (x > rect.left + rect.width) {
+                } else if(x > rect.left + rect.width) {
                     distX = x - (rect.left + rect.width);
                 }
 
                 // calc Y offset
                 if (y < rect.top) {
                     distY = rect.top - y;
-                } else if (y > rect.top + rect.height) {
+                } else if(y > rect.top + rect.height) {
                     distY = y - (rect.top + rect.height);
                 }
 
                 return Math.sqrt((distX * distX) + (distY * distY));
             }
 
-            function trackMouse(ev) {
+            function trackMouse(ev){
                 if (!globalOpts.dom) {
                     // the dom was already destroyed, so trigger a dismiss
                     onDismiss();
@@ -15448,23 +15064,23 @@ var PCCViewer = window.PCCViewer || {};
             // keep track of window resizing and scrolling, so they can be trottled a bit
             var scrollTimeout,
                 resizeTimeout,
-                onScrollDismiss = function() {
+                onScrollDismiss = function(){
                     onDismiss({ type: 'scroll' });
                 };
 
-            function trackScroll() {
+            function trackScroll(){
                 if (scrollTimeout) {
                     // don't register a new timeout if there is already one
                     return;
                 }
 
                 // dismiss in a short amount of time
-                scrollTimeout = setTimeout(function() {
+                scrollTimeout = setTimeout(function(){
                     scrollTimeout = undefined;
                     onScrollDismiss();
                 }, 100);
             }
-            function trackResize() {
+            function trackResize(){
                 if (scrollTimeout) {
                     clearTimeout(scrollTimeout);
                     scrollTimeout = undefined;
@@ -15481,7 +15097,7 @@ var PCCViewer = window.PCCViewer || {};
                 // on the device.
                 var origOnScrollDismiss = onScrollDismiss;
                 onScrollDismiss = noop;
-                resizeTimeout = setTimeout(function() {
+                resizeTimeout = setTimeout(function(){
                     onScrollDismiss = origOnScrollDismiss;
                 }, 800);
             }
@@ -15503,7 +15119,7 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             return {
-                add: function(opts, dismissFunc) {
+                add: function(opts, dismissFunc){
                     $scrollDom = $(viewerDom).find('.pccPageListContainerWrapper');
                     globalOpts = _.extend({
                         // default is to use both triggers
@@ -15531,7 +15147,7 @@ var PCCViewer = window.PCCViewer || {};
                         $(window).on('resize', trackResize);
                     }
                 },
-                remove: function() {
+                remove: function(){
                     removeActiveListeners();
                 }
             };
@@ -15548,50 +15164,50 @@ var PCCViewer = window.PCCViewer || {};
 
         function padNumber(val) {
             val = val.toString();
-            while (val.length < 2) {
+            while(val.length < 2) {
                 val = '0' + val;
             }
             return val;
         }
 
-        return template.replace(/MM/, padNumber(date.getMonth() + 1))
-            .replace(/M/, date.getMonth() + 1)
-            .replace(/DD/, padNumber(date.getDate()))
-            .replace(/D/, date.getDate())
-            .replace(/YYYY/, year)
-            .replace(/YY/, shortYear)
-            .replace(/HH/, padNumber(hours))
-            .replace(/H/, hours)
-            .replace(/hh/, padNumber(adjustedHours))
-            .replace(/h/, adjustedHours)
-            .replace(/mm/, padNumber(date.getMinutes()))
-            .replace(/m/, date.getMinutes())
-            .replace(/a/, period)
-            .replace(/A/, period.toUpperCase());
+        return template.replace(/MM/, padNumber( date.getMonth() + 1 ))
+                .replace(/M/, date.getMonth() + 1)
+                .replace(/DD/, padNumber(date.getDate()))
+                .replace(/D/, date.getDate())
+                .replace(/YYYY/, year )
+                .replace(/YY/, shortYear)
+                .replace(/HH/, padNumber(hours))
+                .replace(/H/, hours)
+                .replace(/hh/, padNumber(adjustedHours))
+                .replace(/h/, adjustedHours)
+                .replace(/mm/, padNumber(date.getMinutes()))
+                .replace(/m/, date.getMinutes())
+                .replace(/a/, period)
+                .replace(/A/, period.toUpperCase());
     }
 
-    var fontLoader = (function() {
+    var fontLoader = (function(){
         var isLegacyBrowser = document.documentMode && document.documentMode === 8,
             fonts = {
-                // Safe serif and sans-serif fonts
-                'Times New Roman': { useInLegacy: true },
-                'Arial': { useInLegacy: true },
+            // Safe serif and sans-serif fonts
+            'Times New Roman': { useInLegacy: true },
+            'Arial': { useInLegacy: true },
 
-                // Web fonts
-                'Cedarville Cursive': { useInLegacy: false },
-                'Dancing Script': { useInLegacy: true },
+            // Web fonts
+            'Cedarville Cursive': { useInLegacy: false },
+            'Dancing Script': { useInLegacy: true },
 
-                'La Belle Aurore': { useInLegacy: false },
-                'Sacramento': { useInLegacy: true },
+            'La Belle Aurore': { useInLegacy: false },
+            'Sacramento': { useInLegacy: true },
 
-                'Pacifico': { useInLegacy: true },
-                'Italianno': { useInLegacy: true },
+            'Pacifico': { useInLegacy: true },
+            'Italianno': { useInLegacy: true },
 
-                'Grand Hotel': { useInLegacy: true },
-                'Great Vibes': { useInLegacy: true }
-            };
+            'Grand Hotel': { useInLegacy: true },
+            'Great Vibes': { useInLegacy: true }
+        };
 
-        function load() {
+        function load(){
             // Create a preloader div
             var preloader = document.createElement('div'),
                 style = preloader.style,
@@ -15603,7 +15219,7 @@ var PCCViewer = window.PCCViewer || {};
             style.width = style.height = '0px';
             // Note: do not set zIndex to 0, as that would cause some browsers not to preload
 
-            _.each(returnNames(), function(name) {
+            _.each(returnNames(), function(name){
                 // create a temporary div
                 div = document.createElement('div');
                 div.style.fontFamily = '"' + name + '"';
@@ -15616,7 +15232,7 @@ var PCCViewer = window.PCCViewer || {};
             document.body.appendChild(preloader);
 
             // Remove the preloader on the next event loop
-            setTimeout(function() {
+            setTimeout(function(){
                 document.body.removeChild(preloader);
             }, 0);
         }
@@ -15624,8 +15240,8 @@ var PCCViewer = window.PCCViewer || {};
         // Gets a list of all the fonts.
         function returnNames() {
             // filter out non-legacy fonts in legacy browsers
-            return _.filter(_.keys(fonts), function(el) {
-                return !isLegacyBrowser || fonts[el].useInLegacy;
+            return _.filter(_.keys(fonts), function(el){
+                return !isLegacyBrowser  || fonts[el].useInLegacy;
             });
         }
 
@@ -15638,23 +15254,23 @@ var PCCViewer = window.PCCViewer || {};
 
     // This module manages the localStorage for signatures.
     // It populates the global, shared PCCViewer.Signatures collection
-    var localSignatureManager = (function() {
+    var localSignatureManager = (function () {
         var hasLocalStorage = (window.localStorage &&
-            window.localStorage.getItem &&
-            window.localStorage.setItem &&
-            window.localStorage.removeItem);
+                               window.localStorage.getItem &&
+                               window.localStorage.setItem &&
+                               window.localStorage.removeItem);
 
         // the key to use in local storage
         var signatureStorageKey = 'pccvSignatures';
         // create a new non-blocking queue to load saved signatures
         var loadQueue = new Queue();
 
-        function signatureAdded() {
+        function signatureAdded(){
             // overwrite signatures with PCCViewer.Signatures collection
             setStoredSignatures(PCCViewer.Signatures.toArray());
         }
 
-        function signatureRemoved() {
+        function signatureRemoved(){
             // overwrite signatures with PCCViewer.Signatures collection
             var signatureArr = PCCViewer.Signatures.toArray();
             setStoredSignatures(signatureArr);
@@ -15666,17 +15282,17 @@ var PCCViewer = window.PCCViewer || {};
             }
         };
 
-        var loadStoredSignatures = function() {
+        var loadStoredSignatures = function () {
             var signatures = getStoredSignatures();
 
             var tempCount = signatures.length;
 
-            while (tempCount--) {
+            while(tempCount--) {
                 // Make sure this loop does not block the UI if there are a lot of signatures,
                 // just in case. Also, ignore possible errors of generating functions inside a loop,
                 // we need to queue up individual functions.
                 /* jshint -W083 */
-                loadQueue.push(function() {
+                loadQueue.push(function(){
                     if (signatures.length) {
                         var value = signatures.shift();
 
@@ -15687,7 +15303,7 @@ var PCCViewer = window.PCCViewer || {};
             }
 
             // execute the non-blocking queue
-            loadQueue.run(function() {
+            loadQueue.run(function(){
                 // this code will execute if the queue is done or is stopped
                 if (signatures.length) {
                     saveSignaturesSync(signatures);
@@ -15708,7 +15324,7 @@ var PCCViewer = window.PCCViewer || {};
         }
 
 
-        var getStoredSignatures = function() {
+        var getStoredSignatures = function () {
             var signatures = localStorage.getItem(signatureStorageKey);
 
             if (typeof signatures === 'undefined' || signatures === null) {
@@ -15722,20 +15338,20 @@ var PCCViewer = window.PCCViewer || {};
             return signatures.values;
         };
 
-        var setStoredSignatures = function(signaturesArray) {
+        var setStoredSignatures = function (signaturesArray) {
             if (!hasLocalStorage) { return; }
 
             var sigTemplate = getSignatureStorageTemplate();
 
             // filter out signatures the user did not want to save
-            sigTemplate.values = _.filter(signaturesArray, function(el) {
+            sigTemplate.values = _.filter(signaturesArray, function(el){
                 return el.localSave;
             });
 
             window.localStorage.setItem(signatureStorageKey, JSON.stringify(sigTemplate));
         };
 
-        var clearAllStoredSignatures = function() {
+        var clearAllStoredSignatures = function () {
             if (!hasLocalStorage) { return; }
 
             window.localStorage.removeItem(signatureStorageKey);
@@ -15746,7 +15362,7 @@ var PCCViewer = window.PCCViewer || {};
         PCCViewer.Signatures.on('ItemRemoved', signatureRemoved);
 
         // make sure this module is disposed if the user navigates away from the page
-        $(window).on('beforeunload', function() {
+        $(window).on('beforeunload', function(){
             destroy();
         });
 
@@ -15798,7 +15414,7 @@ var PCCViewer = window.PCCViewer || {};
     }
 
     // Expose the Viewer through a jQuery plugin
-    $.fn.pccViewer = function(options) {
+    $.fn.pccViewer = function (options) {
         if (typeof options === 'undefined') {
             // If we are not given an options argument, return any existing viewer object associated with the
             // selected element.

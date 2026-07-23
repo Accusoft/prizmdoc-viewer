@@ -19,7 +19,7 @@
     }
     .pcc-icon.pcc-active {
         background-color: darken(@background_dark, 10%) !important;
-        border-bottom: 1px solid lighten(@background_dark, 30%);
+        border-bottom: 1px solid lighten(@background_dark, 20%);
         border-radius: 2px;
         .box-shadow(inset 0 1px 1px rgba(0, 0, 0, .4));
     }
@@ -38,8 +38,7 @@
     color: @font_color_dark;
     padding: 0;
     list-style: none;
-    font-size: 1.5em;
-    font-weight: bold;
+    font-size: 1.2em;
     white-space: nowrap;
 
     height: auto;
@@ -77,15 +76,9 @@
         }
     }
 
-    .pcc-end-group:after {
-        content: "";
-        display: block;
+    .pcc-separator {
         background: @border_light;
         height: 4px;
-        margin-top: 6px;
-        margin-bottom: -6px;
-        margin-left: -8px;
-        width: calc(100% + 16px);
     }
 }
 
@@ -93,145 +86,6 @@
     width: 47px;
     background: darken(@background_dark, 10%) !important;
     color: white;
-    font-weight: bold;
-}
-
-.pccv #pcc-redact-toolbar .pcc-left {
-    overflow: visible !important;
-}
-
-.pccv .pcc-select.pcc-redaction-tool-dropdown {
-    display: inline-block;
-    vertical-align: middle;
-    width: 34px;
-    height: 26px;
-    margin: 0;
-    padding: 0;
-    border: none;
-    background: transparent;
-
-    .pcc-label {
-        display: block;
-        width: 34px;
-        height: 26px;
-        padding: 0;
-        margin: 0;
-        background: @background_offwhite;
-        .box-shadow(none);
-        border-radius: 2px;
-        border: none;
-        cursor: pointer;
-        font-size: 0;
-        color: transparent;
-        text-indent: 0;
-        overflow: hidden;
-    }
-
-    .pcc-label .pcc-icon {
-        display: block;
-        float: left;
-        width: 24px;
-        height: 26px;
-        line-height: 26px;
-        text-align: center;
-        font-size: 16px;
-        color: #333;
-        background: transparent;
-        border: none;
-        border-radius: 0;
-        padding: 0;
-        margin: 0;
-    }
-
-    &.pcc-active .pcc-label,
-    .pcc-label.pcc-active {
-        background-color: @icon_active_light;
-        border-bottom: 1px solid @border_white;
-        .box-shadow(inset 0 1px 1px rgba(0, 0, 0, .4));
-    }
-
-    &.pcc-active .pcc-label.pcc-locked,
-    .pcc-label.pcc-active.pcc-locked {
-        background-color: @icon_active_dark;
-    }
-
-    &.pcc-active .pcc-label .pcc-icon,
-    .pcc-label.pcc-active .pcc-icon {
-        color: @font_color_white;
-    }
-
-    &.pcc-active .pcc-label.pcc-locked .pcc-icon svg,
-    .pcc-label.pcc-active.pcc-locked .pcc-icon svg {
-        fill: @font_color_white;
-    }
-
-    &.pcc-active .pcc-arrow-down {
-        border-top-color: @font_color_white;
-    }
-
-    .pcc-redaction-dropdown-toggle {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 10px;
-        height: 26px;
-        cursor: pointer;
-    }
-
-    .pcc-arrow-down {
-        position: absolute;
-        right: 2px;
-        top: 11px;
-        margin: 0;
-        padding: 0;
-        border-top-color: @icon_color;
-    }
-
-    .pcc-dropdown {
-        top: 34px;
-        left: 0;
-        z-index: 10000;
-        width: auto;
-        min-width: 150px;
-        padding: 0;
-        background: rgb(242, 243, 246);
-        opacity: 1;
-    }
-
-    .pcc-dropdown.pcc-open {
-        height: auto;
-        visibility: visible;
-    }
-
-    .pcc-dropdown > div {
-        display: block;
-        width: 100%;
-        text-align: left;
-        padding: 6px 12px;
-        line-height: 24px;
-        font-size: 13px;
-        color: #333;
-        box-sizing: border-box;
-        white-space: nowrap;
-    }
-
-    .pcc-dropdown > div .pcc-icon {
-        display: inline-block;
-        float: none;
-        vertical-align: top;
-        margin: 0 8px 0 0;
-        border: none;
-        background: transparent;
-        width: 24px;
-        height: 24px;
-        line-height: 24px;
-        text-align: center;
-        font-size: 16px;
-    }
-
-    .pcc-dropdown > div:hover {
-        background-color: #E8E8E8;
-    }
 }
 
 .pcc-image-tools-panel {
@@ -251,26 +105,4 @@
     box-shadow: rgba(0, 0, 0, 0.4) 2px 2px 3px 0px;
     padding-bottom: 10px;
     padding-top: 7px;
-}
-
-.pcc-skip-link {
-    position: absolute;
-    left: -9999px;
-    top: auto;
-    width: 1px;
-    height: 1px;
-    z-index: 9999;
-    text-decoration: none;
-}
-
-.pcc-skip-link:focus {
-    top: 0;
-    left: 0;
-    width: auto;
-    height: auto;
-    background-color: @background_offwhite;
-    padding: 8px;
-    color: @font_color_dark;
-    outline: none;
-    box-shadow: inset 0px 0px 0px 2px @highlight_blue;
 }

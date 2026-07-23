@@ -1,12 +1,78 @@
-<a href="#pcc-page-list" class="pcc-skip-link" id="pcc-skip-link"><%= data.skipToContent %></a>
-
 <div data-pcc-nav-trigger class="pcc-tab-item pcc-trigger pcc-hide"><span class="pcc-icon pcc-icon-view"></span> <%= data.viewLabel %></div>
 
 <div class="pcc-tabset pcc-nav-tabset" data-pcc-nav role="tablist" id="pcc-tablist">
 
-    <div class="pcc-tab" data-pcc-nav-tab="view" data-pcc-removable-id="viewTab">
-        <button class="pcc-tab-item active" role="tab" aria-selected="true" aria-controls="pcc-view-toolbar" id="pcc-view-tab"><span class="pcc-icon pcc-icon-view"></span> <%= data.viewLabel %></button>
-        
+    <div class="pcc-tab" data-pcc-nav-tab="view" data-pcc-removable-id="viewTab" role="presentation">
+        <button class="pcc-tab-item active" role="tab" aria-selected="true" aria-controls="pcc-view-toolbar" id="view-tab"><span class="pcc-icon pcc-icon-view"></span> <%= data.viewLabel %></button>
+        <div class="pcc-tab-pane pcc-tab-advanced" id="pcc-view-toolbar" role="tabpanel">
+            <div class="pcc-left pcc-pull-left">
+                <button data-pcc-toggle="dialog-thumbnails" class="pcc-icon pcc-icon-thumbnails" title="<%= data.thumbnails %>"></button>
+                <button data-pcc-mouse-tool="AccusoftMagnifier" class="pcc-icon pcc-icon-magnifiertool" title="<%= data.magnifierTool %>"></button>
+                <button data-pcc-mouse-tool="AccusoftSelectToZoom" class="pcc-icon pcc-icon-rectanglezoomtool" title="<%= data.rectangleZoom %>"></button>
+                <button data-pcc-rotate-document class="pcc-icon pcc-icon-rotate-doc-cw" title="<%= data.rotateDocument %>"></button>
+                <button data-pcc-rotate-page class="pcc-icon pcc-icon-rotate-page-cw" title="<%= data.rotatePage %>"></button>
+                <button data-pcc-image-tools class="pcc-icon pcc-icon-imageTools" title="<%= data.imageTools %>" data-pcc-removable-id="image-tools">
+                </button>
+                <div data-pcc-image-tools-panel class="pccv pcc-hide pcc-image-tools-panel" tabindex=-1>
+                    <div class="pcc-image-tools-slider-container" data-pcc-removable-id="sharpening">
+                        <div class="pcc-image-tools-title"><%= data.imageOperations.sharpening %></div>
+                        <div class="pcc-slider pcc-image-tools-slider" data-pcc-slider="sharpening">
+                            <div class="pcc-slider-track pcc-image-tools-slider-control">
+                                <div class="pcc-slider-thumb pcc-icon pcc-icon-annotate-ellipse-filled"></div>
+                            </div>
+                        </div>
+                        <div data-pcc-image-tools-slider-sharpening-value class="pcc-image-tools-slider-value">0</div>
+                    </div>
+                    <div class="pcc-image-tools-slider-container" data-pcc-removable-id="gamma">
+                        <div class="pcc-image-tools-title"><%= data.imageOperations.gamma %></div>
+                        <div class="pcc-slider pcc-image-tools-slider" data-pcc-slider="gamma">
+                            <div class="pcc-slider-track pcc-image-tools-slider-control">
+                                <span style="left:50%" class="pcc-slider-break"></span>
+                                <div class="pcc-slider-thumb pcc-icon pcc-icon-annotate-ellipse-filled"></div>
+                            </div>
+                        </div>
+                        <div data-pcc-image-tools-slider-gamma-value class="pcc-image-tools-slider-value">1</div>
+                    </div>
+                    <div class="pcc-image-tools-slider-container" data-pcc-removable-id="svgStrokeWidth">
+                        <div class="pcc-image-tools-title"><%= data.imageOperations.svgStrokeWidth %></div>
+                        <div class="pcc-slider pcc-image-tools-slider" data-pcc-slider="svgStrokeWidth">
+                            <div class="pcc-slider-track pcc-image-tools-slider-control">
+                                <div class="pcc-slider-thumb pcc-icon pcc-icon-annotate-ellipse-filled"></div>
+                            </div>
+                        </div>
+                        <div data-pcc-image-tools-slider-svg-stroke-value  class="pcc-image-tools-slider-value">1</div>
+                    </div>
+                </div>
+                <button data-pcc-attachments class="pcc-icon pcc-icon-paperclip pcc-hide" data-pcc-removable-id="attachments" title="<%= data.attachments.tooltip %>">
+                    <span class="pcc-icon-badge">0</span>
+                </button>
+                <div data-pcc-attachments-panel class="pccv pcc-hide pcc-attachments-panel" tabindex=-1>
+                    <div class="pcc-dialog-wrapper">
+                        <div class="pcc-attachments-section pcc-attachments-section-current-document">
+                            <div class="pcc-attachments-section-content">
+                                <div class="pcc-attachments-current-document pcc-row">
+                                    <span class="pcc-icon pcc-icon-document"></span>
+                                    <a class="pcc-attachments-current-document-name" href="#"></a>
+                                    <span class="pcc-icon pcc-icon-check"></span>
+                                </div>
+                            </div>
+                            <button class="pcc-attachments-to-prev-document pcc-disabled">
+                                <span class="pcc-icon pcc-icon-arrow-left"></span>
+                                <a href="#"><%= data.attachments.returnToPrevDocument%></a>
+                            </button>
+                        </div>
+                        <div class="pcc-attachments-section">
+                            <div data-pcc-attachments-panel-list class="pcc-attachments-section-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pcc-pull-right">
+                <button class="pcc-icon pcc-icon-document-compare pcc-hide" data-pcc-toggle="dialog-revision" title="<%= data.docRevision %>"></button>
+                <button class="pcc-icon pcc-icon-print" title="<%= data.printButton %>" data-pcc-print="launch" data-pcc-removable-id="printing"></button>
+                <button data-pcc-toggle="dialog-download" data-pcc-removable-id="download" class="pcc-icon pcc-icon-download" title="<%= data.download %>"></button>
+            </div>
+        </div>
         <div class="pcc-tab-preview">
             <div class="pcc-center">
                 <button data-pcc-end-preview><%= data.previewEnd %></button>
@@ -14,268 +80,178 @@
         </div>
     </div>
 
-    <div class="pcc-tab" data-pcc-nav-tab="search" data-pcc-removable-id="searchTab">
-        <button class="pcc-tab-item" role="tab" aria-controls="pcc-search-toolbar" id="pcc-search-tab" tabindex="-1"><span class="pcc-icon pcc-icon-search"></span> <%= data.search %></button>
-    </div>
-
-    <div class="pcc-tab" data-pcc-nav-tab="annotate" data-pcc-removable-id="annotateTab">
-        <button class="pcc-tab-item" role="tab" aria-controls="pcc-annotate-toolbar" id="pcc-annotate-tab" tabindex="-1"><span class="pcc-icon pcc-icon-edit"></span> <%= data.annotateLabel %></button>
-    </div>
-
-    <div class="pcc-tab" data-pcc-nav-tab="redact" data-pcc-removable-id="redactTab">
-        <button class="pcc-tab-item" role="tab" aria-controls="pcc-redact-toolbar" id="pcc-redact-tab" tabindex="-1"><span class="pcc-icon pcc-icon-redact"></span> <%= data.redactLabel %></button>
-    </div>
-
-    <div class="pcc-tab" data-pcc-nav-tab="esign" data-pcc-removable-id="esignTab">
-        <button class="pcc-tab-item" role="tab" aria-controls="pcc-esign-toolbar" id="pcc-esign-tab" tabindex="-1"><span class="pcc-icon pcc-icon-esign"></span> <%= data.esignLabel %></button>
-    </div>
-</div>
-
-<div class="pcc-tab-pane pcc-tab-advanced" id="pcc-view-toolbar" role="tabpanel" aria-labelledby="pcc-view-tab">
-    <div class="pcc-left pcc-pull-left">
-        <button data-pcc-toggle="dialog-thumbnails" class="pcc-icon pcc-icon-thumbnails" title="<%= data.thumbnails %>"></button>
-        <button data-pcc-mouse-tool="AccusoftMagnifier" class="pcc-icon pcc-icon-magnifiertool" title="<%= data.magnifierTool %>"></button>
-        <button data-pcc-mouse-tool="AccusoftSelectToZoom" class="pcc-icon pcc-icon-rectanglezoomtool" title="<%= data.rectangleZoom %>"></button>
-        <button data-pcc-rotate-document class="pcc-icon pcc-icon-rotate-doc-cw" title="<%= data.rotateDocument %>"></button>
-        <button data-pcc-rotate-page class="pcc-icon pcc-icon-rotate-page-cw" title="<%= data.rotatePage %>"></button>
-        <button data-pcc-image-tools class="pcc-icon pcc-icon-imageTools" title="<%= data.imageTools %>" data-pcc-removable-id="image-tools">
-        </button>
-        <div data-pcc-image-tools-panel class="pccv pcc-hide pcc-image-tools-panel" tabindex=-1>
-            <div class="pcc-image-tools-slider-container" data-pcc-removable-id="sharpening">
-                <div class="pcc-image-tools-title"><%= data.imageOperations.sharpening %></div>
-                <div class="pcc-slider pcc-image-tools-slider" data-pcc-slider="sharpening">
-                    <div class="pcc-slider-track pcc-image-tools-slider-control">
-                        <div class="pcc-slider-thumb pcc-icon pcc-icon-annotate-ellipse-filled"></div>
-                    </div>
-                </div>
-                <div data-pcc-image-tools-slider-sharpening-value class="pcc-image-tools-slider-value">0</div>
-            </div>
-            <div class="pcc-image-tools-slider-container" data-pcc-removable-id="gamma">
-                <div class="pcc-image-tools-title"><%= data.imageOperations.gamma %></div>
-                <div class="pcc-slider pcc-image-tools-slider" data-pcc-slider="gamma">
-                    <div class="pcc-slider-track pcc-image-tools-slider-control">
-                        <span style="left:50%" class="pcc-slider-break"></span>
-                        <div class="pcc-slider-thumb pcc-icon pcc-icon-annotate-ellipse-filled"></div>
-                    </div>
-                </div>
-                <div data-pcc-image-tools-slider-gamma-value class="pcc-image-tools-slider-value">1</div>
-            </div>
-            <div class="pcc-image-tools-slider-container" data-pcc-removable-id="svgStrokeWidth">
-                <div class="pcc-image-tools-title"><%= data.imageOperations.svgStrokeWidth %></div>
-                <div class="pcc-slider pcc-image-tools-slider" data-pcc-slider="svgStrokeWidth">
-                    <div class="pcc-slider-track pcc-image-tools-slider-control">
-                        <div class="pcc-slider-thumb pcc-icon pcc-icon-annotate-ellipse-filled"></div>
-                    </div>
-                </div>
-                <div data-pcc-image-tools-slider-svg-stroke-value  class="pcc-image-tools-slider-value">1</div>
-            </div>
-        </div>
-        <button data-pcc-attachments class="pcc-icon pcc-icon-paperclip pcc-hide" data-pcc-removable-id="attachments" title="<%= data.attachments.tooltip %>">
-            <span class="pcc-icon-badge">0</span>
-        </button>
-        <div data-pcc-attachments-panel class="pccv pcc-hide pcc-attachments-panel" tabindex=-1>
-            <div class="pcc-dialog-wrapper">
-                <div class="pcc-attachments-section pcc-attachments-section-current-document">
-                    <div class="pcc-attachments-section-content">
-                        <div class="pcc-attachments-current-document pcc-row">
-                            <span class="pcc-icon pcc-icon-document"></span>
-                            <a class="pcc-attachments-current-document-name" href="#"></a>
-                            <span class="pcc-icon pcc-icon-check"></span>
-                        </div>
-                    </div>
-                    <button class="pcc-attachments-to-prev-document pcc-disabled">
-                        <span class="pcc-icon pcc-icon-arrow-left"></span>
-                        <a href="#"><%= data.attachments.returnToPrevDocument%></a>
+    <div class="pcc-tab" data-pcc-nav-tab="search" data-pcc-removable-id="searchTab" role="presentation">
+        <button class="pcc-tab-item" role="tab" aria-controls="pcc-search-toolbar" id="search-tab" tabindex="-1"><span class="pcc-icon pcc-icon-search"></span> <%= data.search %></button>
+        <div class="pcc-tab-pane pcc-tab-advanced" id="pcc-search-toolbar" role="tabpanel">
+            <div class="pcc-left pcc-pull-left">
+                <button class="pcc-icon pcc-icon-list pcc-search-menu-button" title="<%= data.searchOptions %>" data-pcc-toggle="dialog-search"></button>
+                <div class="pcc-search-group pcc-search-group-input">
+                    <button title="<%= data.previousSearches %>" data-pcc-toggle="dropdown-search-box">
+                        <span class="pcc-arrow-down"></span>
+                    </button>
+                    <input type="text" data-pcc-search="input" placeholder="<%= data.searchDocument %>"
+                        autocorrect="off" autocapitalize="off">
+                    <button title="<%= data.clearSearch %>" data-pcc-search="clear" class="pcc-close">&#215;</button>
+                    <button title="<%= data.fixedSearchTerms %>" data-pcc-toggle="dropdown-search-fixed-box" class="pcc-search-fixed pcc-hide">
+                        <span class="pcc-icon pcc-icon-pushpin pcc-search-fixed-icon"></span>
                     </button>
                 </div>
-                <div class="pcc-attachments-section">
-                    <div data-pcc-attachments-panel-list class="pcc-attachments-section-content"></div>
+                <div class="pcc-search-group pcc-search-group-buttons">
+                    <button data-pcc-search="submit" title="<%= data.search %>">
+                        <span class="pcc-icon pcc-icon-search"></span>
+                    </button>
+                    <button data-pcc-search="cancel" class="pcc-hide" title="<%= data.cancelButton %>">
+                        <span class="pcc-icon pcc-icon-x"></span>
+                    </button>
+                    <button data-pcc-toggle="advanced-options" class="pcc-hide pcc-show-sm" title="<%= data.advancedSearch %>">
+                        <span class="pcc-icon pcc-icon-wrench"></span>
+                    </button>
+                </div>
+
+                <div class="pcc-advanced-search-group" data-pcc-toggle-id="advanced-options">
+                    <button data-pcc-search="exactWord" class="pcc-icon pcc-icon-exactword" title="<%= data.matchExact %>"></button>
+                    <button data-pcc-search="matchCase" class="pcc-icon pcc-icon-matchcase" title="<%= data.matchCase %>"></button>
+                    <button data-pcc-search="matchWholeWord" class="pcc-icon pcc-icon-wholeword" title="<%= data.wholeWord %>"></button>
+                    <button data-pcc-search="beginsWith" class="pcc-icon pcc-icon-beginswith" title="<%= data.beginsWith %>"></button>
+                    <button data-pcc-search="endsWith" class="pcc-icon pcc-icon-endswith" title="<%= data.endsWith %>"></button>
+                    <button data-pcc-search="wildcard" class="pcc-icon pcc-icon-wildcard" title="<%= data.useWildcards %>"></button>
+                    <button data-pcc-search="proximity" class="pcc-icon pcc-icon-proximity" title="<%= data.proximitySearchToggle %>"></button>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="pcc-pull-right">
-        <button class="pcc-icon pcc-icon-document-compare pcc-hide" data-pcc-toggle="dialog-revision" title="<%= data.docRevision %>"></button>
-        <button class="pcc-icon pcc-icon-print" title="<%= data.printButton %>" data-pcc-print="launch" data-pcc-removable-id="printing"></button>
-        <button data-pcc-toggle="dialog-download" data-pcc-removable-id="download" class="pcc-icon pcc-icon-download" title="<%= data.download %>"></button>
-    </div>
-</div>
-
-<div class="pcc-tab-pane pcc-tab-advanced" id="pcc-search-toolbar" role="tabpanel" aria-labelledby="pcc-search-tab">
-    <div class="pcc-left pcc-pull-left">
-        <button class="pcc-icon pcc-icon-list pcc-search-menu-button" title="<%= data.searchOptions %>" data-pcc-toggle="dialog-search"></button>
-        <div class="pcc-search-group pcc-search-group-input">
-            <button title="<%= data.previousSearches %>" data-pcc-toggle="dropdown-search-box">
-                <span class="pcc-arrow-down"></span>
-            </button>
-            <input type="text" data-pcc-search="input" placeholder="<%= data.searchDocument %>"
-                autocorrect="off" autocapitalize="off" aria-label="<%= data.searchDocument %>">
-            <button title="<%= data.clearSearch %>" data-pcc-search="clear" class="pcc-close">&#215;</button>
-            <button title="<%= data.fixedSearchTerms %>" data-pcc-toggle="dropdown-search-fixed-box" class="pcc-search-fixed pcc-hide">
-                <span class="pcc-icon pcc-icon-pushpin pcc-search-fixed-icon"></span>
-            </button>
-        </div>
-        <div class="pcc-search-group pcc-search-group-buttons">
-            <button data-pcc-search="submit" title="<%= data.search %>">
-                <span class="pcc-icon pcc-icon-search"></span>
-            </button>
-            <button data-pcc-search="cancel" class="pcc-hide" title="<%= data.cancelButton %>">
-                <span class="pcc-icon pcc-icon-x"></span>
-            </button>
-            <button data-pcc-toggle="advanced-options" class="pcc-hide pcc-show-sm" title="<%= data.advancedSearch %>">
-                <span class="pcc-icon pcc-icon-wrench"></span>
-            </button>
-        </div>
-
-        <div class="pcc-advanced-search-group" data-pcc-toggle-id="advanced-options">
-            <button data-pcc-search="exactWord" class="pcc-icon pcc-icon-exactword" title="<%= data.matchExact %>"></button>
-            <button data-pcc-search="matchCase" class="pcc-icon pcc-icon-matchcase" title="<%= data.matchCase %>"></button>
-            <button data-pcc-search="matchWholeWord" class="pcc-icon pcc-icon-wholeword" title="<%= data.wholeWord %>"></button>
-            <button data-pcc-search="beginsWith" class="pcc-icon pcc-icon-beginswith" title="<%= data.beginsWith %>"></button>
-            <button data-pcc-search="endsWith" class="pcc-icon pcc-icon-endswith" title="<%= data.endsWith %>"></button>
-            <button data-pcc-search="wildcard" class="pcc-icon pcc-icon-wildcard" title="<%= data.useWildcards %>"></button>
-            <button data-pcc-search="proximity" class="pcc-icon pcc-icon-proximity" title="<%= data.proximitySearchToggle %>"></button>
-        </div>
-    </div>
-    <div class="pcc-pull-right">
-        <button data-pcc-toggle="dialog-pii-detection" class="pcc-icon pcc-icon-person-search pcc-hide" title="<%= data.piiDetect %>"></button>
-        <button data-pcc-toggle="dialog-summarization" class="pcc-icon pcc-icon-text-short pcc-hide" title="<%= data.summarizeDocument %>"></button>
-        <button data-pcc-toggle="dialog-query" class="pcc-icon pcc-icon-file-question pcc-hide" title="<%= data.queryDocument %>"></button>
-        <button data-pcc-toggle="dialog-tag" class="pcc-icon pcc-icon-tag pcc-hide" title="<%= data.classifyAndTagDocument %>"></button>
-    </div>
-
-    <div class="pcc-dropdown pcc-dropdown-search-box" data-pcc-toggle-id="dropdown-search-box">
-        <div class="pcc-toolbar"><%= data.previousSearches %></div>
-        <div data-pcc-previous-search><span class="pcc-placeholder"><%= data.noPreviousSearches %></span></div>
-        <hr>
-        <div class="pcc-toolbar" data-pcc-search="toggleAllPresets"><span>&#x2714;</span> <%= data.toggleAll %></div>
-        <div class="pcc-predefined-search" data-pcc-predefined-search></div>
-    </div>
-
-    <div class="pcc-dropdown pcc-dropdown-search-box" data-pcc-toggle-id="dropdown-search-fixed-box">
-        <div class="pcc-toolbar"><%= data.fixedSearchTerms %></div>
-        <div class="pcc-predefined-search" data-pcc-predefined-fixed-search></div>
-    </div>
-</div>
-
-<div class="pcc-tab-pane pcc-tab-advanced" id="pcc-annotate-toolbar" role="tabpanel" aria-labelledby="pcc-annotate-tab">
-    <div class="pcc-left pcc-pull-left">
-
-        <% if (data.annotationsMode === "LayeredAnnotations") { %>
-        <button data-pcc-toggle="dialog-annotation-layer-review" class="pcc-icon pcc-icon-list" title="<%= data.annotationLayerReview.annotationLayers %>"></button>
-        <span class="pcc-separator"></span>
-        <% } %>
-
-        <button data-pcc-mouse-tool="AccusoftArrowAnnotation" data-pcc-default-fill-color="#0000ff"
-            class="pcc-icon pcc-icon-annotate-arrow" title="<%= data.arrowAnnotation %>"></button>
-
-        <button data-pcc-mouse-tool="AccusoftLineAnnotation" data-pcc-default-fill-color="#ff0000" data-pcc-context-menu="true"
-            class="pcc-icon pcc-icon-annotate-line" title="<%= data.lineAnnotation %>"></button>
-
-        <button data-pcc-mouse-tool="AccusoftRectangleAnnotation" data-pcc-default-fill-color="#ff0000"
-            class="pcc-icon pcc-icon-annotate-rectangle" title="<%= data.rectangleAnnotation %>"></button>
-
-        <button data-pcc-mouse-tool="AccusoftEllipseAnnotation" data-pcc-default-fill-color="#ff0000"
-            class="pcc-icon pcc-icon-annotate-ellipse" title="<%= data.ellipseAnnotation %>"></button>
-
-        <button data-pcc-mouse-tool="AccusoftFreehandAnnotation" data-pcc-default-fill-color="#ff0000" data-pcc-context-menu="true"
-            class="pcc-icon pcc-icon-annotate-freehand" title="<%= data.freehandAnnotation %>"></button>
-
-        <button data-pcc-toggle="more-annotation-tools" class="pcc-icon pcc-icon-triangle-down pcc-mobile-overflow-trigger" title="<%= data.moreTools %>"></button>
-
-        <div class="pcc-more-annotation-tools pcc-mobile-overflow" data-pcc-toggle-id="more-annotation-tools">
-            <button data-pcc-mouse-tool="AccusoftPolylineAnnotation" data-pcc-default-fill-color="#000000" data-pcc-context-menu="true"
-                class="pcc-icon pcc-icon-annotate-polyline" title="<%= data.polylineAnnotation %>"></button>
-
-        <button data-pcc-mouse-tool="AccusoftTextAnnotation" data-pcc-default-fill-color="#ffffff"
-            class="pcc-icon pcc-icon-annotate-text" title="<%= data.textAnnotation %>"></button>
-
-        <button data-pcc-mouse-tool="AccusoftHighlightAnnotation" data-pcc-default-fill-color="#ffff00"
-            class="pcc-icon pcc-icon-highlight pcc-disabled" title="<%= data.highlightAnnotation %>"></button>
-
-        <button data-pcc-mouse-tool="AccusoftStrikethroughAnnotation" class="pcc-icon pcc-icon-text-strikeout pcc-disabled" title="<%= data.strikethroughAnnotation %>"></button>
-
-        <button data-pcc-mouse-tool="AccusoftTextHyperlinkAnnotation"
-                class="pcc-icon pcc-icon-link pcc-disabled" title="<%= data.textHyperlinkAnnotation %>"></button>
-
-        <button data-pcc-mouse-tool="AccusoftStampAnnotation" data-pcc-default-fill-color="#ff0000" data-pcc-default-label="<%= data.stampLabelApproved %>"
-            class="pcc-icon pcc-icon-annotate-stamp" title="<%= data.stampAnnotation %>"></button>
-
-            <button data-pcc-mouse-tool="AccusoftImageStampAnnotation" data-pcc-context-menu="true"
-            class="pcc-icon pcc-icon-image-stamp" title="<%= data.imageStampAnnotion %>" disabled></button>
-
-        </div>
-    </div>
-    <div class="pcc-pull-right">
-        <button data-pcc-toggle="dialog-save-annotations" class="pcc-icon pcc-icon-save" title="<%= data.saveAnnotations %>"></button>
-        <button data-pcc-lock-editable-layer data-pcc-toggle="dialog-load-annotations" class="pcc-icon pcc-icon-load" title="<%= data.loadAnnotations %>"></button>
-        <button data-pcc-comments-panel class="pcc-icon pcc-icon-comment" title="<%= data.commentsPanel %>"></button>
-        <button data-pcc-toggle="dialog-download" data-pcc-removable-id="download" class="pcc-icon pcc-icon-download" title="<%= data.download %>"></button>
-    </div>
-</div>
-
-<div class="pcc-tab-pane pcc-tab-advanced" id="pcc-redact-toolbar" role="tabpanel" aria-labelledby="pcc-redact-tab">
-    <div class="pcc-left pcc-pull-left">
-        <% if (data.annotationsMode === "LayeredAnnotations") { %>
-        <button data-pcc-toggle="dialog-annotation-layer-review" class="pcc-icon pcc-icon-list" title="<%= data.annotationLayerReview.annotationLayers %>"></button>
-        <span class="pcc-separator"></span>
-        <% } %>
-
-        <div class="pcc-select pcc-redaction-tool-dropdown" title="<%= data.redact %>">
-            <div class="pcc-label" data-pcc-mouse-tool="AccusoftRectangleRedaction" data-pcc-default-fill-color="#000000" data-pcc-context-menu="true">
-                <span class="pcc-icon pcc-icon-annotate-rectangle-filled"></span>
+            <div class="pcc-pull-right">
+                <button data-pcc-toggle="dialog-pii-detection" class="pcc-icon pcc-icon-person-search pcc-hide" title="<%= data.piiDetect %>"></button>
             </div>
-            <div class="pcc-redaction-dropdown-toggle" data-pcc-toggle="dropdown-rectangle-redaction">
-                <div class="pcc-arrow-down"></div>
+
+            <div class="pcc-dropdown pcc-dropdown-search-box" data-pcc-toggle-id="dropdown-search-box">
+                <div class="pcc-toolbar"><%= data.previousSearches %></div>
+                <div data-pcc-previous-search><span class="pcc-placeholder"><%= data.noPreviousSearches %></span></div>
+                <hr>
+                <div class="pcc-toolbar" data-pcc-search="toggleAllPresets"><span>&#x2714;</span> <%= data.toggleAll %></div>
+                <div class="pcc-predefined-search" data-pcc-predefined-search></div>
             </div>
-            <div data-pcc-toggle-id="dropdown-rectangle-redaction" class="pcc-dropdown">
-                <div data-pcc-redaction-tool-option="AccusoftRectangleRedaction" data-pcc-default-fill-color="#000000" data-pcc-context-menu="true" title="<%= data.redact %>">
-                    <span class="pcc-icon pcc-icon-annotate-rectangle-filled"></span> <%= data.redact %>
-                </div>
-                <div data-pcc-redaction-tool-option="AccusoftInverseRedaction" data-pcc-context-menu="true" title="<%= data.inverseRedact %>">
-                    <span class="pcc-icon pcc-icon-annotate-rectangle-inverse"></span> <%= data.inverseRedact %>
+
+            <div class="pcc-dropdown pcc-dropdown-search-box" data-pcc-toggle-id="dropdown-search-fixed-box">
+                <div class="pcc-toolbar"><%= data.fixedSearchTerms %></div>
+                <div class="pcc-predefined-search" data-pcc-predefined-fixed-search></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pcc-tab" data-pcc-nav-tab="annotate" data-pcc-removable-id="annotateTab" role="presentation">
+        <button class="pcc-tab-item" role="tab" aria-controls="pcc-annotate-toolbar" id="annotate-tab" tabindex="-1"><span class="pcc-icon pcc-icon-edit"></span> <%= data.annotateLabel %></button>
+        <div class="pcc-tab-pane pcc-tab-advanced" id="pcc-annotate-toolbar" role="tabpanel">
+            <div class="pcc-left pcc-pull-left">
+
+                <% if (data.annotationsMode === "LayeredAnnotations") { %>
+                <button data-pcc-toggle="dialog-annotation-layer-review" class="pcc-icon pcc-icon-list" title="<%= data.annotationLayerReview.annotationLayers %>"></button>
+                <span class="pcc-separator"></span>
+                <% } %>
+
+                <button data-pcc-mouse-tool="AccusoftArrowAnnotation" data-pcc-default-fill-color="#0000ff"
+                    class="pcc-icon pcc-icon-annotate-arrow" title="<%= data.arrowAnnotation %>"></button>
+
+                <button data-pcc-mouse-tool="AccusoftLineAnnotation" data-pcc-default-fill-color="#ff0000" data-pcc-context-menu="true"
+                    class="pcc-icon pcc-icon-annotate-line" title="<%= data.lineAnnotation %>"></button>
+
+                <button data-pcc-mouse-tool="AccusoftRectangleAnnotation" data-pcc-default-fill-color="#ff0000"
+                    class="pcc-icon pcc-icon-annotate-rectangle" title="<%= data.rectangleAnnotation %>"></button>
+
+                <button data-pcc-mouse-tool="AccusoftEllipseAnnotation" data-pcc-default-fill-color="#ff0000"
+                    class="pcc-icon pcc-icon-annotate-ellipse" title="<%= data.ellipseAnnotation %>"></button>
+
+                <button data-pcc-mouse-tool="AccusoftFreehandAnnotation" data-pcc-default-fill-color="#ff0000" data-pcc-context-menu="true"
+                    class="pcc-icon pcc-icon-annotate-freehand" title="<%= data.freehandAnnotation %>"></button>
+
+                <button data-pcc-toggle="more-annotation-tools" class="pcc-icon pcc-icon-triangle-down pcc-mobile-overflow-trigger" title="<%= data.moreTools %>"></button>
+
+                <div class="pcc-more-annotation-tools pcc-mobile-overflow" data-pcc-toggle-id="more-annotation-tools">
+                    <button data-pcc-mouse-tool="AccusoftPolylineAnnotation" data-pcc-default-fill-color="#000000" data-pcc-context-menu="true"
+                        class="pcc-icon pcc-icon-annotate-polyline" title="<%= data.polylineAnnotation %>"></button>
+
+                <button data-pcc-mouse-tool="AccusoftTextAnnotation" data-pcc-default-fill-color="#ffffff"
+                    class="pcc-icon pcc-icon-annotate-text" title="<%= data.textAnnotation %>"></button>
+
+                <button data-pcc-mouse-tool="AccusoftHighlightAnnotation" data-pcc-default-fill-color="#ffff00"
+                    class="pcc-icon pcc-icon-highlight pcc-disabled" title="<%= data.highlightAnnotation %>"></button>
+
+                <button data-pcc-mouse-tool="AccusoftStrikethroughAnnotation" class="pcc-icon pcc-icon-text-strikeout pcc-disabled" title="<%= data.strikethroughAnnotation %>"></button>
+
+                <button data-pcc-mouse-tool="AccusoftTextHyperlinkAnnotation"
+                        class="pcc-icon pcc-icon-link pcc-disabled" title="<%= data.textHyperlinkAnnotation %>"></button>
+
+                <button data-pcc-mouse-tool="AccusoftStampAnnotation" data-pcc-default-fill-color="#ff0000" data-pcc-default-label="<%= data.stampLabelApproved %>"
+                    class="pcc-icon pcc-icon-annotate-stamp" title="<%= data.stampAnnotation %>"></button>
+
+                    <button data-pcc-mouse-tool="AccusoftImageStampAnnotation" data-pcc-context-menu="true"
+                    class="pcc-icon pcc-icon-image-stamp" title="<%= data.imageStampAnnotion %>" disabled></button>
+
                 </div>
             </div>
+            <div class="pcc-pull-right">
+                <button data-pcc-toggle="dialog-save-annotations" class="pcc-icon pcc-icon-save" title="<%= data.saveAnnotations %>"></button>
+                <button data-pcc-lock-editable-layer data-pcc-toggle="dialog-load-annotations" class="pcc-icon pcc-icon-load" title="<%= data.loadAnnotations %>"></button>
+                <button data-pcc-comments-panel class="pcc-icon pcc-icon-comment" title="<%= data.commentsPanel %>"></button>
+                <button data-pcc-toggle="dialog-download" data-pcc-removable-id="download" class="pcc-icon pcc-icon-download" title="<%= data.download %>"></button>
+            </div>
         </div>
-
-        <button data-pcc-mouse-tool="AccusoftTextSelectionRedaction" data-pcc-default-fill-color="#000000"
-            class="pcc-icon pcc-icon-redact-textselection pcc-disabled" title="<%= data.textSelectionRedaction %>"></button>
-
-        <button class="pcc-icon pcc-icon-redact" title="<%= data.pageRedactionButton %>" data-pcc-page-redaction="launch"></button>
-
-        <span class="pcc-separator"></span>
-
-        <button data-pcc-redactionViewMode class="pcc-icon pcc-icon-eye" title="<%= data.redactionViewMode %>"> </button>
     </div>
-    <div class="pcc-pull-right">
-        <button data-pcc-toggle="dialog-pii-detection" class="pcc-icon pcc-icon-person-search pcc-hide" title="<%= data.piiDetect %>"></button>
-        <button data-pcc-toggle="dialog-save-annotations" class="pcc-icon pcc-icon-save" title="<%= data.saveAnnotations %>"></button>
-        <button data-pcc-lock-editable-layer data-pcc-toggle="dialog-load-annotations" class="pcc-icon pcc-icon-load" title="<%= data.loadAnnotations %>"></button>
-        <button data-pcc-comments-panel class="pcc-icon pcc-icon-comment" title="<%= data.commentsPanel %>"></button>
-        <button data-pcc-toggle="dialog-download" data-pcc-removable-id="download" class="pcc-icon pcc-icon-download" title="<%= data.download %>"></button>
-    </div>
-</div>
 
-<div class="pcc-tab-pane pcc-tab-advanced" id="pcc-esign-toolbar" role="tabpanel" aria-labelledby="pcc-esign-tab">
-    <div class="pcc-left pcc-pull-left">
-        <button class="pcc-icon pcc-icon-list" title="<%= data.esignManage %>" data-pcc-esign="manage"></button>
-        <button class="pcc-icon pcc-icon-freehandSign" title="<%= data.esignFreehand %>" data-pcc-esign="freehandLaunch"></button>
-        <button class="pcc-icon pcc-icon-textSign" title="<%= data.esignText %>" data-pcc-esign="textLaunch"></button>
-        <button class="pcc-icon pcc-icon-place pcc-disabled" title="<%= data.esignPlaceSignature %>" data-pcc-mouse-tool="AccusoftPlaceSignature" data-pcc-esign="place" disabled></button>
-        <button class="pcc-icon pcc-icon-datestamp" title="<%= data.esignPlaceDateSignature %>" data-pcc-mouse-tool="AccusoftPlaceDateSignature" data-pcc-esign="placeDate"></button>
-    </div>
-    <div class="pcc-pull-right">
-        <button data-pcc-comments-panel class="pcc-icon pcc-icon-comment" title="<%= data.commentsPanel %>"></button>
-        <button data-pcc-toggle="dialog-download" data-pcc-removable-id="download" class="pcc-icon pcc-icon-download" title="<%= data.download %>"></button>
-    </div>
-</div>
+    <div class="pcc-tab" data-pcc-nav-tab="redact" data-pcc-removable-id="redactTab" role="presentation">
+        <button class="pcc-tab-item" role="tab" aria-controls="pcc-redact-toolbar" id="redact-tab" tabindex="-1"><span class="pcc-icon pcc-icon-redact"></span> <%= data.redactLabel %></button>
+        <div class="pcc-tab-pane pcc-tab-advanced" id="pcc-redact-toolbar" role="tabpanel">
+            <div class="pcc-left pcc-pull-left">
+                <% if (data.annotationsMode === "LayeredAnnotations") { %>
+                <button data-pcc-toggle="dialog-annotation-layer-review" class="pcc-icon pcc-icon-list" title="<%= data.annotationLayerReview.annotationLayers %>"></button>
+                <span class="pcc-separator"></span>
+                <% } %>
 
-<div class="pcc-status-bar">
-    <button data-pcc-first-page class="pcc-icon pcc-icon-firstpage" title="<%= data.firstPage %>"></button>
-    <button data-pcc-prev-page class="pcc-icon pcc-icon-prevpage" title="<%= data.previousPage %>"></button>
-    <input type="number" value="1" data-pcc-pageSelect autocorrect="off" autocapitalize="off" aria-label="<%= data.pageNumber %>"> <%= data.of %> <span data-pcc-pagecount>1</span>
-    <button data-pcc-next-page class="pcc-icon pcc-icon-nextpage" title="<%= data.nextPage %>"></button>
-    <button data-pcc-last-page class="pcc-icon pcc-icon-lastpage" title="<%= data.lastPage %>"></button>
+                <button data-pcc-mouse-tool="AccusoftRectangleRedaction" data-pcc-default-fill-color="#000000"
+                    class="pcc-icon pcc-icon-annotate-rectangle-filled" title="<%= data.rectangleRedaction %>"></button>
+
+                <button data-pcc-mouse-tool="AccusoftTextSelectionRedaction" data-pcc-default-fill-color="#000000"
+                    class="pcc-icon pcc-icon-redact-textselection pcc-disabled" title="<%= data.textSelectionRedaction %>"></button>
+
+                <button class="pcc-icon pcc-icon-redact" title="<%= data.pageRedactionButton %>" data-pcc-page-redaction="launch"></button>
+
+                <span class="pcc-separator"></span>
+
+                <button data-pcc-redactionViewMode class="pcc-icon pcc-icon-eye" title="<%= data.redactionViewMode %>"> </button>
+            </div>
+            <div class="pcc-pull-right">
+                <button data-pcc-toggle="dialog-pii-detection" class="pcc-icon pcc-icon-person-search pcc-hide" title="<%= data.piiDetect %>"></button>
+                <button data-pcc-toggle="dialog-save-annotations" class="pcc-icon pcc-icon-save" title="<%= data.saveAnnotations %>"></button>
+                <button data-pcc-lock-editable-layer data-pcc-toggle="dialog-load-annotations" class="pcc-icon pcc-icon-load" title="<%= data.loadAnnotations %>"></button>
+                <button data-pcc-comments-panel class="pcc-icon pcc-icon-comment" title="<%= data.commentsPanel %>"></button>
+                <button data-pcc-toggle="dialog-download" data-pcc-removable-id="download" class="pcc-icon pcc-icon-download" title="<%= data.download %>"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="pcc-tab" data-pcc-nav-tab="esign" data-pcc-removable-id="esignTab" role="presentation">
+        <button class="pcc-tab-item" role="tab" aria-controls="pcc-esign-toolbar" id="esign-tab" tabindex="-1"><span class="pcc-icon pcc-icon-esign"></span> <%= data.esignLabel %></button>
+        <div class="pcc-tab-pane pcc-tab-advanced" id="pcc-esign-toolbar" role="tabpanel">
+            <div class="pcc-left pcc-pull-left">
+                <button class="pcc-icon pcc-icon-list" title="<%= data.esignManage %>" data-pcc-esign="manage"></button>
+                <button class="pcc-icon pcc-icon-freehandSign" title="<%= data.esignFreehand %>" data-pcc-esign="freehandLaunch"></button>
+                <button class="pcc-icon pcc-icon-textSign" title="<%= data.esignText %>" data-pcc-esign="textLaunch"></button>
+                <button class="pcc-icon pcc-icon-place pcc-disabled" title="<%= data.esignPlaceSignature %>" data-pcc-mouse-tool="AccusoftPlaceSignature" data-pcc-esign="place" disabled></button>
+                <button class="pcc-icon pcc-icon-datestamp" title="<%= data.esignPlaceDateSignature %>" data-pcc-mouse-tool="AccusoftPlaceDateSignature" data-pcc-esign="placeDate"></button>
+            </div>
+            <div class="pcc-pull-right">
+                <button data-pcc-comments-panel class="pcc-icon pcc-icon-comment" title="<%= data.commentsPanel %>"></button>
+                <button data-pcc-toggle="dialog-download" data-pcc-removable-id="download" class="pcc-icon pcc-icon-download" title="<%= data.download %>"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="pcc-status-bar">
+        <button data-pcc-first-page class="pcc-icon pcc-icon-firstpage" title="<%= data.firstPage %>"></button>
+        <button data-pcc-prev-page class="pcc-icon pcc-icon-prevpage" title="<%= data.previousPage %>"></button>
+        <input type="number" value="1" data-pcc-pageSelect autocorrect="off" autocapitalize="off"> <%= data.of %> <span data-pcc-pagecount>1</span>
+        <button data-pcc-next-page class="pcc-icon pcc-icon-nextpage" title="<%= data.nextPage %>"></button>
+        <button data-pcc-last-page class="pcc-icon pcc-icon-lastpage" title="<%= data.lastPage %>"></button>
+    </div>
+
 </div>
 
 <div class="pcc-tabset pcc-tools-tabset">
@@ -291,7 +267,8 @@
         <li data-pcc-scale='125'><%= data.scaleOptions.scale125 %></li>
         <li data-pcc-scale='100'><%= data.scaleOptions.scale100 %></li>
         <li data-pcc-scale='75'><%= data.scaleOptions.scale75 %></li>
-        <li data-pcc-scale='50' class="pcc-end-group"><%= data.scaleOptions.scale50 %></li>
+        <li data-pcc-scale='50'><%= data.scaleOptions.scale50 %></li>
+        <div class='pcc-separator'></div>
         <li data-pcc-fit='FullWidth'><%= data.fullWidth %></li>
         <li data-pcc-fit='FullHeight'><%= data.fullHeight %></li>
         <li data-pcc-fit='FullPage'><%= data.fullPage %></li>
@@ -442,7 +419,7 @@
                 </div>
 
                 <div class="pcc-row">
-                    <input type="text" data-pcc-qa-redaction-reason-input class="pcc-hide" placeholder="<%= data.redactionReasonFreeform %>" aria-label="<%= data.redactionReasonFreeform %>">
+                    <input type="text" data-pcc-qa-redaction-reason-input class="pcc-hide">
                 </div>
 
                 <button data-pcc-search-quick-action="redactReasonUpdateDone" class="" title="<%= data.searchQuickActions.redactReasonUpdateDone %>"><%= data.searchQuickActions.redactReasonUpdateDone %></button>
@@ -520,7 +497,7 @@
                 <div class="pcc-col-10 pcc-center"><%= data.results %></div>
                 <div class="pcc-col-2 pcc-center pcc-hide"><%= data.type %></div>
             </div>
-            <div class="pcc-row pcc-row-results" data-pcc-search="results" tabindex="0"></div>
+            <div class="pcc-row pcc-row-results" data-pcc-search="results" tabindex="1"></div>
         </div>
     </div>
 </div>
@@ -557,7 +534,7 @@
                 <div class="pcc-col-8 pcc-center"><%= data.revision %></div>
                 <div class="pcc-col-2 pcc-center"><%= data.type %></div>
             </div>
-            <div class="pcc-row pcc-row-results" data-pcc-revision="results" tabindex="0"></div>
+            <div class="pcc-row pcc-row-results" data-pcc-revision="results" tabindex="1"></div>
         </div>
     </div>
 </div>
@@ -566,7 +543,7 @@
     <div class="pcc-dialog-wrapper">
         <div class="pcc-pii-detection-header pcc-clear">
             <div class="pcc-pull-right">
-                <button class="pcc-icon pcc-icon-list" title="<%= data.piiEntities %>" data-pcc-pii-entities-container-toggle="entities" aria-label="<%= data.piiEntities %>"></button>
+                <button class="pcc-icon pcc-icon-list" title="<%= data.piiEntities %>" data-pcc-pii-entities-container-toggle="entities"></button>
                 <button class="pcc-icon pcc-icon-filter" title="<%= data.piiFilterActions.title %>" data-pcc-pii-entities-container-toggle="filter" aria-label="<%= data.piiFilterActions.title %>"></button>
                 <button class="pcc-icon pcc-icon-redact-textselection pcc-disabled" title="<%= data.piiRedact %>" data-pcc-pii-detection="redact"></button>
             </div>
@@ -580,7 +557,6 @@
                 <div class="pcc-bar"></div>
             </div>
         </div>
-
 
         <div class="pcc-pii-filter-container pcc-hide pcc-clear" data-pcc-pii-entities-container="filter">
 
@@ -624,15 +600,11 @@
                         <% }); %>
                     </div>
                 </div>
-
                 <div class="pcc-row">
                     <input type="text" data-pcc-pii-filter-qa-redaction-reason-input class="pcc-hide">
                 </div>
-
                 <button data-pcc-pii-filter-action="redactReasonUpdateDone" class="" title="<%= data.piiFilterActions.redactReasonUpdateDone %>"><%= data.piiFilterActions.redactReasonUpdateDone %></button>
-
             </div>
-
         </div>
 
         <div class="pcc-row pcc-clear pcc-pii-detection-nav pcc-center">
@@ -657,49 +629,8 @@
                 <div class="pcc-col-4 pcc-center"><%= data.piiEntityType %></div>
                 <div class="pcc-col-2 pcc-center"><%= data.piiEntityScore %></div>
             </div>
-            <div class="pcc-row pcc-row-results" data-pcc-pii-detection="entities" tabindex="0"></div>
+            <div class="pcc-row pcc-row-results" data-pcc-pii-detection="entities" tabindex="1"></div>
         </div>
-    </div>
-</div>
-
-<div class="pcc-dialog pcc-dialog-summarization" data-pcc-toggle-id="dialog-summarization">
-    <div class="pcc-dialog-wrapper">
-        <div>
-            <h3 class="pcc-pull-left"><%= data.summary %></h3>
-            <h3 class="pcc-pull-right">
-                <button data-pcc-copy-summary class="pcc-icon pcc-icon-content-copy pcc-hide" title="<%= data.summaryCopy %>" aria-label="<%= data.summaryCopy %>"></button>
-                <button data-pcc-regenerate-summary class="pcc-icon pcc-icon-refresh pcc-hide" title="<%= data.summaryRegenerate %>"></button>
-            </h3>
-        </div>
-        <label data-pcc-summary class="pcc-row pcc-clear"><%= data.summarizingDocument %></label>
-    </div>
-</div>
-
-<div class="pcc-dialog pcc-dialog-query" data-pcc-toggle-id="dialog-query">
-    <div class="pcc-dialog-wrapper">
-        <h3><%= data.qAndA %></h3>
-        <h4><%= data.query %></h4>
-        <textarea data-pcc-query class="pcc-query-textarea" placeholder="<%= data.queryEnter %>" aria-label="<%= data.queryEnter %>"></textarea>
-        <div>
-            <h4 class="pcc-pull-left"><%= data.queryResponse %></h4>
-            <h4 class="pcc-pull-right">
-                <button data-pcc-copy-query-response class="pcc-icon pcc-icon-content-copy pcc-hide" title="<%= data.queryResponseCopy %>" aria-label="<%= data.queryResponseCopy %>"></button>
-            </h4>
-        </div>
-        <label data-pcc-query-response class="pcc-row pcc-clear"></label>
-    </div>
-</div>
-
-<div class="pcc-dialog pcc-dialog-tag" data-pcc-toggle-id="dialog-tag">
-    <div class="pcc-dialog-wrapper">
-        <h3><%= data.classification %></h3>
-        <div data-pcc-classifications><%= data.classifyingDocument %></div>
-        <h3><%= data.tags %></h3>
-        <div data-pcc-tags><%= data.taggingDocument %></div>
-        <h3 data-pcc-classification-other-title><%= data.classificationOther %></h3>
-        <div data-pcc-classification-other></div>
-        <h3 data-pcc-tags-other-title class="pcc-hide"><%= data.tagsOther %></h3>
-        <div data-pcc-tags-other></div>
     </div>
 </div>
 
@@ -716,7 +647,7 @@
 <div class="pcc-dialog pcc-dialog-load-annotation-layers" data-pcc-toggle-id="dialog-load-annotation-layers">
 
     <div class="pcc-annotation-layers-title">
-        <button data-pcc-toggle="dialog-annotation-layer-review" data-pcc-load-annotation-layers="back" class="pcc-icon pcc-icon-prevpage pcc-pull-left" aria-label="<%= data.annotationLayerReview.annotationLayers %>"></button>
+        <button data-pcc-toggle="dialog-annotation-layer-review" data-pcc-load-annotation-layers="back" class="pcc-icon pcc-icon-prevpage pcc-pull-left"></button>
         <%= data.annotations.load.title %>
     </div>
 
@@ -751,7 +682,7 @@
 
 <div class="pcc-dialog pcc-dialog-save-annotations" data-pcc-toggle-id="dialog-save-annotations">
     <div class="pcc-annotation-save-msg"></div>
-    <input type="text" disabled="disabled" placeholder="<%= data.annotationName %>" aria-label="<%= data.annotationName %>">
+    <input type="text" disabled="disabled">
         <button disabled="disabled"><%= data.saveButton %></button>
 </div>
 
@@ -809,11 +740,11 @@
 <div class="pcc-dialog pcc-dialog-annotation-layer-save" data-pcc-toggle-id="dialog-annotation-layer-save">
     <div class="pcc-dialog-wrapper">
         <div class="pcc-annotation-layers-title">
-            <button data-pcc-toggle="dialog-annotation-layer-review" class="pcc-icon pcc-icon-prevpage pcc-pull-left" aria-label="<%= data.annotationLayerReview.annotationLayers %>"></button>
+            <button data-pcc-toggle="dialog-annotation-layer-review" class="pcc-icon pcc-icon-prevpage pcc-pull-left"></button>
             <%= data.annotations.save.title %>
         </div>
         <div class="pcc-annotation-save-msg"><%= data.annotations.save.as %></div>
-        <input type="text" placeholder="Annotation name" aria-label="Annotation name">
+        <input type="text">
         <button class="pcc-disabled" data-pcc-save-layer><%= data.saveButton %></button>
     </div>
 </div>
@@ -822,7 +753,7 @@
     <p></p><button data-pcc-toggle="notify">&#215;</button>
 </div>
 
-<div data-pcc-pageList id="pcc-page-list"></div>
+<div data-pcc-pageList></div>
 <div data-pcc-context-menu class="pcc-context-menu"></div>
 <div class="pcc-overlay-fade"></div>
 <div class="pcc-overlay" data-pcc-print="overlay"></div>
