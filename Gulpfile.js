@@ -31,11 +31,11 @@ const css = function() {
 }
 
 const fonts = function() {
-  return src(['src/fonts/*.+(woff|woff2|ttf|otf)', 'src/fonts/*LICENSE*']).pipe(dest('dist/viewer-assets/fonts'));
+  return src(['src/fonts/*.+(woff|woff2|ttf|otf)', 'src/fonts/*LICENSE*'], { encoding: false }).pipe(dest('dist/viewer-assets/fonts'));
 }
 
 const img = function() {
-  return src('src/img/*.+(png|gif|jpg|jpeg|cur)').pipe(dest('dist/viewer-assets/img'));
+  return src('src/img/*.+(png|gif|jpg|jpeg|cur)', { encoding: false }).pipe(dest('dist/viewer-assets/img'));
 }
 
 const viewerCoreJs = function() {
