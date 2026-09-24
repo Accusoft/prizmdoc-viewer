@@ -3,7 +3,7 @@
   "description": "Source code and build which produces the client assets for the PrizmDoc Viewer client",
   "main": "Gulpfile.js",
   "dependencies": {
-    "@prizmdoc/viewer-core": "^14.9.3"
+    "@prizmdoc/viewer-core": "^14.10.4"
   },
   "devDependencies": {
     "async": "^3.2.6",
