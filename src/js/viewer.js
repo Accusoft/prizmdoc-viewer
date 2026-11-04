@@ -1807,7 +1807,7 @@ var PCCViewer = window.PCCViewer || {};
 
                 // Delete marks button
                 .on('click', '[data-pcc-delete-mark]', function(ev) {
-                    viewer.viewerControl.deleteMarks(viewer.currentMarks);
+                    deleteMarksOrSelectedVisibleRegions(viewer.currentMarks);
                 })
 
                 .on('click', '[data-pcc-add-comment-context-menu]', function(ev) {
@@ -2407,7 +2407,7 @@ var PCCViewer = window.PCCViewer || {};
                     if (!$(viewer.viewerNodes.$overlayFade[0]).is(':visible')) {
                         var selectedMarks = viewer.viewerControl.getSelectedMarks();
                         if (selectedMarks.length) {
-                            viewer.viewerControl.deleteMarks(viewer.currentMarks);
+                            deleteMarksOrSelectedVisibleRegions(selectedMarks);
                             return false;
                         }
                     }
@@ -3731,6 +3731,29 @@ var PCCViewer = window.PCCViewer || {};
             } else if (markType === PCCViewer.Mark.Type.FreehandSignature || markType === PCCViewer.Mark.Type.TextSignature) {
                 // Keep track of the size that the user has used for the signature
                 viewer.eSignature.updateSignatureSizeOnDocument(ev.mark);
+            }
+        }
+
+        // Delete the given marks. A selected page redaction with selected visible regions only has those
+        // regions removed, so the rest of the redaction is preserved.
+        function deleteMarksOrSelectedVisibleRegions(marks) {
+            var marksToDelete = [];
+            var marksToDeselect = [];
+            _.each(marks, function(mark) {
+                var selectedVisibleRegions = mark.getSelectedVisibleRegions ? mark.getSelectedVisibleRegions() : [];
+                if (selectedVisibleRegions.length) {
+                    mark.deleteVisibleRegions(selectedVisibleRegions);
+                    marksToDeselect.push(mark);
+                } else {
+                    marksToDelete.push(mark);
+                }
+            });
+
+            if (marksToDeselect.length) {
+                viewer.viewerControl.deselectMarks(marksToDeselect);
+            }
+            if (marksToDelete.length) {
+                viewer.viewerControl.deleteMarks(marksToDelete);
             }
         }
 
