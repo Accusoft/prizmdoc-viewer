@@ -7470,7 +7470,27 @@ var PCCViewer = window.PCCViewer || {};
                         partialResultsTimeout = undefined;
                     }
 
-                    partialResultsTimeout = setTimeout(sortAndColorCorrectResultsView, delay);
+                    partialResultsTimeout = setTimeout(function() {
+                        partialResultsTimeout = undefined;
+                        sortAndColorCorrectResultsView();
+                    }, delay);
+                }
+            };
+
+            // Drops the pending throttled sort without running it.
+            var cancelPendingResultsSort = function() {
+                if (partialResultsTimeout) {
+                    clearTimeout(partialResultsTimeout);
+                    partialResultsTimeout = undefined;
+                }
+            };
+
+            // Runs the pending throttled sort now, so the list is in its final order when the search is reported finished.
+            // Does nothing when no sort is pending.
+            var flushPendingResultsSort = function() {
+                if (partialResultsTimeout) {
+                    cancelPendingResultsSort();
+                    sortAndColorCorrectResultsView();
                 }
             };
 
@@ -7578,6 +7598,7 @@ var PCCViewer = window.PCCViewer || {};
             // Triggered when search has completed due to failure, abort, or when the full set of search results is available.
             var searchCompletedHandler = function(ev) {
                 unHookSearchResultEvents();
+                flushPendingResultsSort();
 
                 var resultsVerbiage = (searchResultsCount === 0) ? PCCViewer.Language.data.nothingFound : '',
                     pagesWithoutTextMsg = '',
@@ -7623,6 +7644,7 @@ var PCCViewer = window.PCCViewer || {};
                 var msg = PCCViewer.Language.data.searchError + searchRequest.getErrorMessage();
 
                 unHookSearchResultEvents();
+                flushPendingResultsSort();
                 updateStatusUi(PCCViewer.Language.data.searchCancelled, false, 100);
 
                 viewer.viewerNodes.$searchCancel.addClass('pcc-hide');
@@ -7640,6 +7662,7 @@ var PCCViewer = window.PCCViewer || {};
             // Triggered when the search has completed due to a call to cancel.
             var searchCancelledHandler = function(ev) {
                 unHookSearchResultEvents();
+                flushPendingResultsSort();
                 updateStatusUi(PCCViewer.Language.data.searchCancelled, false, 100);
 
                 viewer.viewerNodes.$searchCancel.addClass('pcc-hide');
@@ -7664,6 +7687,7 @@ var PCCViewer = window.PCCViewer || {};
 
             // Resets the module's properties used to track search results.
             var resetSearchParams = function() {
+                cancelPendingResultsSort();
                 searchResultsCount = 0;
                 activeSearchResultId = undefined;
                 $(allResultsFragment).children().off();
